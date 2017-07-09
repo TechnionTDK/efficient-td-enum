@@ -17,7 +17,7 @@ public class Graph implements IGraph {
     int numberOfNodes = 0;
     int numberOfEdges = 0;
     NodeSet nodes = new NodeSet();
-    List<Set<Node>> neighborSets = new ArrayList<Set<Node>>();
+    List<NodeSet> neighborSets = new ArrayList<>();
 
 
     public Graph()
@@ -28,15 +28,28 @@ public class Graph implements IGraph {
     public Graph(int numberOfNodes)
     {
         this.numberOfNodes = numberOfNodes;
-        neighborSets = new ArrayList<Set<Node>>(numberOfNodes);
+        neighborSets = new ArrayList<NodeSet>(numberOfNodes);
         for (int i = 0; i < numberOfNodes; i++)
         {
             Node v = new Node(i);
             nodes.add(v);
-            neighborSets.add(i, new HashSet<Node>() {
+            neighborSets.add(i, new NodeSet() {
             });
         }
 
+    }
+
+    public Graph(final Graph g)
+    {
+        this.numberOfNodes = g.numberOfNodes;
+        this.numberOfEdges = g.numberOfEdges;
+        nodes.addAll(g.nodes);
+        for (int i= 0; i < g.neighborSets.size(); i++)
+        {
+            NodeSet set = new NodeSet();
+            set.addAll(g.neighborSets.get(i));
+            neighborSets.add(set);
+        }
     }
 
 
@@ -45,6 +58,7 @@ public class Graph implements IGraph {
     {
         return isValidNode(v.intValue());
     }
+
 
     boolean isValidNode(int v)
     {
@@ -109,7 +123,9 @@ public class Graph implements IGraph {
 
     }
 
-    public void addClique(Set<Node> clique) {
+    @Override
+    public void addClique(NodeSet clique) {
+
 
         for(Node v: clique)
         {
@@ -124,6 +140,7 @@ public class Graph implements IGraph {
 
     }
 
+    @Override
     public void addClique(List<Node> clique) {
 
         for(Node v: clique)
@@ -138,35 +155,40 @@ public class Graph implements IGraph {
         }
     }
 
-    public void saturateNodeSets(Set<? extends Set<Node>> sets) {
-        for (Set<Node> set : sets)
+    @Override
+    public void saturateNodeSets(Set<NodeSet> sets) {
+        for (NodeSet set : sets)
         {
             addClique(set);
         }
 
     }
 
-    public Set<Node> getNodes() {
+    @Override
+    public NodeSet getNodes() {
 //        Set<Node> nodes = IntStream.
 //                rangeClosed(0, numberOfNodes).
 //                boxed().map(i -> new Node(i)).collect(Collectors.toSet());
         return nodes;
     }
 
+    @Override
     public int getNumberOfEdges() {
         return numberOfEdges;
     }
 
+    @Override
     public int getNumberOfNodes() {
         return numberOfNodes;
     }
 
-    public Set<Node> getNeighbors(Node v) {
+    @Override
+    public NodeSet getNeighbors(Node v) {
        return getNeighbors(v.intValue());
     }
 
     @Override
-    public Set<Node> getNeighbors(int v) {
+    public NodeSet getNeighbors(int v) {
         if (!isValidNode(v))
         {
             System.out.println("Error: Requesting access to invalid node");
@@ -176,6 +198,7 @@ public class Graph implements IGraph {
     }
 
 
+    @Override
     public NodeSet getNeighbors(List<Node> nodes) {
         NodeSetProducer neighborsProducer = new NodeSetProducer(numberOfNodes);
         for(Node v : nodes)
@@ -196,12 +219,12 @@ public class Graph implements IGraph {
         return neighborsProducer.produce();
     }
 
-
-    public NodeSet getNeighbors(Set<Node> nodes) {
+    @Override
+    public NodeSet getNeighbors(NodeSet nodes) {
         NodeSetProducer neighborsProducer = new NodeSetProducer(numberOfNodes);
         for(Node v : nodes)
         {
-            if (isValidNode(v))
+            if (!isValidNode(v))
             {
                 return new NodeSet();
             }
@@ -217,6 +240,7 @@ public class Graph implements IGraph {
         return neighborsProducer.produce();
     }
 
+    @Override
     public List<Boolean> getNeighborsMap(Node v) {
         List<Boolean> result = Utils.generateFixedList(numberOfNodes, false);
         for(Node u : getNeighbors(v))
@@ -227,7 +251,8 @@ public class Graph implements IGraph {
         return result;
     }
 
-    public List<NodeSet> getComponents(Set<Node> removeNodes) {
+    @Override
+    public List<NodeSet> getComponents(List<Node> removeNodes) {
         List<Integer> visitedList = Utils.generateFixedList(numberOfNodes, 0);
         for(Node v: removeNodes)
         {
@@ -241,6 +266,8 @@ public class Graph implements IGraph {
         return getComponenetsAux(visitedList, numberOfUnhandeledNodes);
     }
 
+
+    @Override
     public List<NodeSet> getComponents(NodeSet removeNodes) {
         List<Integer> visitedList = Utils.generateFixedList(numberOfNodes, 0);
         for(Node v: removeNodes)
@@ -255,10 +282,12 @@ public class Graph implements IGraph {
         return getComponenetsAux(visitedList, numberOfUnhandeledNodes);
     }
 
-    public Set<Node> getComponent(Node v, Set<Node> removedNodes) {
+    @Override
+    public NodeSet getComponent(Node v, NodeSet removedNodes) {
+
         ArrayDeque<Node> q = new ArrayDeque<>();
         List<Boolean> insertedNodes = Utils.generateFixedList(numberOfNodes, false);
-        Set<Node> component = new HashSet<>();
+        NodeSet component = new NodeSet();
         for(Node removed: removedNodes)
         {
             insertedNodes.set(removed.intValue(), true);
@@ -271,7 +300,7 @@ public class Graph implements IGraph {
         while(!q.isEmpty())
         {
             v = q.poll();
-            final Set<Node> neighbors = getNeighbors(v);
+            final NodeSet neighbors = getNeighbors(v);
             for (Node neighbor : neighbors)
             {
                 if (!insertedNodes.get(neighbor.intValue()))
@@ -285,7 +314,7 @@ public class Graph implements IGraph {
         return  component;
     }
 
-
+    @Override
     public boolean areNeighbors(Node u, Node v) {
         return neighborSets.get(u.intValue()).contains(v);
     }
@@ -303,5 +332,27 @@ public class Graph implements IGraph {
             sb.append("}").append(System.lineSeparator());
         }
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Graph)) return false;
+
+        Graph graph = (Graph) o;
+
+        if (getNumberOfNodes() != graph.getNumberOfNodes()) return false;
+        if (getNumberOfEdges() != graph.getNumberOfEdges()) return false;
+        if (!getNodes().equals(graph.getNodes())) return false;
+        return neighborSets.equals(graph.neighborSets);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getNumberOfNodes();
+        result = 31 * result + getNumberOfEdges();
+        result = 31 * result + getNodes().hashCode();
+        result = 31 * result + neighborSets.hashCode();
+        return result;
     }
 }

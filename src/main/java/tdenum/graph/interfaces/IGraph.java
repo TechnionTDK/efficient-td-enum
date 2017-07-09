@@ -3,6 +3,7 @@ package tdenum.graph.interfaces;
 import tdenum.graph.Node;
 import tdenum.graph.NodeSet;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -13,22 +14,24 @@ import java.util.Set;
 public interface IGraph{
 
 
-    void addEdge(Node u , Node v);
-    void addClique(final Set<Node> clique);
-    void addClique(final List<Node> clique);
-    void saturateNodeSets(final Set<? extends Set<Node>> sets);
 
-    Set<Node> getNodes();
+
+    void addEdge(Node u , Node v);
+    void addClique(final NodeSet clique);
+    void addClique(final List<Node> clique);
+    void saturateNodeSets(final Set<NodeSet>  sets);
+
+    NodeSet getNodes();
     int getNumberOfEdges();
     int getNumberOfNodes();
-    Set<Node> getNeighbors(Node v);
-    Set<Node> getNeighbors(int v);
+    NodeSet getNeighbors(Node v);
+    NodeSet getNeighbors(int v);
     NodeSet getNeighbors(final List<Node> nodes);
-    NodeSet getNeighbors(final Set<Node> nodes);
+    NodeSet getNeighbors(final NodeSet nodes);
     List<Boolean> getNeighborsMap(Node v);
-    List<NodeSet> getComponents(final Set<Node> removeNodes);
+    List<NodeSet> getComponents(final List<Node> removeNodes);
     List<NodeSet> getComponents(final NodeSet removeNodes);
-    Set<Node> getComponent(Node v, final Set<Node> removedNodes);
+    NodeSet getComponent(Node v, final NodeSet removedNodes);
     boolean areNeighbors(Node u, Node v);
 
 

@@ -4,6 +4,7 @@ import tdenum.common.Utils;
 import tdenum.graph.Node;
 import tdenum.graph.NodeSet;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,35 +16,48 @@ import java.util.stream.Stream;
 //public class NodeSetProducer <Node extends Integer>
 public class NodeSetProducer{
 
-    List<Boolean> isMemeberMap;
+
+    HashMap<Node, Boolean> isMemeberMap = new HashMap<>();
 
     public NodeSetProducer(int sizeOfOriginalNodeSet)
     {
 //        isMemeberMap = Stream.iterate(false, b->b).limit(sizeOfOriginalNodeSet).collect(Collectors.toList());
-        isMemeberMap = Utils.generateFixedList(sizeOfOriginalNodeSet,false);
+//        isMemeberMap = Utils.generateFixedList(sizeOfOriginalNodeSet,false);
+
+    }
+
+    public NodeSetProducer()
+    {
 
     }
 
     public void insert(Node v)
     {
-        isMemeberMap.set(v.intValue(), true);
+        isMemeberMap.put(v, true);
     }
 
     public void remove(Node v)
     {
-        isMemeberMap.set(v.intValue(), false);
+        isMemeberMap.put(v, false);
     }
 
     public NodeSet produce()
     {
         NodeSet members = new NodeSet();
-        for (int i =0; i < isMemeberMap.size(); i++)
+        for (Node v : isMemeberMap.keySet())
         {
-            if (isMemeberMap.get(i))
+            if (isMemeberMap.get(v))
             {
-                members.add(new Node(i));
+                members.add(v);
             }
         }
+//        for (int i =0; i < isMemeberMap.size(); i++)
+//        {
+//            if (isMemeberMap.get(i))
+//            {
+//                members.add(new Node(i));
+//            }
+//        }
         return members;
     }
 }

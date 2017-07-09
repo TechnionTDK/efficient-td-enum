@@ -9,5 +9,5 @@ import java.util.HashSet;
  */
 
 //public class NodeSet <Node extends Integer> extends ArrayList<Node> {
-public class NodeSet extends HashSet<Node> {
+public class NodeSet extends ArrayList<Node> {
 }
