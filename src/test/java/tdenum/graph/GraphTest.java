@@ -9,7 +9,8 @@ import static org.junit.Assert.*;
 /**
  * Created by dvir.dukhan on 7/9/2017.
  */
-public class GraphTest {
+public class GraphTest
+{
 
     @Test
     public void graphTest()
@@ -23,7 +24,6 @@ public class GraphTest {
         Graph emptyGraph = new Graph();
         assertEquals(0, emptyGraph.getNodes().size());
         assertEquals(emptyGraph.getNodes().size(), emptyGraph.getNumberOfNodes());
-
 
 
         Graph g = new Graph(4);

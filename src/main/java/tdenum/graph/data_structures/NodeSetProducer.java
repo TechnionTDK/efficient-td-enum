@@ -14,7 +14,8 @@ import java.util.stream.Stream;
  */
 
 //public class NodeSetProducer <Node extends Integer>
-public class NodeSetProducer{
+public class NodeSetProducer
+{
 
 
     HashMap<Node, Boolean> isMemeberMap = new HashMap<>();
@@ -41,9 +42,9 @@ public class NodeSetProducer{
         isMemeberMap.put(v, false);
     }
 
-    public NodeSet produce()
+    public <T extends NodeSet> T produce()
     {
-        NodeSet members = new NodeSet();
+        T members = (T) new NodeSet();
         for (Node v : isMemeberMap.keySet())
         {
             if (isMemeberMap.get(v))

@@ -1,7 +1,6 @@
 package tdenum.graph.data_structures;
 
 
-
 import tdenum.graph.Node;
 
 import java.util.*;
@@ -9,11 +8,13 @@ import java.util.*;
 /**
  * Created by dvir.dukhan on 7/6/2017.
  */
-public class IncreasingWeightNodeQueue {
+public class IncreasingWeightNodeQueue
+{
 
-//    List<Integer> weight = new ArrayList<>();
+    //    List<Integer> weight = new ArrayList<>();
 //    Set<Pair<Integer, Node>> queue = new HashSet<>();
     LinkedHashMap<Node, Integer> queue;
+
     public IncreasingWeightNodeQueue(int numberOfNoeds)
     {
 //        weight = Utils.generateFixedList(numberOfNoeds, 0);
@@ -39,7 +40,7 @@ public class IncreasingWeightNodeQueue {
         int weight = queue.get(v);
         queue.remove(v);
         weight++;
-        queue.put(v,weight );
+        queue.put(v, weight);
     }
 
     public int getWeight(Node v)
@@ -58,8 +59,6 @@ public class IncreasingWeightNodeQueue {
         queue.remove(v);
         return v;
     }
-
-
 
 
 }

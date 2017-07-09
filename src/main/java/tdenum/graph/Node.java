@@ -3,7 +3,8 @@ package tdenum.graph;
 /**
  * Created by dvir.dukhan on 7/5/2017.
  */
-public class Node {
+public class Node
+{
     int value;
 
     public Node(int value)
@@ -17,13 +18,15 @@ public class Node {
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         final StringBuilder sb = new StringBuilder().append(value);
         return sb.toString();
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
         if (!(o instanceof Node)) return false;
 
@@ -33,7 +36,8 @@ public class Node {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return value;
     }
 

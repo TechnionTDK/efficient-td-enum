@@ -9,12 +9,13 @@ import java.util.*;
 /**
  * Created by dvir.dukhan on 7/9/2017.
  */
-public class SubGraph extends Graph implements ISubGraph  {
+public class SubGraph extends Graph implements ISubGraph
+{
 
     IGraph mainGraph = null;
     Map<Node, Node> nodeMapToMainGraph = new HashMap<>();
 
-    Set<MinimalSeparator> seps =new HashSet<>();
+    Set<MinimalSeparator> seps = new HashSet<>();
 
 
     public SubGraph(final Graph mainGraph)
@@ -51,7 +52,7 @@ public class SubGraph extends Graph implements ISubGraph  {
         final Map<Node, Node> fatherNodesMapInMain = fatherGraph.nodeMapToMainGraph;
 
         NodeSet nodeSetInFather = nodeSetInFatherGraph;
-        Map<Node, Node>  subNodesInMain = nodeMapToMainGraph;
+        Map<Node, Node> subNodesInMain = nodeMapToMainGraph;
         Set<Node> fatherNodesInSub = new HashSet<>();
 
 
@@ -63,13 +64,13 @@ public class SubGraph extends Graph implements ISubGraph  {
         }
 
 
-        for (Node nodeInFather: nodeSetInFather)
+        for (Node nodeInFather : nodeSetInFather)
         {
             fatherNodesInSub.remove(nodeInFather);
             NodeSet neighbors = fatherGraph.getNeighbors(nodeInFather);
             for (Node neighborInFather : neighbors)
             {
-                if(fatherNodesInSub.contains(neighborInFather))
+                if (fatherNodesInSub.contains(neighborInFather))
                 {
                     addEdge(nodeInFather, neighborInFather);
                 }
@@ -78,24 +79,27 @@ public class SubGraph extends Graph implements ISubGraph  {
     }
 
     @Override
-    public Set<MinimalSeparator> getSeps() {
+    public Set<MinimalSeparator> getSeps()
+    {
         return seps;
     }
 
     @Override
-    public void setSeps(Set<MinimalSeparator> seps) {
+    public void setSeps(Set<MinimalSeparator> seps)
+    {
         this.seps = seps;
     }
 
     @Override
-    public Set<Edge> createEdgeSet() {
+    public Set<Edge> createEdgeSet()
+    {
         HashSet<Edge> edgeSet = new HashSet<>();
         Map<Node, Node> nodeIndsInMain = getNodeMaptoMainGraph();
         int n = getNumberOfNodes();
 
-        for (int nis =0; nis < n; nis++)
+        for (int nis = 0; nis < n; nis++)
         {
-            for (int ois = nis +1; ois < n; ois++)
+            for (int ois = nis + 1; ois < n; ois++)
             {
                 Node u = new Node(nis);
                 Node v = new Node(ois);
@@ -109,8 +113,7 @@ public class SubGraph extends Graph implements ISubGraph  {
                     {
                         e.add(e1);
                         e.add(e0);
-                    }
-                    else
+                    } else
                     {
                         e.add(e0);
                         e.add(e1);
@@ -125,13 +128,15 @@ public class SubGraph extends Graph implements ISubGraph  {
     }
 
     @Override
-    public Map<Node, Node> getNodeMaptoMainGraph() {
+    public Map<Node, Node> getNodeMaptoMainGraph()
+    {
         return nodeMapToMainGraph;
     }
 
     @Override
-    public Set<MinimalSeparator> createNewSepGroup(Map<Node, Node>  subNodesInFather, MinimalSeparator excludeSep,
-                                                   Set<MinimalSeparator> sepsInFatherGraph) {
+    public Set<MinimalSeparator> createNewSepGroup(Map<Node, Node> subNodesInFather, MinimalSeparator excludeSep,
+                                                   Set<MinimalSeparator> sepsInFatherGraph)
+    {
         Set<MinimalSeparator> sepsOfSub = new HashSet<>();
         HashMap<Node, Boolean> nodeInSubNodes = new HashMap<>();
         for (Node v : subNodesInFather.keySet())
@@ -141,7 +146,7 @@ public class SubGraph extends Graph implements ISubGraph  {
         HashMap<Node, Node> fatherNodesMapToSub = new HashMap<>();
         for (Node v : subNodesInFather.keySet())
         {
-            fatherNodesMapToSub.put(subNodesInFather.get(v),v);
+            fatherNodesMapToSub.put(subNodesInFather.get(v), v);
         }
 
         for (MinimalSeparator sepInFather : sepsInFatherGraph)
@@ -173,7 +178,8 @@ public class SubGraph extends Graph implements ISubGraph  {
     }
 
     @Override
-    public void print() {
+    public void print()
+    {
         System.out.println(this.toString());
     }
 

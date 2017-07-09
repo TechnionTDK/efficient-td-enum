@@ -9,7 +9,8 @@ import java.util.*;
 /**
  * Created by dvir.dukhan on 7/6/2017.
  */
-public class ChordalGraph extends Graph implements IChordalGraph {
+public class ChordalGraph extends Graph implements IChordalGraph
+{
 
 
     public ChordalGraph()
@@ -23,44 +24,44 @@ public class ChordalGraph extends Graph implements IChordalGraph {
     }
 
 
-
     @Override
-    public Set<NodeSet> getMaximalCliques() {
-       Set<NodeSet> cliques = new HashSet<>();
-       Map<Node, Boolean> isVisited = new HashMap<>();
-       IncreasingWeightNodeQueue queue = new IncreasingWeightNodeQueue(getNumberOfNodes());
-       int previousNumberOfNeighbors = -1;
-       Node previousNode = new Node(-1);
+    public Set<NodeSet> getMaximalCliques()
+    {
+        Set<NodeSet> cliques = new HashSet<>();
+        Map<Node, Boolean> isVisited = new HashMap<>();
+        IncreasingWeightNodeQueue queue = new IncreasingWeightNodeQueue(getNumberOfNodes());
+        int previousNumberOfNeighbors = -1;
+        Node previousNode = new Node(-1);
 
-       while(!queue.isEmpty())
-       {
-           Node currentNode = queue.pop();
-           int currentNumberOfNeighbors = queue.getWeight(currentNode);
-           if (currentNumberOfNeighbors <= previousNumberOfNeighbors)
-           {
-               NodeSetProducer cliqueProducer = new NodeSetProducer(getNumberOfNodes());
-               cliqueProducer.insert(previousNode);
-               for (Node v : getNeighbors(currentNode))
-               {
-                   if (isVisited.get(v))
-                   {
-                       cliqueProducer.insert(v);
-                   }
-               }
-               cliques.add(cliqueProducer.produce());
-           }
+        while (!queue.isEmpty())
+        {
+            Node currentNode = queue.pop();
+            int currentNumberOfNeighbors = queue.getWeight(currentNode);
+            if (currentNumberOfNeighbors <= previousNumberOfNeighbors)
+            {
+                NodeSetProducer cliqueProducer = new NodeSetProducer(getNumberOfNodes());
+                cliqueProducer.insert(previousNode);
+                for (Node v : getNeighbors(currentNode))
+                {
+                    if (isVisited.get(v))
+                    {
+                        cliqueProducer.insert(v);
+                    }
+                }
+                cliques.add(cliqueProducer.produce());
+            }
 
-           for (Node v : getNeighbors(currentNode))
-           {
-               if(!isVisited.get(v))
-               {
-                   queue.increaseWeight(v);
-               }
-           }
-           isVisited.put(currentNode,true);
-           previousNumberOfNeighbors = currentNumberOfNeighbors;
-           previousNode = currentNode;
-       }
+            for (Node v : getNeighbors(currentNode))
+            {
+                if (!isVisited.get(v))
+                {
+                    queue.increaseWeight(v);
+                }
+            }
+            isVisited.put(currentNode, true);
+            previousNumberOfNeighbors = currentNumberOfNeighbors;
+            previousNode = currentNode;
+        }
         NodeSetProducer cliqueProducer = new NodeSetProducer(getNumberOfNodes());
         cliqueProducer.insert(previousNode);
         for (Node v : getNeighbors(previousNode))
@@ -69,17 +70,18 @@ public class ChordalGraph extends Graph implements IChordalGraph {
         }
         cliques.add(cliqueProducer.produce());
 
-       return  cliques;
+        return cliques;
     }
 
     @Override
-    public List<Edge> getFillEdges(Graph origin) {
+    public List<Edge> getFillEdges(Graph origin)
+    {
         List<Edge> edges = new ArrayList<>();
         for (Node v : nodes)
         {
             for (Node u : getNeighbors(v))
             {
-                if (v.intValue() <- u.intValue() && !origin.areNeighbors(v,u))
+                if (v.intValue() < -u.intValue() && !origin.areNeighbors(v, u))
                 {
                     Edge edge = new Edge();
                     edge.add(v);
@@ -92,12 +94,14 @@ public class ChordalGraph extends Graph implements IChordalGraph {
     }
 
     @Override
-    public int getFillIn(Graph origin) {
-        return  getNumberOfEdges() - origin.getNumberOfEdges();
+    public int getFillIn(Graph origin)
+    {
+        return getNumberOfEdges() - origin.getNumberOfEdges();
     }
 
     @Override
-    public int getTreeWidht() {
+    public int getTreeWidht()
+    {
         Set<NodeSet> maximalCliques = getMaximalCliques();
         int maxSize = 0;
 
@@ -110,22 +114,24 @@ public class ChordalGraph extends Graph implements IChordalGraph {
     }
 
     @Override
-    public long getExpBagsSize() {
-       Set<NodeSet> maximalCliques = getMaximalCliques();
-       long result = 0;
+    public long getExpBagsSize()
+    {
+        Set<NodeSet> maximalCliques = getMaximalCliques();
+        long result = 0;
 
-       for (NodeSet set : maximalCliques)
-       {
-           result += Math.pow(2, set.size());
-       }
+        for (NodeSet set : maximalCliques)
+        {
+            result += Math.pow(2, set.size());
+        }
 
-       return result;
+        return result;
 
     }
 
     @Override
-    public void printTriangulation(final Graph origin) {
-        for (Edge edge: getFillEdges(origin))
+    public void printTriangulation(final Graph origin)
+    {
+        for (Edge edge : getFillEdges(origin))
         {
             Node u = edge.iterator().next();
             Node v = edge.iterator().next();
@@ -136,7 +142,8 @@ public class ChordalGraph extends Graph implements IChordalGraph {
     }
 
     @Override
-    public void printMaximumClique() {
+    public void printMaximumClique()
+    {
         Set<NodeSet> maximalCliques = getMaximalCliques();
         int maxSize = 0;
         for (NodeSet set : maximalCliques)
@@ -144,7 +151,7 @@ public class ChordalGraph extends Graph implements IChordalGraph {
             maxSize = maxSize < set.size() ? set.size() : maxSize;
         }
 
-        for (NodeSet set: maximalCliques)
+        for (NodeSet set : maximalCliques)
         {
             if (set.size() == maxSize)
             {

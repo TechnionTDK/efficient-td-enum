@@ -10,17 +10,21 @@ import static org.junit.Assert.*;
 /**
  * Created by dvir.dukhan on 7/6/2017.
  */
-public class IncreasingWeightNodeQueueTest {
+public class IncreasingWeightNodeQueueTest
+{
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws Exception
+    {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() throws Exception
+    {
     }
 
     @Test
-    public void increaseWeight() throws Exception {
+    public void increaseWeight() throws Exception
+    {
         Node v = new Node(0);
         IncreasingWeightNodeQueue queue = new IncreasingWeightNodeQueue(1);
         queue.increaseWeight(v);
@@ -28,20 +32,23 @@ public class IncreasingWeightNodeQueueTest {
     }
 
     @org.junit.Test
-    public void getWeight() throws Exception {
+    public void getWeight() throws Exception
+    {
 
         IncreasingWeightNodeQueue queue = new IncreasingWeightNodeQueue(1);
         assertEquals(0, queue.getWeight(new Node(0)));
     }
 
     @org.junit.Test
-    public void isEmpty() throws Exception {
+    public void isEmpty() throws Exception
+    {
         IncreasingWeightNodeQueue queue = new IncreasingWeightNodeQueue(1);
         assertFalse(queue.isEmpty());
     }
 
     @org.junit.Test
-    public void pop() throws Exception {
+    public void pop() throws Exception
+    {
         IncreasingWeightNodeQueue queue = new IncreasingWeightNodeQueue(3);
         queue.increaseWeight(new Node(0));
         assertEquals(new Node(1), queue.pop());

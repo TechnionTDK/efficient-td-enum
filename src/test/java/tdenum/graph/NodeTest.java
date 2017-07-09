@@ -9,17 +9,21 @@ import static org.junit.Assert.*;
 /**
  * Created by dvir.dukhan on 7/6/2017.
  */
-public class NodeTest {
+public class NodeTest
+{
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws Exception
+    {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() throws Exception
+    {
     }
 
     @Test
-    public void intValue() throws Exception {
+    public void intValue() throws Exception
+    {
         Node v = new Node(1);
         assertEquals(1, v.intValue());
     }
