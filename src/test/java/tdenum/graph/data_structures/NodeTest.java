@@ -1,4 +1,4 @@
-package tdenum.graph;
+package tdenum.graph.data_structures;
 
 import org.junit.After;
 import org.junit.Before;
