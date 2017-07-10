@@ -1,4 +1,4 @@
-package tdenum.graph.interfaces;
+package tdenum.graph.graphs.interfaces;
 
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
@@ -48,6 +48,8 @@ public interface IGraph
     boolean areNeighbors(Node u, Node v);
 
     Map<Node, Integer> getComponentsMap(final NodeSet removedNodes);
+
+    List<NodeSet> getNeighborSets();
 
 
 }

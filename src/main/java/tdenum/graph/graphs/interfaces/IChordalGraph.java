@@ -1,4 +1,4 @@
-package tdenum.graph.interfaces;
+package tdenum.graph.graphs.interfaces;
 
 import tdenum.graph.data_structures.Edge;
 import tdenum.graph.graphs.Graph;

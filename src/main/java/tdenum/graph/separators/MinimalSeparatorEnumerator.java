@@ -1,20 +1,20 @@
 package tdenum.graph.separators;
 
 import tdenum.graph.data_structures.*;
-import tdenum.graph.graphs.Graph;
+import tdenum.graph.graphs.interfaces.IGraph;
 
 /**
  * Created by dvird on 17/07/10.
  */
 public class MinimalSeparatorEnumerator
 {
-    Graph graph;
+    IGraph graph;
     SeparatorScorer scorer;
     WeightedNodeSetQueue separatorsToExtend = new WeightedNodeSetQueue();
     NodeSetSet separatorsExtended = new NodeSetSet();
 
 
-    public MinimalSeparatorEnumerator(Graph g, SeparatorsScoringCriterion c)
+    public MinimalSeparatorEnumerator(IGraph g, SeparatorsScoringCriterion c)
     {
         graph = g;
         scorer = new SeparatorScorer(g, c);
@@ -24,11 +24,11 @@ public class MinimalSeparatorEnumerator
             vAndNeighbors.add(v);
             for (NodeSet nodeSet : graph.getComponents(vAndNeighbors))
             {
-                NodeSet potentialSeperator = graph.getNeighbors(nodeSet);
-                if (potentialSeperator.size() >0)
+                NodeSet potentialSeparator = graph.getNeighbors(nodeSet);
+                if (potentialSeparator.size() >0)
                 {
-                    int score = scorer.scoreSeparator(potentialSeperator);
-                    separatorsToExtend.insert(potentialSeperator, score);
+                    int score = scorer.scoreSeparator(potentialSeparator);
+                    separatorsToExtend.insert(potentialSeparator, score);
                 }
             }
         }

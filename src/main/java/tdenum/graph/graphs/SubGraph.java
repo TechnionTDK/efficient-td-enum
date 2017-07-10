@@ -4,8 +4,8 @@ import tdenum.graph.data_structures.Edge;
 import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
-import tdenum.graph.interfaces.IGraph;
-import tdenum.graph.interfaces.ISubGraph;
+import tdenum.graph.graphs.interfaces.IGraph;
+import tdenum.graph.graphs.interfaces.ISubGraph;
 
 import java.util.*;
 
@@ -15,33 +15,46 @@ import java.util.*;
 public class SubGraph extends Graph implements ISubGraph
 {
 
+
+
     IGraph mainGraph = null;
+
+    public void setNodeMapToMainGraph(Map<Node, Node> nodeMapToMainGraph) {
+        this.nodeMapToMainGraph = nodeMapToMainGraph;
+    }
+
+    public Map<Node, Node> getNodeMapToMainGraph() {
+        return nodeMapToMainGraph;
+    }
+
     Map<Node, Node> nodeMapToMainGraph = new HashMap<>();
 
-    Set<MinimalSeparator> seps = new HashSet<>();
 
 
-    public SubGraph(final Graph mainGraph)
+    Set<? extends NodeSet> seps = new HashSet<>();
+
+
+    public SubGraph(final IGraph mainGraph)
     {
         super(mainGraph);
         this.mainGraph = mainGraph;
 
 
-        for (Node n : mainGraph.nodes)
+        for (Node n : mainGraph.getNodes())
         {
             nodeMapToMainGraph.put(n, n);
         }
 
     }
 
-    public SubGraph(final SubGraph fatherGraph, NodeSet nodeSetInFatherGraph)
+    public SubGraph(final ISubGraph fatherGraph, NodeSet nodeSetInFatherGraph)
     {
         super(nodeSetInFatherGraph.size());
         initializeFromFatherSubgraph(fatherGraph, nodeSetInFatherGraph);
 
     }
 
-    public SubGraph(final SubGraph fatherGraph, NodeSet nodeSetInFatherGraph, final Set<MinimalSeparator> seps)
+    public SubGraph(final ISubGraph fatherGraph, NodeSet nodeSetInFatherGraph, final Set<? extends NodeSet> seps)
     {
         super(nodeSetInFatherGraph.size());
         initializeFromFatherSubgraph(fatherGraph, nodeSetInFatherGraph);
@@ -49,16 +62,16 @@ public class SubGraph extends Graph implements ISubGraph
 
     }
 
-    public SubGraph(final Graph mainGraph, final Set<MinimalSeparator> seps)
+    public SubGraph(final IGraph mainGraph, final Set<? extends NodeSet> seps)
     {
         super(mainGraph);
         this.seps = seps;
     }
 
-    private void initializeFromFatherSubgraph(final SubGraph fatherGraph, NodeSet nodeSetInFatherGraph)
+    private void initializeFromFatherSubgraph(final ISubGraph fatherGraph, NodeSet nodeSetInFatherGraph)
     {
-        mainGraph = fatherGraph.mainGraph;
-        final Map<Node, Node> fatherNodesMapInMain = fatherGraph.nodeMapToMainGraph;
+        mainGraph = fatherGraph.getMainGraph();
+        final Map<Node, Node> fatherNodesMapInMain = fatherGraph.getNodeMaptoMainGraph();
 
         Map<Node, Node> subNodesInMain = nodeMapToMainGraph;
         Set<Node> fatherNodesInSub = new HashSet<>();
@@ -87,16 +100,20 @@ public class SubGraph extends Graph implements ISubGraph
     }
 
     @Override
-    public Set<MinimalSeparator> getSeps()
-    {
+    public IGraph getMainGraph() {
+        return mainGraph;
+    }
+
+    @Override
+    public Set<? extends NodeSet> getSeps() {
         return seps;
     }
 
     @Override
-    public void setSeps(Set<MinimalSeparator> seps)
-    {
+    public void setSeps(Set<? extends NodeSet> seps) {
         this.seps = seps;
     }
+
 
     @Override
     public Set<Edge> createEdgeSet()

@@ -5,7 +5,8 @@ import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
 import tdenum.graph.data_structures.IncreasingWeightNodeQueue;
 import tdenum.graph.data_structures.NodeSetProducer;
-import tdenum.graph.interfaces.IChordalGraph;
+import tdenum.graph.graphs.interfaces.IChordalGraph;
+import tdenum.graph.graphs.interfaces.IGraph;
 
 import java.util.*;
 
@@ -21,7 +22,7 @@ public class ChordalGraph extends Graph implements IChordalGraph
         super();
     }
 
-    public ChordalGraph(final Graph graph)
+    public ChordalGraph(final IGraph graph)
     {
         super(graph.getNumberOfNodes());
     }

@@ -1,4 +1,4 @@
-package tdenum.graph.interfaces;
+package tdenum.graph.graphs.interfaces;
 
 /**
  * Created by dvird on 17/07/10.

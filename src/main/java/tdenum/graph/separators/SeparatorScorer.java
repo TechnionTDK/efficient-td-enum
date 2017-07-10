@@ -2,17 +2,17 @@ package tdenum.graph.separators;
 
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
-import tdenum.graph.graphs.Graph;
+import tdenum.graph.graphs.interfaces.IGraph;
 
 /**
  * Created by dvird on 17/07/10.
  */
 public class SeparatorScorer
 {
-    Graph graph;
+    IGraph graph;
     SeparatorsScoringCriterion criterion;
 
-    public SeparatorScorer(final Graph g, SeparatorsScoringCriterion c)
+    public SeparatorScorer(final IGraph g, SeparatorsScoringCriterion c)
     {
         graph = g;
         criterion = c;

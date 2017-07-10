@@ -6,6 +6,8 @@ import tdenum.graph.data_structures.NodeSet;
 import tdenum.graph.graphs.Graph;
 import tdenum.graph.graphs.SubGraph;
 import tdenum.graph.independent_set.interfaces.IIndependentSetExtender;
+import tdenum.graph.graphs.interfaces.IGraph;
+import tdenum.graph.graphs.interfaces.ISubGraph;
 
 import java.util.*;
 
@@ -14,19 +16,19 @@ import java.util.*;
  */
 public class IndSetExtBySeparators implements IIndependentSetExtender<MinimalSeparator>
 {
-    Graph graph = new Graph();
+    IGraph graph = new Graph();
 
     public IndSetExtBySeparators()
     {
 
     }
 
-    public IndSetExtBySeparators(Graph graph)
+    public IndSetExtBySeparators(IGraph graph)
     {
         this.graph = graph;
     }
 
-    NodeSet getUnconnectedNodes(final Graph graph)
+    NodeSet getUnconnectedNodes(final IGraph graph)
     {
         NodeSet unconnectedNodes = new NodeSet();
         for (Node u : graph.getNodes())
@@ -94,7 +96,7 @@ public class IndSetExtBySeparators implements IIndependentSetExtender<MinimalSep
         return mergedComp;
     }
 
-    Queue<SubGraph> decompose(final SubGraph mainSubGraph, final Set<MinimalSeparator> s )
+    Queue<SubGraph> decompose(final ISubGraph mainSubGraph, final Set<? extends NodeSet> s )
     {
         Queue<SubGraph> Q = new ArrayDeque<>();
         Queue<SubGraph> resultComponents = new ArrayDeque<>();
@@ -104,7 +106,7 @@ public class IndSetExtBySeparators implements IIndependentSetExtender<MinimalSep
         while(!Q.isEmpty())
         {
             SubGraph c = Q.poll();
-            Set<MinimalSeparator> cSeps = c.getSeps();
+            Set<MinimalSeparator> cSeps = (Set<MinimalSeparator> )c.getSeps();
             if (cSeps.isEmpty())
             {
                 resultComponents.add(c);

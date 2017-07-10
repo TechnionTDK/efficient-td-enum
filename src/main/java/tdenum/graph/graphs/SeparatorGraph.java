@@ -1,10 +1,11 @@
 package tdenum.graph.graphs;
 
 import tdenum.graph.data_structures.MinimalSeparator;
+import tdenum.graph.graphs.interfaces.IGraph;
 import tdenum.graph.separators.MinimalSeparatorEnumerator;
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.separators.SeparatorsScoringCriterion;
-import tdenum.graph.interfaces.ISuccinctGraphRepresentation;
+import tdenum.graph.graphs.interfaces.ISuccinctGraphRepresentation;
 
 import java.util.Map;
 
@@ -13,11 +14,11 @@ import java.util.Map;
  */
 public class SeparatorGraph implements ISuccinctGraphRepresentation<MinimalSeparator>
 {
-    Graph graph;
+    IGraph graph;
     MinimalSeparatorEnumerator nodesEnumerator;
     int nodesGenerated;
 
-    public SeparatorGraph(final Graph g, SeparatorsScoringCriterion c)
+    public SeparatorGraph(final IGraph g, SeparatorsScoringCriterion c)
     {
         graph = g;
         nodesEnumerator = new MinimalSeparatorEnumerator(g, c);

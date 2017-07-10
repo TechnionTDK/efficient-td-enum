@@ -3,7 +3,7 @@ package tdenum.graph.graphs;
 import tdenum.common.Utils;
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
-import tdenum.graph.interfaces.IGraph;
+import tdenum.graph.graphs.interfaces.IGraph;
 import tdenum.graph.data_structures.NodeSetProducer;
 
 import java.util.*;
@@ -20,6 +20,9 @@ public class Graph implements IGraph
     int numberOfNodes = 0;
     int numberOfEdges = 0;
     NodeSet nodes = new NodeSet();
+
+
+
     List<NodeSet> neighborSets = new ArrayList<>();
 
 
@@ -43,15 +46,15 @@ public class Graph implements IGraph
 
     }
 
-    public Graph(final Graph g)
+    public Graph(final IGraph g)
     {
-        this.numberOfNodes = g.numberOfNodes;
-        this.numberOfEdges = g.numberOfEdges;
-        nodes.addAll(g.nodes);
-        for (int i = 0; i < g.neighborSets.size(); i++)
+        this.numberOfNodes = g.getNumberOfNodes();
+        this.numberOfEdges = g.getNumberOfEdges();
+        nodes.addAll(g.getNodes());
+        for (int i = 0; i < g.getNeighborSets().size(); i++)
         {
             NodeSet set = new NodeSet();
-            set.addAll(g.neighborSets.get(i));
+            set.addAll(g.getNeighborSets().get(i));
             neighborSets.add(set);
         }
     }
@@ -426,5 +429,10 @@ public class Graph implements IGraph
         result = 31 * result + getNodes().hashCode();
         result = 31 * result + neighborSets.hashCode();
         return result;
+    }
+
+    @Override
+    public List<NodeSet> getNeighborSets() {
+        return neighborSets;
     }
 }
