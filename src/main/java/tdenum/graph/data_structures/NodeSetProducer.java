@@ -1,13 +1,6 @@
 package tdenum.graph.data_structures;
 
-import tdenum.common.Utils;
-import tdenum.graph.Node;
-import tdenum.graph.NodeSet;
-
 import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by dvir.dukhan on 7/5/2017.
@@ -23,7 +16,7 @@ public class NodeSetProducer
     public NodeSetProducer(int sizeOfOriginalNodeSet)
     {
 //        isMemeberMap = Stream.iterate(false, b->b).limit(sizeOfOriginalNodeSet).collect(Collectors.toList());
-//        isMemeberMap = Utils.generateFixedList(sizeOfOriginalNodeSet,false);
+//        isMemeberMap = utils.generateFixedList(sizeOfOriginalNodeSet,false);
 
     }
 

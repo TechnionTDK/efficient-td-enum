@@ -1,8 +1,6 @@
 package tdenum.graph.data_structures;
 
 import org.junit.Test;
-import tdenum.graph.Node;
-import tdenum.graph.NodeSet;
 
 import static org.junit.Assert.*;
 

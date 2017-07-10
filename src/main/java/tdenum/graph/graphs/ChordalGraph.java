@@ -1,5 +1,8 @@
-package tdenum.graph;
+package tdenum.graph.graphs;
 
+import tdenum.graph.data_structures.Edge;
+import tdenum.graph.data_structures.Node;
+import tdenum.graph.data_structures.NodeSet;
 import tdenum.graph.data_structures.IncreasingWeightNodeQueue;
 import tdenum.graph.data_structures.NodeSetProducer;
 import tdenum.graph.interfaces.IChordalGraph;
@@ -100,7 +103,7 @@ public class ChordalGraph extends Graph implements IChordalGraph
     }
 
     @Override
-    public int getTreeWidht()
+    public int getTreeWidth()
     {
         Set<NodeSet> maximalCliques = getMaximalCliques();
         int maxSize = 0;

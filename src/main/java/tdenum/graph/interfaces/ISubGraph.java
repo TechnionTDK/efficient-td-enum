@@ -1,11 +1,9 @@
 package tdenum.graph.interfaces;
 
-import tdenum.graph.Edge;
-import tdenum.graph.MinimalSeparator;
-import tdenum.graph.Node;
-import tdenum.graph.NodeSet;
+import tdenum.graph.data_structures.Edge;
+import tdenum.graph.data_structures.MinimalSeparator;
+import tdenum.graph.data_structures.Node;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 

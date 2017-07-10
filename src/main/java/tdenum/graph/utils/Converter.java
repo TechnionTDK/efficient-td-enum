@@ -1,7 +1,8 @@
-package tdenum.graph;
+package tdenum.graph.utils;
 
-import tdenum.graph.data_structures.IncreasingWeightNodeQueue;
-import tdenum.graph.data_structures.NodeSetProducer;
+import tdenum.graph.data_structures.*;
+import tdenum.graph.graphs.ChordalGraph;
+import tdenum.graph.graphs.Graph;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -1,6 +1,8 @@
-package tdenum.graph;
+package tdenum.graph.graphs;
 
 import tdenum.common.Utils;
+import tdenum.graph.data_structures.Node;
+import tdenum.graph.data_structures.NodeSet;
 import tdenum.graph.interfaces.IGraph;
 import tdenum.graph.data_structures.NodeSetProducer;
 
@@ -29,7 +31,7 @@ public class Graph implements IGraph
     public Graph(int numberOfNodes)
     {
         this.numberOfNodes = numberOfNodes;
-        neighborSets = new ArrayList<NodeSet>(numberOfNodes);
+        neighborSets = new ArrayList<>(numberOfNodes);
         for (int i = 0; i < numberOfNodes; i++)
         {
             Node v = new Node(i);
@@ -272,7 +274,7 @@ public class Graph implements IGraph
         {
             if (!isValidNode(v))
             {
-                return new ArrayList<NodeSet>();
+                return new ArrayList<>();
             }
             visitedList.set(v.intValue(), -1);
         }
@@ -289,7 +291,7 @@ public class Graph implements IGraph
         {
             if (!isValidNode(v))
             {
-                return new ArrayList<NodeSet>();
+                return new ArrayList<>();
             }
             visitedList.set(v.intValue(), -1);
         }
@@ -337,6 +339,57 @@ public class Graph implements IGraph
     }
 
     @Override
+    public Map<Node, Integer> getComponentsMap(NodeSet removedNodes)
+    {
+        Map<Node, Integer> visitedList = new HashMap<>();
+        for (Node v : nodes)
+        {
+            visitedList.put(v, 0);
+        }
+        for (Node v : removedNodes)
+        {
+            if (!isValidNode(v))
+            {
+                return new HashMap<>();
+            }
+            visitedList.put(v, -1);
+        }
+
+        int numberOfUnhandledNodes = numberOfNodes - removedNodes.size();
+        int currentComponent = 1;
+        while (numberOfUnhandledNodes > 0)
+        {
+            ArrayDeque<Node> bfsQueue = new ArrayDeque<>();
+            for (Node v : nodes)
+            {
+                if (visitedList.get(v) == 0)
+                {
+                    bfsQueue.push(v);
+                    visitedList.put(v, currentComponent);
+                    numberOfUnhandledNodes--;
+                    break;
+                }
+
+            }
+            while(!bfsQueue.isEmpty())
+            {
+                Node v = bfsQueue.poll();
+                for (Node u : getNeighbors(v))
+                {
+                    if (visitedList.get(u) == 0)
+                    {
+                        bfsQueue.push(u);
+                        visitedList.put(u, currentComponent);
+                        numberOfUnhandledNodes--;
+                    }
+                }
+            }
+            currentComponent++;
+        }
+        return visitedList;
+    }
+
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
@@ -362,8 +415,7 @@ public class Graph implements IGraph
 
         if (getNumberOfNodes() != graph.getNumberOfNodes()) return false;
         if (getNumberOfEdges() != graph.getNumberOfEdges()) return false;
-        if (!getNodes().equals(graph.getNodes())) return false;
-        return neighborSets.equals(graph.neighborSets);
+        return getNodes().equals(graph.getNodes()) && neighborSets.equals(graph.neighborSets);
     }
 
     @Override

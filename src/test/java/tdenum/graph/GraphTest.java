@@ -1,6 +1,9 @@
 package tdenum.graph;
 
 import org.junit.Test;
+import tdenum.graph.data_structures.Node;
+import tdenum.graph.data_structures.NodeSet;
+import tdenum.graph.graphs.Graph;
 
 import java.util.HashSet;
 
@@ -35,7 +38,7 @@ public class GraphTest
         assertEquals(expectedNodeSet, g.getNodes());
 
         assertEquals(0, g.getNeighbors(node0).size());
-        g.saturateNodeSets(new HashSet<NodeSet>());
+        g.saturateNodeSets(new HashSet<>());
         assertEquals(0, g.getNeighbors(node0).size());
 
         NodeSet clique1 = new NodeSet();

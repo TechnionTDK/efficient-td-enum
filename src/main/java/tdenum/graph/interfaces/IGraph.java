@@ -1,10 +1,10 @@
 package tdenum.graph.interfaces;
 
-import tdenum.graph.Node;
-import tdenum.graph.NodeSet;
+import tdenum.graph.data_structures.Node;
+import tdenum.graph.data_structures.NodeSet;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,6 +46,8 @@ public interface IGraph
     NodeSet getComponent(Node v, final NodeSet removedNodes);
 
     boolean areNeighbors(Node u, Node v);
+
+    Map<Node, Integer> getComponentsMap(final NodeSet removedNodes);
 
 
 }

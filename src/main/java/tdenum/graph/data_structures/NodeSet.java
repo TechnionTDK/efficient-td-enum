@@ -1,7 +1,6 @@
-package tdenum.graph;
+package tdenum.graph.data_structures;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 
 /**

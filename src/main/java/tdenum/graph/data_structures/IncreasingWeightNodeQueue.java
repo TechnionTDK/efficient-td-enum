@@ -1,8 +1,6 @@
 package tdenum.graph.data_structures;
 
 
-import tdenum.graph.Node;
-
 import java.util.*;
 
 /**
@@ -17,7 +15,7 @@ public class IncreasingWeightNodeQueue
 
     public IncreasingWeightNodeQueue(int numberOfNoeds)
     {
-//        weight = Utils.generateFixedList(numberOfNoeds, 0);
+//        weight = utils.generateFixedList(numberOfNoeds, 0);
 //        List<Pair<Integer, Node>> temporaryQueue = new ArrayList<>();
 //        for(int v = 0; v < numberOfNoeds; v++)
 //        {

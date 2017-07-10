@@ -3,7 +3,6 @@ package tdenum.graph.data_structures;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import tdenum.graph.Node;
 
 import static org.junit.Assert.*;
 

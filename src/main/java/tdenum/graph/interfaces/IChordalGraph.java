@@ -1,9 +1,8 @@
 package tdenum.graph.interfaces;
 
-import tdenum.graph.Edge;
-import tdenum.graph.Graph;
-import tdenum.graph.MinimalSeparator;
-import tdenum.graph.NodeSet;
+import tdenum.graph.data_structures.Edge;
+import tdenum.graph.graphs.Graph;
+import tdenum.graph.data_structures.NodeSet;
 
 import java.util.List;
 import java.util.Set;
@@ -21,7 +20,7 @@ public interface IChordalGraph
 
     int getFillIn(final Graph origin);
 
-    int getTreeWidht();
+    int getTreeWidth();
 
     long getExpBagsSize();
 

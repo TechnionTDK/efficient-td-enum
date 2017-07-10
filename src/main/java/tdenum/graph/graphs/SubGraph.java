@@ -1,6 +1,9 @@
-package tdenum.graph;
+package tdenum.graph.graphs;
 
-import tdenum.common.Utils;
+import tdenum.graph.data_structures.Edge;
+import tdenum.graph.data_structures.MinimalSeparator;
+import tdenum.graph.data_structures.Node;
+import tdenum.graph.data_structures.NodeSet;
 import tdenum.graph.interfaces.IGraph;
 import tdenum.graph.interfaces.ISubGraph;
 
@@ -46,17 +49,22 @@ public class SubGraph extends Graph implements ISubGraph
 
     }
 
+    public SubGraph(final Graph mainGraph, final Set<MinimalSeparator> seps)
+    {
+        super(mainGraph);
+        this.seps = seps;
+    }
+
     private void initializeFromFatherSubgraph(final SubGraph fatherGraph, NodeSet nodeSetInFatherGraph)
     {
         mainGraph = fatherGraph.mainGraph;
         final Map<Node, Node> fatherNodesMapInMain = fatherGraph.nodeMapToMainGraph;
 
-        NodeSet nodeSetInFather = nodeSetInFatherGraph;
         Map<Node, Node> subNodesInMain = nodeMapToMainGraph;
         Set<Node> fatherNodesInSub = new HashSet<>();
 
 
-        for (Node nodeInFather : nodeSetInFather)
+        for (Node nodeInFather : nodeSetInFatherGraph)
         {
             Node nodeInMain = fatherNodesMapInMain.get(nodeInFather);
             subNodesInMain.put(nodeInFather, nodeInMain);
@@ -64,7 +72,7 @@ public class SubGraph extends Graph implements ISubGraph
         }
 
 
-        for (Node nodeInFather : nodeSetInFather)
+        for (Node nodeInFather : nodeSetInFatherGraph)
         {
             fatherNodesInSub.remove(nodeInFather);
             NodeSet neighbors = fatherGraph.getNeighbors(nodeInFather);
@@ -107,8 +115,8 @@ public class SubGraph extends Graph implements ISubGraph
                 {
                     Edge e = new Edge();
 
-                    Node e0 = nodeIndsInMain.get(nis);
-                    Node e1 = nodeIndsInMain.get(ois);
+                    Node e0 = nodeIndsInMain.get(u);
+                    Node e1 = nodeIndsInMain.get(v);
                     if (e0.intValue() > e1.intValue())
                     {
                         e.add(e1);
@@ -188,11 +196,13 @@ public class SubGraph extends Graph implements ISubGraph
     {
         StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < nodeMapToMainGraph.size(); i++)
+        for (Node key : getNodeMaptoMainGraph().keySet())
         {
-            sb.append("[ ").append(i).append(" - ").append(nodeMapToMainGraph.get(i)).append(" ]")
+
+            sb.append("[ ").append(key).append(" - ").append(nodeMapToMainGraph.get(key)).append(" ]")
                     .append(System.lineSeparator());
         }
+
         return sb.toString();
     }
 }
