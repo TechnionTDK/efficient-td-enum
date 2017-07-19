@@ -1,5 +1,7 @@
 package tdenum.graph.data_structures;
 
+import tdenum.common.Utils;
+
 import java.util.*;
 
 /**
@@ -8,14 +10,25 @@ import java.util.*;
 public class TdListMap<T> extends TdMap<T> {
 
     List<T> list = new ArrayList<>();
+    Set<Node> keys = new HashSet<>();
+    Set<T> values = new HashSet<>();
+
+
+    public TdListMap()
+    {
+
+    }
 
     public TdListMap(int size)
     {
-        for (int i= 0; i < size; i ++)
-        {
-            list.add(i , null);
-        }
+        list = Utils.generateFixedList(size, null);
     }
+
+    public TdListMap(int size, T value)
+    {
+        list = Utils.generateFixedList(size, value);
+    }
+
 
     @Override
     public int size() {
@@ -29,13 +42,13 @@ public class TdListMap<T> extends TdMap<T> {
 
     @Override
     public boolean containsKey(Object key) {
-        Node v = (Node) key;
-        return list.get(v.intValue())!= null;
+
+        return keys.contains(key);
     }
 
     @Override
     public boolean containsValue(Object value) {
-        return list.contains(value);
+        return values.contains(value);
     }
 
     @Override
@@ -52,6 +65,7 @@ public class TdListMap<T> extends TdMap<T> {
             list.add(i, null);
         }
         Node v = (Node) key;
+        keys.add(key);
 
         list.set(v.intValue(), value);
 
@@ -62,6 +76,7 @@ public class TdListMap<T> extends TdMap<T> {
     @Override
     public T remove(Object key) {
         Node v = (Node) key;
+        keys.remove(key);
         return list.remove((v.intValue()));
     }
 
@@ -76,34 +91,24 @@ public class TdListMap<T> extends TdMap<T> {
     @Override
     public void clear() {
         list.clear();
+        keys.clear();
+        values.clear();
 
     }
 
     @Override
     public Set<Node> keySet() {
 
-        Set<Node> set = new HashSet<>();
-        for (int i = 0; i < size(); i++)
-        {
-            Node v = new Node(i);
-            if(containsKey(v))
-            {
-                set.add(v);
-            }
-        }
-        return set;
+
+        return keys;
     }
 
     @Override
     public Collection<T> values() {
         Collection<T> collection = new ArrayList<>();
-        for (int i = 0; i < size(); i++)
+        for (Node key : keys)
         {
-            Node v = new Node(i);
-            if(containsKey(v))
-            {
-                collection.add(get(v));
-            }
+            collection.add(get(key));
         }
         return collection;
     }
@@ -111,13 +116,9 @@ public class TdListMap<T> extends TdMap<T> {
     @Override
     public Set<Entry<Node, T>> entrySet() {
         Set<Entry<Node, T>> set = new HashSet<>();
-        for (int i = 0; i < size(); i++)
+        for (Node key : keys)
         {
-            Node v = new Node(i);
-            if(containsKey(v))
-            {
-                set.add(new AbstractMap.SimpleEntry<Node, T>(v, get(v)));
-            }
+            set.add(new AbstractMap.SimpleEntry<Node, T>(key, get(key)));
         }
         return set;
     }

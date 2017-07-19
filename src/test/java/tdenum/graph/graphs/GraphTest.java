@@ -1,4 +1,4 @@
-package tdenum.graph;
+package tdenum.graph.graphs;
 
 import org.junit.Test;
 import tdenum.graph.data_structures.Node;

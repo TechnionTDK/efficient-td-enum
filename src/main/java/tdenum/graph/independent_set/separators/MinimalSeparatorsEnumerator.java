@@ -1,4 +1,4 @@
-package tdenum.graph.separators;
+package tdenum.graph.independent_set.separators;
 
 import tdenum.graph.data_structures.*;
 import tdenum.graph.graphs.interfaces.IGraph;
@@ -6,7 +6,7 @@ import tdenum.graph.graphs.interfaces.IGraph;
 /**
  * Created by dvird on 17/07/10.
  */
-public class MinimalSeparatorEnumerator
+public class MinimalSeparatorsEnumerator
 {
     IGraph graph;
     SeparatorScorer scorer;
@@ -14,7 +14,7 @@ public class MinimalSeparatorEnumerator
     NodeSetSet separatorsExtended = new NodeSetSet();
 
 
-    public MinimalSeparatorEnumerator(IGraph g, SeparatorsScoringCriterion c)
+    public MinimalSeparatorsEnumerator(IGraph g, SeparatorsScoringCriterion c)
     {
         graph = g;
         scorer = new SeparatorScorer(g, c);
@@ -28,7 +28,7 @@ public class MinimalSeparatorEnumerator
                 if (potentialSeparator.size() >0)
                 {
                     int score = scorer.scoreSeparator(potentialSeparator);
-                    separatorsToExtend.insert(potentialSeparator, score);
+                    separatorsToExtend.setWeight( potentialSeparator, score);
                 }
             }
         }
@@ -40,13 +40,13 @@ public class MinimalSeparatorEnumerator
         {
             return new MinimalSeparator();
         }
-        MinimalSeparator s = separatorsToExtend.pop();
+        MinimalSeparator s =  new MinimalSeparator((NodeSet) separatorsToExtend.pop());
         separatorsExtended.add(s);
         for (Node x : s)
         {
-            NodeSet xNeighbotsAndS = graph.getNeighbors(x);
-            xNeighbotsAndS.addAll(s);
-            for (NodeSet nodeSet : graph.getComponents(xNeighbotsAndS))
+            NodeSet xNeighborsAndS = graph.getNeighbors(x);
+            xNeighborsAndS.addAll(s);
+            for (NodeSet nodeSet : graph.getComponents(xNeighborsAndS))
             {
                 minimalSeparatorFound(graph.getNeighbors(nodeSet));
             }
@@ -64,7 +64,7 @@ public class MinimalSeparatorEnumerator
         if (s.size() > 0 && !separatorsExtended.contains(s))
         {
             int score = scorer.scoreSeparator(s);
-            separatorsToExtend.insert(s, score);
+            separatorsToExtend.setWeight( s, score);
         }
     }
 }

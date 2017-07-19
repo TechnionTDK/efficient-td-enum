@@ -5,7 +5,7 @@ package tdenum.graph.graphs.interfaces;
  */
 public interface ISuccinctGraphRepresentation<T>
 {
-    boolean hasNext();
+    boolean hasNextNode();
     T nextNode();
     boolean hasEdge(final T u, final  T v);
 }

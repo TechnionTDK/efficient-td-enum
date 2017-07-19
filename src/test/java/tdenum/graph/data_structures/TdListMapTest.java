@@ -10,13 +10,25 @@ import static org.junit.Assert.*;
 public class TdListMapTest {
 
     @Test
-    public void listMapTest()
-    {
-        TdListMap<Integer> map = new TdListMap<>(6);
+    public void listMapTest() {
+        TdListMap<Integer> map = new TdListMap<>();
 
         map.put(new Node(5), 1);
 
         assertEquals(6, map.size());
+
+        for (int i = 0; i <= 5; i++)
+        {
+            if (i!= 5)
+            {
+                assertNull(map.get(new Node(i)));
+            }
+            else
+            {
+                assertEquals(1,(int) map.get(new Node(i)));
+            }
+        }
+
 
     }
 

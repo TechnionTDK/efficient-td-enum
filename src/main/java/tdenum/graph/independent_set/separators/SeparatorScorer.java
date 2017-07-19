@@ -1,4 +1,4 @@
-package tdenum.graph.separators;
+package tdenum.graph.independent_set.separators;
 
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;

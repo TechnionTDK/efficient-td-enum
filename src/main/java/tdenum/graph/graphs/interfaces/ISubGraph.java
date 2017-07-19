@@ -1,9 +1,6 @@
 package tdenum.graph.graphs.interfaces;
 
-import tdenum.graph.data_structures.Edge;
-import tdenum.graph.data_structures.MinimalSeparator;
-import tdenum.graph.data_structures.Node;
-import tdenum.graph.data_structures.NodeSet;
+import tdenum.graph.data_structures.*;
 
 import java.util.Map;
 import java.util.Set;
@@ -21,9 +18,12 @@ public interface ISubGraph extends IGraph
 
     Set<Edge> createEdgeSet();
 
-    Map<Node, Node> getNodeMaptoMainGraph();
+  //  Map<Node, Node> getNodeMaptoMainGraph();
+    TdMap<Node> getNodeMaptoMainGraph();
 
-    Set<? extends NodeSet> createNewSepGroup(Map<Node, Node> subNodesInFather, final MinimalSeparator excludeSep, final Set<MinimalSeparator> sepsInFatherGraph);
+//    Set<? extends NodeSet> createNewSepGroup(Map<Node, Node> subNodesInFather, final MinimalSeparator excludeSep, final Set<MinimalSeparator> sepsInFatherGraph);
+
+    Set<? extends NodeSet> createNewSepGroup(TdMap<Node> subNodesInFather, final MinimalSeparator excludeSep, final Set<MinimalSeparator> sepsInFatherGraph);
 
     void print();
 

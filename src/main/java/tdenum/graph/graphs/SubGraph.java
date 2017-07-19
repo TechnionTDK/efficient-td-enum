@@ -1,9 +1,6 @@
 package tdenum.graph.graphs;
 
-import tdenum.graph.data_structures.Edge;
-import tdenum.graph.data_structures.MinimalSeparator;
-import tdenum.graph.data_structures.Node;
-import tdenum.graph.data_structures.NodeSet;
+import tdenum.graph.data_structures.*;
 import tdenum.graph.graphs.interfaces.IGraph;
 import tdenum.graph.graphs.interfaces.ISubGraph;
 
@@ -15,23 +12,27 @@ import java.util.*;
 public class SubGraph extends Graph implements ISubGraph
 {
 
+    //Map<Node, Node> nodeMapToMainGraph = new HashMap<>();
 
+    TdMap<Node> nodeMapToMainGraph = new TdListMap<>();
+
+    Set<? extends NodeSet> seps = new HashSet<>();
 
     IGraph mainGraph = null;
 
-    public void setNodeMapToMainGraph(Map<Node, Node> nodeMapToMainGraph) {
+    public void setNodeMapToMainGraph(TdMap<Node> nodeMapToMainGraph) {
         this.nodeMapToMainGraph = nodeMapToMainGraph;
     }
 
-    public Map<Node, Node> getNodeMapToMainGraph() {
+    public TdMap<Node>getNodeMapToMainGraph() {
         return nodeMapToMainGraph;
     }
 
-    Map<Node, Node> nodeMapToMainGraph = new HashMap<>();
 
 
 
-    Set<? extends NodeSet> seps = new HashSet<>();
+
+
 
 
     public SubGraph(final IGraph mainGraph)
@@ -71,9 +72,9 @@ public class SubGraph extends Graph implements ISubGraph
     private void initializeFromFatherSubgraph(final ISubGraph fatherGraph, NodeSet nodeSetInFatherGraph)
     {
         mainGraph = fatherGraph.getMainGraph();
-        final Map<Node, Node> fatherNodesMapInMain = fatherGraph.getNodeMaptoMainGraph();
+        final TdMap<Node>fatherNodesMapInMain = fatherGraph.getNodeMaptoMainGraph();
 
-        Map<Node, Node> subNodesInMain = nodeMapToMainGraph;
+        TdMap<Node> subNodesInMain = nodeMapToMainGraph;
         Set<Node> fatherNodesInSub = new HashSet<>();
 
 
@@ -119,7 +120,7 @@ public class SubGraph extends Graph implements ISubGraph
     public Set<Edge> createEdgeSet()
     {
         HashSet<Edge> edgeSet = new HashSet<>();
-        Map<Node, Node> nodeIndsInMain = getNodeMaptoMainGraph();
+        TdMap<Node> nodeIndsInMain = getNodeMaptoMainGraph();
         int n = getNumberOfNodes();
 
         for (int nis = 0; nis < n; nis++)
@@ -130,18 +131,17 @@ public class SubGraph extends Graph implements ISubGraph
                 Node v = new Node(ois);
                 if (areNeighbors(u, v))
                 {
-                    Edge e = new Edge();
+                    Edge e;
 
                     Node e0 = nodeIndsInMain.get(u);
                     Node e1 = nodeIndsInMain.get(v);
                     if (e0.intValue() > e1.intValue())
                     {
-                        e.add(e1);
-                        e.add(e0);
+                        e = new Edge(e1, e0);
+
                     } else
                     {
-                        e.add(e0);
-                        e.add(e1);
+                        e = new Edge(e0, e1);
                     }
 
                     edgeSet.add(e);
@@ -153,22 +153,22 @@ public class SubGraph extends Graph implements ISubGraph
     }
 
     @Override
-    public Map<Node, Node> getNodeMaptoMainGraph()
+    public TdMap<Node> getNodeMaptoMainGraph()
     {
         return nodeMapToMainGraph;
     }
 
     @Override
-    public Set<MinimalSeparator> createNewSepGroup(Map<Node, Node> subNodesInFather, MinimalSeparator excludeSep,
+    public Set<MinimalSeparator> createNewSepGroup(TdMap<Node> subNodesInFather, MinimalSeparator excludeSep,
                                                    Set<MinimalSeparator> sepsInFatherGraph)
     {
         Set<MinimalSeparator> sepsOfSub = new HashSet<>();
-        HashMap<Node, Boolean> nodeInSubNodes = new HashMap<>();
+        TdMap<Boolean> nodeInSubNodes = new TdListMap<>();
         for (Node v : subNodesInFather.keySet())
         {
             nodeInSubNodes.put(v, true);
         }
-        HashMap<Node, Node> fatherNodesMapToSub = new HashMap<>();
+        TdMap<Node> fatherNodesMapToSub = new TdListMap<>();
         for (Node v : subNodesInFather.keySet())
         {
             fatherNodesMapToSub.put(subNodesInFather.get(v), v);
@@ -221,5 +221,27 @@ public class SubGraph extends Graph implements ISubGraph
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SubGraph)) return false;
+        if (!super.equals(o)) return false;
+
+        SubGraph subGraph = (SubGraph) o;
+
+        if (!getNodeMapToMainGraph().equals(subGraph.getNodeMapToMainGraph())) return false;
+        if (!getSeps().equals(subGraph.getSeps())) return false;
+        return getMainGraph().equals(subGraph.getMainGraph());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + getNodeMapToMainGraph().hashCode();
+        result = 31 * result + getSeps().hashCode();
+        result = 31 * result + getMainGraph().hashCode();
+        return result;
     }
 }

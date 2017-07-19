@@ -2,6 +2,7 @@ package tdenum.graph.graphs.interfaces;
 
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
+import tdenum.graph.data_structures.TdMap;
 
 import java.util.List;
 import java.util.Map;
@@ -31,13 +32,13 @@ public interface IGraph
 
     NodeSet getNeighbors(Node v);
 
-    NodeSet getNeighbors(int v);
+//    NodeSet getNeighbors(int v);
 
     NodeSet getNeighbors(final List<Node> nodes);
 
     NodeSet getNeighbors(final NodeSet nodes);
 
-    List<Boolean> getNeighborsMap(Node v);
+    TdMap<Boolean> getNeighborsMap(Node v);
 
     List<NodeSet> getComponents(final List<Node> removeNodes);
 
@@ -47,9 +48,9 @@ public interface IGraph
 
     boolean areNeighbors(Node u, Node v);
 
-    Map<Node, Integer> getComponentsMap(final NodeSet removedNodes);
+    TdMap<Integer> getComponentsMap(final NodeSet removedNodes);
 
-    List<NodeSet> getNeighborSets();
+    TdMap<NodeSet> getNeighborSets();
 
 
 }

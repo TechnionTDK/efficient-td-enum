@@ -1,5 +1,8 @@
 package tdenum.graph.data_structures;
 
+import tdenum.common.Utils;
+
+import java.lang.reflect.Type;
 import java.util.HashMap;
 
 /**
@@ -11,12 +14,12 @@ public class NodeSetProducer
 {
 
 
-    HashMap<Node, Boolean> isMemeberMap = new HashMap<>();
+    TdMap<Boolean> isMemeberMap = new TdListMap<>();
 
     public NodeSetProducer(int sizeOfOriginalNodeSet)
     {
 //        isMemeberMap = Stream.iterate(false, b->b).limit(sizeOfOriginalNodeSet).collect(Collectors.toList());
-//        isMemeberMap = utils.generateFixedList(sizeOfOriginalNodeSet,false);
+        isMemeberMap = new TdListMap<>(sizeOfOriginalNodeSet, false);
 
     }
 
@@ -35,9 +38,40 @@ public class NodeSetProducer
         isMemeberMap.put(v, false);
     }
 
-    public <T extends NodeSet> T produce()
+    public  <T extends  NodeSet  > T produce(Class<T> tClass)
     {
+
+        T members = null;
+        try {
+            members = tClass.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        for (Node v : isMemeberMap.keySet())
+        {
+            if (isMemeberMap.get(v))
+            {
+                members.add(v);
+            }
+        }
+//        for (int i =0; i < isMemeberMap.size(); i++)
+//        {
+//            if (isMemeberMap.get(i))
+//            {
+//                members.add(new Node(i));
+//            }
+//        }
+        return members;
+    }
+
+
+    public  <T extends  NodeSet  > T produce()
+    {
+
         T members = (T) new NodeSet();
+
         for (Node v : isMemeberMap.keySet())
         {
             if (isMemeberMap.get(v))

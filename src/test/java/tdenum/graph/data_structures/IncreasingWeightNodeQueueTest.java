@@ -25,7 +25,7 @@ public class IncreasingWeightNodeQueueTest
     public void increaseWeight() throws Exception
     {
         Node v = new Node(0);
-        IncreasingWeightNodeQueue queue = new IncreasingWeightNodeQueue(1);
+        WeightedNodeQueue queue = new WeightedNodeQueue(1);
         queue.increaseWeight(v);
         assertEquals(1, queue.getWeight(v));
     }
@@ -34,21 +34,21 @@ public class IncreasingWeightNodeQueueTest
     public void getWeight() throws Exception
     {
 
-        IncreasingWeightNodeQueue queue = new IncreasingWeightNodeQueue(1);
+        WeightedNodeQueue queue = new WeightedNodeQueue(1);
         assertEquals(0, queue.getWeight(new Node(0)));
     }
 
     @org.junit.Test
     public void isEmpty() throws Exception
     {
-        IncreasingWeightNodeQueue queue = new IncreasingWeightNodeQueue(1);
+        WeightedNodeQueue queue = new WeightedNodeQueue(1);
         assertFalse(queue.isEmpty());
     }
 
     @org.junit.Test
     public void pop() throws Exception
     {
-        IncreasingWeightNodeQueue queue = new IncreasingWeightNodeQueue(3);
+        WeightedNodeQueue queue = new WeightedNodeQueue(3);
         queue.increaseWeight(new Node(0));
         assertEquals(new Node(1), queue.pop());
         assertEquals(new Node(2), queue.pop());

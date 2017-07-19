@@ -2,7 +2,8 @@ package tdenum.graph.utils;
 
 import tdenum.graph.data_structures.*;
 import tdenum.graph.graphs.ChordalGraph;
-import tdenum.graph.graphs.Graph;
+import tdenum.graph.graphs.interfaces.IChordalGraph;
+import tdenum.graph.graphs.interfaces.IGraph;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,35 +16,37 @@ import java.util.Set;
 public class Converter
 {
 
-    public static ChordalGraph minimalSeparatorsToTriangulation(final Graph g,
-                                                                final Set<? extends NodeSet> minimalSeparators)
+    public static IChordalGraph minimalSeparatorsToTriangulation(final IGraph g,
+                                                                 final Set<? extends NodeSet> minimalSeparators)
     {
-        ChordalGraph triangulation = new ChordalGraph(g);
+        IChordalGraph triangulation = new ChordalGraph(g);
         triangulation.saturateNodeSets(minimalSeparators);
         return triangulation;
     }
 
-    public static Set<MinimalSeparator> triangulationToMinimalSeparators(final ChordalGraph g)
+    public static Set<MinimalSeparator> triangulationToMinimalSeparators(final IGraph g)
     {
         Set<MinimalSeparator> minimalSeparators = new HashSet<>();
-        Map<Node, Boolean> isVisited = new HashMap<>();
-        IncreasingWeightNodeQueue queue = new IncreasingWeightNodeQueue(g.getNumberOfNodes());
+        TdMap<Boolean> isVisited = new TdListMap<>(g.getNumberOfNodes(), false);
+        WeightedNodeQueue queue = new WeightedNodeQueue(g.getNodes());
         int previousNumberOfNeighbors = -1;
         while (!queue.isEmpty())
         {
-            Node currentNode = queue.pop();
+            Node currentNode = queue.top();
             int currentNumberOfNeighbors = queue.getWeight(currentNode);
+            queue.pop();
             if (currentNumberOfNeighbors <= previousNumberOfNeighbors)
             {
-                NodeSetProducer sparatorProducer = new NodeSetProducer(g.getNumberOfNodes());
+                NodeSetProducer separatorProducer = new NodeSetProducer(g.getNumberOfNodes());
                 for (Node v : g.getNeighbors(currentNode))
                 {
-                    if (isVisited.get(v))
+                    Boolean iv = isVisited.get(v);
+                    if (iv != null && iv)
                     {
-                        sparatorProducer.insert(v);
+                        separatorProducer.insert(v);
                     }
                 }
-                MinimalSeparator currentSeparator = sparatorProducer.produce();
+                MinimalSeparator currentSeparator = separatorProducer.produce(MinimalSeparator.class);
                 if (!currentSeparator.isEmpty())
                 {
                     minimalSeparators.add(currentSeparator);
@@ -51,12 +54,14 @@ public class Converter
             }
             for (Node v : g.getNeighbors(currentNode))
             {
-                if (!isVisited.get(v))
+                Boolean iv = isVisited.get(v);
+                if (iv != null && !iv)
                 {
                     queue.increaseWeight(v);
                 }
             }
             isVisited.put(currentNode, true);
+            previousNumberOfNeighbors = currentNumberOfNeighbors;
         }
         return minimalSeparators;
 

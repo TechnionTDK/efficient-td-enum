@@ -3,9 +3,9 @@ package tdenum.graph.data_structures;
 /**
  * Created by dvir.dukhan on 7/5/2017.
  */
-public class Node
+public class Node implements Comparable
 {
-    int value;
+    final int value;
 
     public Node(int value)
     {
@@ -42,4 +42,9 @@ public class Node
     }
 
 
+    @Override
+    public int compareTo(Object o) {
+        Node node = (Node) o;
+        return ((Integer)this.value).compareTo(node.value);
+    }
 }

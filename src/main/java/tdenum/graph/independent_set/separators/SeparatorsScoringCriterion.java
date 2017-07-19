@@ -1,4 +1,4 @@
-package tdenum.graph.separators;
+package tdenum.graph.independent_set.separators;
 
 /**
  * Created by dvird on 17/07/10.

@@ -3,7 +3,7 @@ package tdenum.graph.graphs;
 import tdenum.graph.data_structures.Edge;
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
-import tdenum.graph.data_structures.IncreasingWeightNodeQueue;
+import tdenum.graph.data_structures.WeightedNodeQueue;
 import tdenum.graph.data_structures.NodeSetProducer;
 import tdenum.graph.graphs.interfaces.IChordalGraph;
 import tdenum.graph.graphs.interfaces.IGraph;
@@ -24,7 +24,12 @@ public class ChordalGraph extends Graph implements IChordalGraph
 
     public ChordalGraph(final IGraph graph)
     {
-        super(graph.getNumberOfNodes());
+        super(graph);
+    }
+
+    public ChordalGraph(int numberOfNodes)
+    {
+        super(numberOfNodes);
     }
 
 
@@ -33,7 +38,7 @@ public class ChordalGraph extends Graph implements IChordalGraph
     {
         Set<NodeSet> cliques = new HashSet<>();
         Map<Node, Boolean> isVisited = new HashMap<>();
-        IncreasingWeightNodeQueue queue = new IncreasingWeightNodeQueue(getNumberOfNodes());
+        WeightedNodeQueue queue = new WeightedNodeQueue(nodes);
         int previousNumberOfNeighbors = -1;
         Node previousNode = new Node(-1);
 
@@ -78,18 +83,18 @@ public class ChordalGraph extends Graph implements IChordalGraph
     }
 
     @Override
-    public List<Edge> getFillEdges(Graph origin)
+    public List<Edge> getFillEdges(IGraph origin)
     {
         List<Edge> edges = new ArrayList<>();
         for (Node v : nodes)
         {
             for (Node u : getNeighbors(v))
             {
-                if (v.intValue() < -u.intValue() && !origin.areNeighbors(v, u))
+                if (v.intValue() < u.intValue() && !origin.areNeighbors(v, u))
                 {
-                    Edge edge = new Edge();
-                    edge.add(v);
-                    edge.add(u);
+                    Edge edge = new Edge(v,u);
+//                    edge.add(v);
+//                    edge.add(u);
                     edges.add(edge);
                 }
             }
@@ -98,7 +103,7 @@ public class ChordalGraph extends Graph implements IChordalGraph
     }
 
     @Override
-    public int getFillIn(Graph origin)
+    public int getFillIn(IGraph origin)
     {
         return getNumberOfEdges() - origin.getNumberOfEdges();
     }
@@ -133,12 +138,12 @@ public class ChordalGraph extends Graph implements IChordalGraph
     }
 
     @Override
-    public void printTriangulation(final Graph origin)
+    public void printTriangulation(final IGraph origin)
     {
         for (Edge edge : getFillEdges(origin))
         {
-            Node u = edge.iterator().next();
-            Node v = edge.iterator().next();
+            Node u = edge.getKey();
+            Node v = edge.getValue();
             StringBuilder sb = new StringBuilder().append(u).append("-").append(v);
             System.out.println(sb);
         }
@@ -163,4 +168,14 @@ public class ChordalGraph extends Graph implements IChordalGraph
             }
         }
     }
+
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ChordalGraph{");
+        sb.append('}');
+        return sb.toString();
+    }
+
+
 }

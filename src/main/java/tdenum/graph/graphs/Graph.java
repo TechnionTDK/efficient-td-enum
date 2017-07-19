@@ -1,10 +1,8 @@
 package tdenum.graph.graphs;
 
 import tdenum.common.Utils;
-import tdenum.graph.data_structures.Node;
-import tdenum.graph.data_structures.NodeSet;
+import tdenum.graph.data_structures.*;
 import tdenum.graph.graphs.interfaces.IGraph;
-import tdenum.graph.data_structures.NodeSetProducer;
 
 import java.util.*;
 
@@ -23,7 +21,7 @@ public class Graph implements IGraph
 
 
 
-    List<NodeSet> neighborSets = new ArrayList<>();
+    TdMap<NodeSet> neighborSets = new TdListMap<>();
 
 
     public Graph()
@@ -34,12 +32,12 @@ public class Graph implements IGraph
     public Graph(int numberOfNodes)
     {
         this.numberOfNodes = numberOfNodes;
-        neighborSets = new ArrayList<>(numberOfNodes);
+        neighborSets = new TdListMap<>(numberOfNodes);
         for (int i = 0; i < numberOfNodes; i++)
         {
             Node v = new Node(i);
             nodes.add(v);
-            neighborSets.add(i, new NodeSet()
+            neighborSets.put(v, new NodeSet()
             {
             });
         }
@@ -51,12 +49,18 @@ public class Graph implements IGraph
         this.numberOfNodes = g.getNumberOfNodes();
         this.numberOfEdges = g.getNumberOfEdges();
         nodes.addAll(g.getNodes());
-        for (int i = 0; i < g.getNeighborSets().size(); i++)
+        for (Node v : nodes)
         {
             NodeSet set = new NodeSet();
-            set.addAll(g.getNeighborSets().get(i));
-            neighborSets.add(set);
+            set.addAll(g.getNeighborSets().get(v));
+            neighborSets.put(v, set);
         }
+//        for (int i = 0; i < g.getNeighborSets().size(); i++)
+//        {
+//            NodeSet set = new NodeSet();
+//            set.addAll(g.getNeighborSets().get(i));
+//            neighborSets.add(set);
+//        }
     }
 
 
@@ -77,21 +81,22 @@ public class Graph implements IGraph
 
     }
 
-    List<NodeSet> getComponenetsAux(List<Integer> visitedList, int numberOfUnhandeledNodes)
+    List<NodeSet> getComponenetsAux(TdMap<Integer> visitedList, int numberOfUnhandeledNodes)
     {
         ArrayList<NodeSet> components = new ArrayList<>();
-        NodeSetProducer componenetProducer = new NodeSetProducer(visitedList.size());
+
         while (numberOfUnhandeledNodes > 0)
         {
+            NodeSetProducer componentProducer = new NodeSetProducer(visitedList.size());
             ArrayDeque<Node> bfsQueue = new ArrayDeque<>();
-            for (int i = 0; i < numberOfNodes; i++)
+            for (Node v : nodes)
             {
-                if (visitedList.get(i) == 0)
+                if (visitedList.get(v) == 0)
                 {
-                    Node node = new Node(i);
-                    bfsQueue.push(node);
-                    visitedList.set(i, 1);
-                    componenetProducer.insert(node);
+
+                    bfsQueue.push(v);
+                    visitedList.put(v, 1);
+                    componentProducer.insert(v);
                     numberOfUnhandeledNodes--;
                     break;
                 }
@@ -100,19 +105,19 @@ public class Graph implements IGraph
             while (!bfsQueue.isEmpty())
             {
                 Node v = bfsQueue.poll();
-                for (Node u : neighborSets.get(v.intValue()))
+                for (Node u : neighborSets.get(v))
                 {
-                    if (visitedList.get(u.intValue()) == 0)
+                    if (visitedList.get(u) == 0)
                     {
                         bfsQueue.push(u);
-                        visitedList.set(u.intValue(), 1);
-                        componenetProducer.insert(u);
+                        visitedList.put(u, 1);
+                        componentProducer.insert(u);
                         numberOfUnhandeledNodes--;
                     }
                 }
 
             }
-            components.add(componenetProducer.produce());
+            components.add(componentProducer.produce());
         }
         return components;
     }
@@ -120,12 +125,12 @@ public class Graph implements IGraph
 
     public void addEdge(Node u, Node v)
     {
-        if (!isValidNode(u) || !isValidNode(v) || neighborSets.get(u.intValue()).contains(v))
+        if (!isValidNode(u) || !isValidNode(v) || neighborSets.get(u).contains(v))
         {
             return;
         }
-        neighborSets.get(u.intValue()).add(v);
-        neighborSets.get(v.intValue()).add(u);
+        neighborSets.get(u).add(v);
+        neighborSets.get(v).add(u);
         numberOfEdges++;
 
     }
@@ -198,19 +203,15 @@ public class Graph implements IGraph
     @Override
     public NodeSet getNeighbors(Node v)
     {
-        return getNeighbors(v.intValue());
-    }
 
-    @Override
-    public NodeSet getNeighbors(int v)
-    {
         if (!isValidNode(v))
         {
             System.out.println("Error: Requesting access to invalid node");
-            return neighborSets.get(0);
+            return new NodeSet();
         }
-        return neighborSets.get(v);
+        return new NodeSet(neighborSets.get(v));
     }
+
 
 
     @Override
@@ -223,7 +224,7 @@ public class Graph implements IGraph
             {
                 return new NodeSet();
             }
-            for (Node u : neighborSets.get(v.intValue()))
+            for (Node u : neighborSets.get(v))
             {
                 neighborsProducer.insert(u);
             }
@@ -245,7 +246,7 @@ public class Graph implements IGraph
             {
                 return new NodeSet();
             }
-            for (Node u : neighborSets.get(v.intValue()))
+            for (Node u : neighborSets.get(v))
             {
                 neighborsProducer.insert(u);
             }
@@ -258,12 +259,12 @@ public class Graph implements IGraph
     }
 
     @Override
-    public List<Boolean> getNeighborsMap(Node v)
+    public TdMap<Boolean> getNeighborsMap(Node v)
     {
-        List<Boolean> result = Utils.generateFixedList(numberOfNodes, false);
+        TdMap<Boolean>  result = new TdListMap<>(numberOfNodes, false);
         for (Node u : getNeighbors(v))
         {
-            result.set(u.intValue(), true);
+            result.put(u, true);
         }
 
         return result;
@@ -272,14 +273,14 @@ public class Graph implements IGraph
     @Override
     public List<NodeSet> getComponents(List<Node> removeNodes)
     {
-        List<Integer> visitedList = Utils.generateFixedList(numberOfNodes, 0);
+        TdMap<Integer> visitedList = new TdListMap<>(numberOfNodes, 0);
         for (Node v : removeNodes)
         {
             if (!isValidNode(v))
             {
                 return new ArrayList<>();
             }
-            visitedList.set(v.intValue(), -1);
+            visitedList.put(v, -1);
         }
         int numberOfUnhandeledNodes = numberOfNodes - removeNodes.size();
         return getComponenetsAux(visitedList, numberOfUnhandeledNodes);
@@ -289,14 +290,14 @@ public class Graph implements IGraph
     @Override
     public List<NodeSet> getComponents(NodeSet removeNodes)
     {
-        List<Integer> visitedList = Utils.generateFixedList(numberOfNodes, 0);
+        TdMap<Integer> visitedList = new TdListMap<>(numberOfNodes, 0);
         for (Node v : removeNodes)
         {
             if (!isValidNode(v))
             {
                 return new ArrayList<>();
             }
-            visitedList.set(v.intValue(), -1);
+            visitedList.put(v, -1);
         }
         int numberOfUnhandeledNodes = numberOfNodes - removeNodes.size();
         return getComponenetsAux(visitedList, numberOfUnhandeledNodes);
@@ -307,16 +308,16 @@ public class Graph implements IGraph
     {
 
         ArrayDeque<Node> q = new ArrayDeque<>();
-        List<Boolean> insertedNodes = Utils.generateFixedList(numberOfNodes, false);
+        TdMap<Boolean> insertedNodes = new TdListMap<>(numberOfNodes);
         NodeSet component = new NodeSet();
         for (Node removed : removedNodes)
         {
-            insertedNodes.set(removed.intValue(), true);
+            insertedNodes.put(removed, true);
         }
 
         component.add(v);
         q.push(v);
-        insertedNodes.set(v.intValue(), true);
+        insertedNodes.put(v, true);
 
         while (!q.isEmpty())
         {
@@ -324,10 +325,10 @@ public class Graph implements IGraph
             final NodeSet neighbors = getNeighbors(v);
             for (Node neighbor : neighbors)
             {
-                if (!insertedNodes.get(neighbor.intValue()))
+                if (!insertedNodes.get(neighbor))
                 {
                     q.push(neighbor);
-                    insertedNodes.set(neighbor.intValue(), true);
+                    insertedNodes.put(neighbor, true);
                     component.add(neighbor);
                 }
             }
@@ -342,9 +343,9 @@ public class Graph implements IGraph
     }
 
     @Override
-    public Map<Node, Integer> getComponentsMap(NodeSet removedNodes)
+    public TdMap<Integer>getComponentsMap(NodeSet removedNodes)
     {
-        Map<Node, Integer> visitedList = new HashMap<>();
+        TdMap<Integer> visitedList = new TdListMap<>();
         for (Node v : nodes)
         {
             visitedList.put(v, 0);
@@ -353,7 +354,7 @@ public class Graph implements IGraph
         {
             if (!isValidNode(v))
             {
-                return new HashMap<>();
+                return new TdListMap<>();
             }
             visitedList.put(v, -1);
         }
@@ -393,18 +394,13 @@ public class Graph implements IGraph
     }
 
     @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        for (int v = 0; v < numberOfNodes; v++)
-        {
-            sb.append(v).append(" has neighbors: {");
-            for (Node u : neighborSets.get(v))
-            {
-                sb.append(u.intValue()).append(" ");
-            }
-            sb.append("}").append(System.lineSeparator());
-        }
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Graph{");
+        sb.append("numberOfNodes=").append(numberOfNodes);
+        sb.append(", numberOfEdges=").append(numberOfEdges);
+        sb.append(", nodes=").append(nodes);
+        sb.append(", neighborSets=").append(neighborSets);
+        sb.append('}');
         return sb.toString();
     }
 
@@ -432,7 +428,7 @@ public class Graph implements IGraph
     }
 
     @Override
-    public List<NodeSet> getNeighborSets() {
+    public TdMap<NodeSet> getNeighborSets() {
         return neighborSets;
     }
 }
