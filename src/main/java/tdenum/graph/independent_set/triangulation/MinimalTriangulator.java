@@ -6,6 +6,7 @@ import tdenum.graph.graphs.ChordalGraph;
 import tdenum.graph.graphs.interfaces.IChordalGraph;
 import tdenum.graph.graphs.interfaces.IGraph;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -93,7 +94,11 @@ public class MinimalTriangulator {
             handled.put(v, true);
             NodeSet nodesToUpdate = new NodeSet();
             TdMap<Boolean> reached = new TdListMap(g.getNumberOfNodes(), false);
-            List<NodeSet> reachedByMaxWeight = Utils.generateFixedList(g.getNumberOfNodes(), new NodeSet());
+            List<NodeSet> reachedByMaxWeight = new ArrayList<>();
+            for (int i = 0; i< g.getNumberOfNodes(); i++)
+            {
+                reachedByMaxWeight.add(new NodeSet());
+            }
             for (Node u : g.getNeighbors(v))
             {
                 if (!handled.get(u))

@@ -88,6 +88,6 @@ public abstract class WeightedQueue<T >
 
     public boolean isEmpty()
     {
-        return  data.isEmpty();
+        return  queue.isEmpty();
     }
 }
