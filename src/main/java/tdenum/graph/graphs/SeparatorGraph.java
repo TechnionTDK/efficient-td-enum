@@ -1,6 +1,7 @@
 package tdenum.graph.graphs;
 
 import tdenum.graph.data_structures.MinimalSeparator;
+import tdenum.graph.data_structures.NodeSet;
 import tdenum.graph.data_structures.TdMap;
 import tdenum.graph.graphs.interfaces.IGraph;
 import tdenum.graph.graphs.interfaces.ISeparatorGraph;
@@ -36,6 +37,9 @@ public class SeparatorGraph implements ISeparatorGraph
         nodesGenerated++;
         return nodesEnumerator.next();
     }
+
+
+
 
     @Override
     public boolean hasEdge(MinimalSeparator u, MinimalSeparator v)

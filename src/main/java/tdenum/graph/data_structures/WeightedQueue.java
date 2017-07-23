@@ -7,7 +7,7 @@ import java.util.*;
 /**
  * Created by dvir.dukhan on 7/11/2017.
  */
-public abstract class WeightedQueue<T >
+public  class WeightedQueue<T >
 {
 
     private class ValueComparator implements Comparator

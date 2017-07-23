@@ -1,10 +1,6 @@
 package tdenum.graph.graphs;
 
-import tdenum.graph.data_structures.Edge;
-import tdenum.graph.data_structures.Node;
-import tdenum.graph.data_structures.NodeSet;
-import tdenum.graph.data_structures.WeightedNodeQueue;
-import tdenum.graph.data_structures.NodeSetProducer;
+import tdenum.graph.data_structures.*;
 import tdenum.graph.graphs.interfaces.IChordalGraph;
 import tdenum.graph.graphs.interfaces.IGraph;
 
@@ -37,15 +33,16 @@ public class ChordalGraph extends Graph implements IChordalGraph
     public Set<NodeSet> getMaximalCliques()
     {
         Set<NodeSet> cliques = new HashSet<>();
-        Map<Node, Boolean> isVisited = new HashMap<>();
+        TdMap<Boolean> isVisited = new TdListMap<>(getNumberOfNodes(), false);
         WeightedNodeQueue queue = new WeightedNodeQueue(nodes);
         int previousNumberOfNeighbors = -1;
         Node previousNode = new Node(-1);
 
         while (!queue.isEmpty())
         {
-            Node currentNode = queue.pop();
+            Node currentNode = queue.top();
             int currentNumberOfNeighbors = queue.getWeight(currentNode);
+            queue.pop();
             if (currentNumberOfNeighbors <= previousNumberOfNeighbors)
             {
                 NodeSetProducer cliqueProducer = new NodeSetProducer(getNumberOfNodes());

@@ -56,12 +56,12 @@ public class IndSetExtBySeparators implements IIndependentSetExtender<MinimalSep
         return unconnectedNodes;
     }
 
-    <T extends NodeSet> void includeNodesToMaximalSet(Map<Node, Node> cNodeIndsInMainGraph,
+    <T extends MinimalSeparator> void includeNodesToMaximalSet(Map<Node, Node> cNodeIndsInMainGraph,
                                  Set<T> maximalSet,
                                  final NodeSet cNeighbors,
                                  final NodeSet minimalSepInC)
     {
-        T newSep = (T) new NodeSet();
+        T newSep = (T)new MinimalSeparator();
         Set<Node> newSepSet = new HashSet<>();
         for (Node neighbor : cNeighbors)
         {

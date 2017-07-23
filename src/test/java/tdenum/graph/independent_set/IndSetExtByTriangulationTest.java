@@ -48,10 +48,29 @@ public class IndSetExtByTriangulationTest {
 
         assertEquals(seps, result);
 
-
-
-
     }
+
+    @Test
+    public void testCliqueGraph()
+    {
+        IGraph g = TestsUtils.cliqueGraph(3);
+        Set<MinimalSeparator> seps = new HashSet<>();
+        IndSetExtByTriangulation extender = new IndSetExtByTriangulation(g, new MinimalTriangulator(MCS_M));
+        Set<MinimalSeparator> result = extender.extendToMaxIndependentSet(seps);
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    public void testLongNExtEightGraph()
+    {
+        IGraph g = TestsUtils.longNeckEightGraph();
+        Set<MinimalSeparator> seps = new HashSet<>();
+        IndSetExtByTriangulation extender = new IndSetExtByTriangulation(g, new MinimalTriangulator(MCS_M));
+        Set<MinimalSeparator> result = extender.extendToMaxIndependentSet(seps);
+        assertEquals(4, result.size());
+    }
+
+
 
     <T> int  findFrequency(T obj, Collection<T> collection)
     {

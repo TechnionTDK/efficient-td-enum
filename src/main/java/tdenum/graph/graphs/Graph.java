@@ -339,7 +339,7 @@ public class Graph implements IGraph
     @Override
     public boolean areNeighbors(Node u, Node v)
     {
-        return neighborSets.get(u.intValue()).contains(v);
+        return neighborSets.get(u).contains(v);
     }
 
     @Override

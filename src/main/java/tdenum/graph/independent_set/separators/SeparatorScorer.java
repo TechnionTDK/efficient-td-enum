@@ -35,6 +35,10 @@ public class SeparatorScorer
             {
                 for (Node v : s)
                 {
+                    if (v.equals(u))
+                    {
+                        break;
+                    }
                     if(!graph.areNeighbors(u, v))
                     {
                         fillEdges++;

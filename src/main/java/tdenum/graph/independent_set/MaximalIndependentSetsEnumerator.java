@@ -24,11 +24,11 @@ public class MaximalIndependentSetsEnumerator <T>{
     IIndependentSetExtender extender;
     IIndependentSetScorer scorer;
 
-    Set<T> nodesGenerated;
+    Set<T> nodesGenerated = new HashSet<>();
 
-    Set<Set<T>> setsExtended;
-    Set<Set<T>> setsNotExtended;
-    WeightedQueue<Set<T>> extendingQueue;
+    Set<Set<T>> setsExtended = new HashSet<>();
+    Set<Set<T>> setsNotExtended = new HashSet<>();
+    WeightedQueue<Set<T>> extendingQueue = new WeightedQueue<>();
     boolean nextSetReady;
     Set<T> nextIndependentSet;
 
@@ -158,7 +158,7 @@ public class MaximalIndependentSetsEnumerator <T>{
         }
         scorer.independentSetUsed(currentScoredSet);
         setsExtended.add(currentScoredSet);
-        setsExtended.remove(currentScoredSet);
+        setsNotExtended.remove(currentScoredSet);
         extendingQueue.pop();
     }
 
