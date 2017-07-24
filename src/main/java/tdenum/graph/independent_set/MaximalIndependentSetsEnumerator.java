@@ -136,6 +136,7 @@ public class MaximalIndependentSetsEnumerator <T>{
     {
         if (nextSetReady || hasNext()) {
             nextSetReady = false;
+            System.out.println("new MIS" + nextIndependentSet);
             return nextIndependentSet;
         }
         return new HashSet<>();
@@ -156,15 +157,17 @@ public class MaximalIndependentSetsEnumerator <T>{
                 currentScore = scorer.scoreIndependentSet(currentScoredSet);
             }
         }
-        scorer.independentSetUsed(currentScoredSet);
-        setsExtended.add(currentScoredSet);
-        setsNotExtended.remove(currentScoredSet);
+        currentSet = currentScoredSet;
+        scorer.independentSetUsed(currentSet);
+        setsExtended.add(currentSet);
+        setsNotExtended.remove(currentSet);
         extendingQueue.pop();
     }
 
 
     Set<T> extendSetInDirectionOfNode (final Set<T>s, final T node)
     {
+//        System.out.println("Extending set " + s + " in direction of node" + node);
         Set<T> baseNodes = new HashSet<>();
         baseNodes.add(node);
         for (T t : s)
@@ -214,6 +217,7 @@ public class MaximalIndependentSetsEnumerator <T>{
         while(setsNotExtended.isEmpty() && graph.hasNextNode())
         {
             currentNode = graph.nextNode();
+            nodesGenerated.add(currentNode);
             setsIterator = setsExtended.iterator();
             while(setsIterator.hasNext())
             {

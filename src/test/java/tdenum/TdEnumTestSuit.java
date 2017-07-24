@@ -2,6 +2,7 @@ package tdenum;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import tdenum.graph.graphs.ChordalGraphTest;
 import tdenum.graph.graphs.GraphTest;
 import tdenum.graph.graphs.SeparatorGraphTest;
 import tdenum.graph.independent_set.IndSetExtByTriangulationTest;
@@ -22,6 +23,7 @@ import tdenum.graph.utils.ConverterTest;
                     IndSetExtByTriangulationTest.class,
                     MinimalTriangulationsEnumeratorTest.class,
                     IndSetScorerByTriangulationTest.class,
-                    SeparatorScorerTest.class})
+                    SeparatorScorerTest.class,
+                    ChordalGraphTest.class})
 public class TdEnumTestSuit {
 }

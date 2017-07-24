@@ -47,7 +47,7 @@ public class ChordalGraph extends Graph implements IChordalGraph
             {
                 NodeSetProducer cliqueProducer = new NodeSetProducer(getNumberOfNodes());
                 cliqueProducer.insert(previousNode);
-                for (Node v : getNeighbors(currentNode))
+                for (Node v : getNeighbors(previousNode))
                 {
                     if (isVisited.get(v))
                     {
@@ -168,11 +168,17 @@ public class ChordalGraph extends Graph implements IChordalGraph
 
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         final StringBuilder sb = new StringBuilder("ChordalGraph{");
+        sb.append("numberOfNodes=").append(numberOfNodes);
+        sb.append(", numberOfEdges=").append(numberOfEdges);
+        sb.append(", nodes=").append(nodes);
+        sb.append(", neighborSets=").append(neighborSets);
         sb.append('}');
         return sb.toString();
     }
+
 
 
 }

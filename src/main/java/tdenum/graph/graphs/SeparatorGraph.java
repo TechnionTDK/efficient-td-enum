@@ -45,11 +45,11 @@ public class SeparatorGraph implements ISeparatorGraph
     public boolean hasEdge(MinimalSeparator u, MinimalSeparator v)
     {
         TdMap<Integer> componentMap = graph.getComponentsMap(u);
-        int componenetContatiningV = 0;
+        int componentContainingV = 0;
         for (Node n : v)
         {
             int componentContainingCurrentNode = componentMap.get(n);
-            if (componenetContatiningV == componentContainingCurrentNode)
+            if (componentContainingV == componentContainingCurrentNode)
             {
                 continue;
             }
@@ -57,9 +57,9 @@ public class SeparatorGraph implements ISeparatorGraph
             {
                 continue;
             }
-            else if (componenetContatiningV == 0)
+            else if (componentContainingV == 0)
             {
-                componenetContatiningV = componentContainingCurrentNode;
+                componentContainingV = componentContainingCurrentNode;
                 continue;
             }
             else

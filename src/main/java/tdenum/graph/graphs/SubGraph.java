@@ -66,6 +66,11 @@ public class SubGraph extends Graph implements ISubGraph
     public SubGraph(final IGraph mainGraph, final Set<? extends NodeSet> seps)
     {
         super(mainGraph);
+        this.mainGraph = mainGraph;
+        for (Node n: nodes)
+        {
+            nodeMapToMainGraph.put(n,n);
+        }
         this.seps = seps;
     }
 
@@ -224,7 +229,8 @@ public class SubGraph extends Graph implements ISubGraph
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
         if (!(o instanceof SubGraph)) return false;
         if (!super.equals(o)) return false;
@@ -237,7 +243,8 @@ public class SubGraph extends Graph implements ISubGraph
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int result = super.hashCode();
         result = 31 * result + getNodeMapToMainGraph().hashCode();
         result = 31 * result + getSeps().hashCode();

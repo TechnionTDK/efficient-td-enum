@@ -220,7 +220,7 @@ public class Graph implements IGraph
         NodeSetProducer neighborsProducer = new NodeSetProducer(numberOfNodes);
         for (Node v : nodes)
         {
-            if (isValidNode(v))
+            if (!isValidNode(v))
             {
                 return new NodeSet();
             }
@@ -308,7 +308,7 @@ public class Graph implements IGraph
     {
 
         ArrayDeque<Node> q = new ArrayDeque<>();
-        TdMap<Boolean> insertedNodes = new TdListMap<>(numberOfNodes);
+        TdMap<Boolean> insertedNodes = new TdListMap<>(numberOfNodes,false);
         NodeSet component = new NodeSet();
         for (Node removed : removedNodes)
         {
@@ -345,11 +345,11 @@ public class Graph implements IGraph
     @Override
     public TdMap<Integer>getComponentsMap(NodeSet removedNodes)
     {
-        TdMap<Integer> visitedList = new TdListMap<>();
-        for (Node v : nodes)
-        {
-            visitedList.put(v, 0);
-        }
+        TdMap<Integer> visitedList = new TdListMap<>(getNumberOfNodes(),0);
+//        for (Node v : nodes)
+//        {
+//            visitedList.put(v, 0);
+//        }
         for (Node v : removedNodes)
         {
             if (!isValidNode(v))

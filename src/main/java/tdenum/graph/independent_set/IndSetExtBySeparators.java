@@ -31,10 +31,13 @@ public class IndSetExtBySeparators implements IIndependentSetExtender<MinimalSep
     NodeSet getUnconnectedNodes(final IGraph graph)
     {
         NodeSet unconnectedNodes = new NodeSet();
-        for (Node u : graph.getNodes())
+
+        for (int i =0; i < graph.getNumberOfNodes(); i++)
         {
-            for (Node v : graph.getNodes())
+            for (int j =i+1; j < graph.getNumberOfNodes(); j++)
             {
+                Node u = graph.getNodes().get(i);
+                Node v = graph.getNodes().get(j);
                 if (!graph.areNeighbors(u, v))
                 {
 
@@ -52,18 +55,39 @@ public class IndSetExtBySeparators implements IIndependentSetExtender<MinimalSep
                 }
             }
         }
+//        for (Node u : graph.getNodes())
+//        {
+//            for (Node v : graph.getNodes())
+//            {
+//                if (!graph.areNeighbors(u, v))
+//                {
+//
+//                    if (u.intValue() > v.intValue())
+//                    {
+//                        unconnectedNodes.add(v);
+//                        unconnectedNodes.add(u);
+//                    }
+//                    else
+//                    {
+//                        unconnectedNodes.add(u);
+//                        unconnectedNodes.add(v);
+//                    }
+//                    return unconnectedNodes;
+//                }
+//            }
+//        }
 
         return unconnectedNodes;
     }
 
     <T extends MinimalSeparator> void includeNodesToMaximalSet(Map<Node, Node> cNodeIndsInMainGraph,
                                  Set<T> maximalSet,
-                                 final NodeSet cNeighbors,
+                                 final NodeSet cComponentNeighbors,
                                  final NodeSet minimalSepInC)
     {
         T newSep = (T)new MinimalSeparator();
         Set<Node> newSepSet = new HashSet<>();
-        for (Node neighbor : cNeighbors)
+        for (Node neighbor : cComponentNeighbors)
         {
             if (minimalSepInC.contains(neighbor))
             {
@@ -102,7 +126,7 @@ public class IndSetExtBySeparators implements IIndependentSetExtender<MinimalSep
         Queue<SubGraph> resultComponents = new ArrayDeque<>();
         SubGraph sg = new SubGraph(mainSubGraph, s);
         Q.add(sg);
-        List<NodeSet> cComponents = new ArrayList<>();
+
         while(!Q.isEmpty())
         {
             SubGraph c = Q.poll();
@@ -115,7 +139,7 @@ public class IndSetExtBySeparators implements IIndependentSetExtender<MinimalSep
             {
                 MinimalSeparator S = cSeps.iterator().next();
                 c.addClique(S);
-                cComponents = c.getComponents(S);
+                List<NodeSet> cComponents = c.getComponents(S);
 
                 for (NodeSet cComponent: cComponents)
                 {
@@ -154,7 +178,7 @@ public class IndSetExtBySeparators implements IIndependentSetExtender<MinimalSep
             queue = decompose(sg, minSeps);
         }
 
-        List<NodeSet> cComponents = new ArrayList<>();
+
 
         while(!queue.isEmpty())
         {
@@ -165,7 +189,7 @@ public class IndSetExtBySeparators implements IIndependentSetExtender<MinimalSep
                 NodeSet minSepInC = findMinSep(unconnectedNodes, c);
                 c.addClique(minSepInC);
 
-                cComponents = c.getComponents(minSepInC);
+                List<NodeSet> cComponents = c.getComponents(minSepInC);
 
                 for (NodeSet cComponent : cComponents)
                 {

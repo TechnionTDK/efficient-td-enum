@@ -68,14 +68,14 @@ public class MinimalTriangulationsEnumeratorTest {
     }
 
     @Test
-    public void testFileCircleGraph()
+    public void testFiveCircleGraph()
     {
         IGraph g = TestsUtils.circleGraph(5);
         MinimalTriangulationsEnumerator enumerator = new MinimalTriangulationsEnumerator(g, NONE, UNIFORM, MCS_M);
         for (int i =0; i<5; i++)
         {
             assertTrue(enumerator.hasNext());
-            enumerator.next();
+            System.out.println(enumerator.next());
         }
         assertFalse(enumerator.hasNext());
     }
@@ -88,7 +88,7 @@ public class MinimalTriangulationsEnumeratorTest {
         int num = 0;
         while(enumerator.hasNext())
         {
-            enumerator.next();
+            System.out.println(enumerator.next());
             num++;
         }
         assertEquals(4, num);
