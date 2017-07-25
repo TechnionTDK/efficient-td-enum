@@ -89,7 +89,8 @@ public class IndSetExtBySeparators implements IIndependentSetExtender<MinimalSep
         Set<Node> newSepSet = new HashSet<>();
         for (Node neighbor : cComponentNeighbors)
         {
-            if (minimalSepInC.contains(neighbor))
+            if(isNodeInSet(neighbor, minimalSepInC))
+//            if (minimalSepInC.contains(neighbor))
             {
                 Node neighborInMain = cNodeIndsInMainGraph.get(neighbor);
                 newSepSet.add(neighborInMain);
@@ -207,5 +208,25 @@ public class IndSetExtBySeparators implements IIndependentSetExtender<MinimalSep
             queue.poll();
         }
         return maximalSet;
+    }
+
+    boolean isNodeInSet(Node node, NodeSet sortedNodes)
+    {
+
+        int n = sortedNodes.size();
+        int i = 0;
+        while (n > 0) {
+            int j = i + n / 2;
+            if (sortedNodes.get(j).equals(node)) {
+                return true;
+            } else if (node.intValue() < sortedNodes.get(j).intValue()) {
+                n = n / 2;
+            } else {
+                i = j + 1;
+                n = n - n / 2 - 1;
+            }
+        }
+
+        return false;
     }
 }
