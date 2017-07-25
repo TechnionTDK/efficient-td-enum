@@ -75,7 +75,7 @@ public class MinimalTriangulationsEnumeratorTest {
         for (int i =0; i<5; i++)
         {
             assertTrue(enumerator.hasNext());
-            System.out.println(enumerator.next());
+            enumerator.next();
         }
         assertFalse(enumerator.hasNext());
     }
@@ -88,7 +88,7 @@ public class MinimalTriangulationsEnumeratorTest {
         int num = 0;
         while(enumerator.hasNext())
         {
-            System.out.println(enumerator.next());
+            enumerator.next();
             num++;
         }
         assertEquals(4, num);

@@ -34,7 +34,7 @@ public class MinimalTriangulationsEnumerator {
         triExtender = new IndSetExtByTriangulation(graph, triangulator);
         sepExtender = new IndSetExtBySeparators(graph);
         scorer = new IndSetScorerByTriangulation(graph, triC);
-        setsEnumerator = new MaximalIndependentSetsEnumerator<MinimalSeparator>(seperatorGraph, sepExtender, scorer);
+        setsEnumerator = new MaximalIndependentSetsEnumerator<MinimalSeparator>(seperatorGraph, triExtender, scorer);
     }
 
     public boolean hasNext()

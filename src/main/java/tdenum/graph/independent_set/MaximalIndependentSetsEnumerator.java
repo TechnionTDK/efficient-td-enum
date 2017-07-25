@@ -136,7 +136,7 @@ public class MaximalIndependentSetsEnumerator <T>{
     {
         if (nextSetReady || hasNext()) {
             nextSetReady = false;
-            System.out.println("new MIS" + nextIndependentSet);
+
             return nextIndependentSet;
         }
         return new HashSet<>();
