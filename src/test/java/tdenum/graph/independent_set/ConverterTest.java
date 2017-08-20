@@ -1,14 +1,13 @@
-package tdenum.graph.utils;
+package tdenum.graph.independent_set;
 
 import org.junit.Test;
 import tdenum.graph.TestsUtils;
 import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
-import tdenum.graph.graphs.ChordalGraph;
 import tdenum.graph.graphs.Graph;
-import tdenum.graph.graphs.interfaces.IChordalGraph;
 import tdenum.graph.graphs.interfaces.IGraph;
+import tdenum.graph.independent_set.Converter;
 
 import java.util.HashSet;
 import java.util.Set;

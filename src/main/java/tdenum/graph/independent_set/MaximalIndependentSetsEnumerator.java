@@ -1,6 +1,5 @@
 package tdenum.graph.independent_set;
 
-import tdenum.common.AlgorithmStep;
 import tdenum.graph.data_structures.WeightedQueue;
 import tdenum.graph.graphs.interfaces.ISuccinctGraphRepresentation;
 import tdenum.graph.independent_set.interfaces.IIndependentSetExtender;
@@ -10,9 +9,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import static tdenum.common.AlgorithmStep.BEGINNING;
-import static tdenum.common.AlgorithmStep.ITERATING_NODES;
-import static tdenum.common.AlgorithmStep.ITERATING_SETS;
+import static tdenum.graph.independent_set.AlgorithmStep.BEGINNING;
+import static tdenum.graph.independent_set.AlgorithmStep.ITERATING_NODES;
+import static tdenum.graph.independent_set.AlgorithmStep.ITERATING_SETS;
 
 /**
  * Created by dvir.dukhan on 7/11/2017.
@@ -162,6 +161,7 @@ public class MaximalIndependentSetsEnumerator <T>{
         setsExtended.add(currentSet);
         setsNotExtended.remove(currentSet);
         extendingQueue.pop();
+//        System.out.println("current set " + currentSet);
     }
 
 
@@ -189,23 +189,30 @@ public class MaximalIndependentSetsEnumerator <T>{
                 extendingQueue.setWeight(generatedSet, scorer.scoreIndependentSet(generatedSet));
                 nextIndependentSet = generatedSet;
                 nextSetReady = true;
+//                System.out.println("new set found");
                 return true;
             }
 
         }
+//        System.out.println("no new set");
         return false;
     }
 
     boolean runFullEnumeration()
     {
+//        System.out.println("now in run fullEnum");
         while(!extendingQueue.isEmpty())
         {
+
             getNextSetToExtend();
+
             nodesIterator = nodesGenerated.iterator();
             while (nodesIterator.hasNext())
             {
                 T node = nodesIterator.next();
+//                System.out.println("current node " + node + "from " + nodesGenerated);
                 Set<T> generatedSet = extendSetInDirectionOfNode(currentSet, node);
+//                System.out.println("generated set " + generatedSet);
                 if (newSetFound(generatedSet))
                 {
                     step = ITERATING_NODES;
@@ -214,10 +221,15 @@ public class MaximalIndependentSetsEnumerator <T>{
             }
 
         }
+
+//        System.out.println("setsNotExtended.isEmpty() " + setsNotExtended.isEmpty() );
+//        System.out.println("setsNotExtended.size() " + setsNotExtended.size());
+//        System.out.println("graph.hasNextNode()" + graph.hasNextNode());
         while(setsNotExtended.isEmpty() && graph.hasNextNode())
         {
             currentNode = graph.nextNode();
             nodesGenerated.add(currentNode);
+//            System.out.println("new node " +  currentNode);
             setsIterator = setsExtended.iterator();
             while(setsIterator.hasNext())
             {

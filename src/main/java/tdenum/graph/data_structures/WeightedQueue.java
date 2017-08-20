@@ -30,8 +30,16 @@ public  class WeightedQueue<T >
                 int valComp = val2.compareTo(val1);
                 if (valComp == 0)
                 {
+                    if (!e2.getKey().equals(e1.getKey()))
+                    {
+                        int keyComp = ((Integer)e1.getKey().hashCode()).compareTo(e2.getKey().hashCode());
+                        if (keyComp == 0)
+                        {
+                            return -1;
+                        }
+                        return keyComp;
+                    }
 
-                    return ((Integer)e1.getKey().hashCode()).compareTo(e2.getKey().hashCode());
                 }
                 return  valComp;
             }
@@ -59,11 +67,15 @@ public  class WeightedQueue<T >
         if (data.containsKey(v))
         {
             int prevWeight = data.get(v);
+//            System.out.println("change weight for " + v);
+//            System.out.println("from " + prevWeight + " to " + weight);
+//            System.out.println("in set weight map size " + data.size() + " tree size " + queue.size() + " " +this.hashCode());
             queue.remove(new Pair<>(v, prevWeight));
         }
 
         data.put(v, weight);
         queue.add(new Pair<>(v, weight));
+//        System.out.println("in set weight map size " + data.size() + " tree size " + queue.size() + " " +this.hashCode());
 
     }
 
@@ -77,17 +89,32 @@ public  class WeightedQueue<T >
         queue.remove(queue.first());
         data.remove(v);
 
+//        System.out.println("in pop map size " + data.size() + " tree size " + queue.size() + " " +this.hashCode());
         return v;
     }
 
     public T top()
     {
         T v = queue.first().getKey();
+//        System.out.println("in top map size " + data.size() + " tree size " + queue.size() + " " +this.hashCode());
         return v;
     }
 
     public boolean isEmpty()
     {
-        return  queue.isEmpty();
+//        System.out.println("in isEmpty map size " + data.size() + " tree size " + queue.size() + " " +this.hashCode());
+//        System.out.println(data);
+        return  data.isEmpty();
     }
+
+//    public int size()
+//    {
+////        System.out.println("in size map size " + data.size() + " tree size " + queue.size() + " " +this.hashCode());
+//        return data.size();
+//    }
+//
+//    public Collection<T> getKeys()
+//    {
+//        return data.keySet();
+//    }
 }

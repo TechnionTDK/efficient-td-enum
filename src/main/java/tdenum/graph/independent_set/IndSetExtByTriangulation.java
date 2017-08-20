@@ -6,7 +6,6 @@ import tdenum.graph.graphs.interfaces.IChordalGraph;
 import tdenum.graph.graphs.interfaces.IGraph;
 import tdenum.graph.independent_set.interfaces.IIndependentSetExtender;
 import tdenum.graph.independent_set.triangulation.MinimalTriangulator;
-import tdenum.graph.utils.Converter;
 
 import java.util.Set;
 

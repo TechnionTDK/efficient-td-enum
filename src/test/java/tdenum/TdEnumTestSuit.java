@@ -11,7 +11,7 @@ import tdenum.graph.independent_set.separators.SeparatorScorerTest;
 import tdenum.graph.independent_set.triangulation.IndSetScorerByTriangulationTest;
 import tdenum.graph.independent_set.triangulation.MinimalTriangulationsEnumeratorTest;
 import tdenum.graph.independent_set.triangulation.MinimalTriangulatorTest;
-import tdenum.graph.utils.ConverterTest;
+import tdenum.graph.independent_set.ConverterTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

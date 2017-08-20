@@ -6,7 +6,7 @@ import tdenum.graph.graphs.Graph;
 import tdenum.graph.graphs.interfaces.IChordalGraph;
 import tdenum.graph.graphs.interfaces.IGraph;
 import tdenum.graph.independent_set.interfaces.IIndependentSetScorer;
-import tdenum.graph.utils.Converter;
+import tdenum.graph.independent_set.Converter;
 
 /**
  * Created by dvir.dukhan on 7/11/2017.

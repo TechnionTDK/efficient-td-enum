@@ -10,7 +10,7 @@ import tdenum.graph.independent_set.IndSetExtBySeparators;
 import tdenum.graph.independent_set.IndSetExtByTriangulation;
 import tdenum.graph.independent_set.MaximalIndependentSetsEnumerator;
 import tdenum.graph.independent_set.separators.SeparatorsScoringCriterion;
-import tdenum.graph.utils.Converter;
+import tdenum.graph.independent_set.Converter;
 
 /**
  * Created by dvir.dukhan on 7/11/2017.

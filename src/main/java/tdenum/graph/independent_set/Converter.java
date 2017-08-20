@@ -1,4 +1,4 @@
-package tdenum.graph.utils;
+package tdenum.graph.independent_set;
 
 import tdenum.graph.data_structures.*;
 import tdenum.graph.graphs.ChordalGraph;

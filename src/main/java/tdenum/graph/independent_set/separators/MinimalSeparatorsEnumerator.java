@@ -32,6 +32,8 @@ public class MinimalSeparatorsEnumerator
                 }
             }
         }
+//        System.out.println("seperators number" + separatorsToExtend.size());
+//        System.out.println("seperators " + separatorsToExtend.getKeys());
     }
 
     public MinimalSeparator next()

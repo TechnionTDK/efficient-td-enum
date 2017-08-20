@@ -1,4 +1,4 @@
-package tdenum.common;
+package tdenum.graph.independent_set;
 
 /**
  * Created by dvir.dukhan on 7/11/2017.
