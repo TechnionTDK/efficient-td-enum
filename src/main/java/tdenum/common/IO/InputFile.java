@@ -19,11 +19,11 @@ public class InputFile {
         Path parent = path.getParent();
         if (parent == null)
         {
-            name = fileName;
+            name = FilenameUtils.getBaseName(fileName);
         }
         else
         {
-            name = FilenameUtils.getName(fileName);
+            name = FilenameUtils.getBaseName(fileName);
 
             innerContainingFolder = parent.getFileName().toString();
             Path parentParent = parent.getParent();

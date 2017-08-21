@@ -91,7 +91,7 @@ public class ResultHandler {
     void handleWidth(ResultInformation currentResult)
     {
         int width = currentResult.getWidth();
-        if (width <= firstFill)
+        if (width <= firstWidth)
         {
             goodWidthCount++;
         }
