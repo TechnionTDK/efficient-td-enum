@@ -11,6 +11,7 @@ import java.util.Set;
 public class WeightedNodeSetQueue<T extends NodeSet> extends WeightedQueue<T>
 {
 
+
 //    Set<Pair<Integer, NodeSet>>queue = new LinkedHashSet<>();
 //
 //    public boolean isEmpty()

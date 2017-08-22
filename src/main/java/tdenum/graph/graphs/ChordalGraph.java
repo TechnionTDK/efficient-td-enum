@@ -34,7 +34,7 @@ public class ChordalGraph extends Graph implements IChordalGraph
     {
         Set<NodeSet> cliques = new HashSet<>();
         TdMap<Boolean> isVisited = new TdListMap<>(getNumberOfNodes(), false);
-        WeightedNodeQueue queue = new WeightedNodeQueue(nodes);
+        IncreasingWeightedNodeQueue queue = new IncreasingWeightedNodeQueue(nodes);
         int previousNumberOfNeighbors = -1;
         Node previousNode = new Node(-1);
 

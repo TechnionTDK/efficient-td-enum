@@ -6,13 +6,14 @@ import java.util.*;
 /**
  * Created by dvir.dukhan on 7/6/2017.
  */
-public class WeightedNodeQueue extends WeightedQueue<Node> {
+public class IncreasingWeightedNodeQueue extends WeightedQueue<Node> {
 
     //    List<Integer> weight = new ArrayList<>();
 //    Set<Pair<Integer, Node>> queue = new HashSet<>();
 //    LinkedHashMap<Node, Integer> queue = new LinkedHashMap<>();
 
-    public WeightedNodeQueue(int numberOfNoeds) {
+    public IncreasingWeightedNodeQueue(int numberOfNoeds) {
+        super(true);
 //        weight = utils.generateFixedList(numberOfNoeds, 0);
 //        List<Pair<Integer, Node>> temporaryQueue = new ArrayList<>();
 //        for(int v = 0; v < numberOfNoeds; v++)
@@ -27,8 +28,9 @@ public class WeightedNodeQueue extends WeightedQueue<Node> {
         }
     }
 
-    public WeightedNodeQueue(NodeSet nodes)
+    public IncreasingWeightedNodeQueue(NodeSet nodes)
     {
+        super(true);
         for (Node v : nodes)
         {
             setWeight(v,0);

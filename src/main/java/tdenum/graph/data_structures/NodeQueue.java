@@ -11,12 +11,12 @@ import static tdenum.graph.independent_set.triangulation.TriangulationAlgorithm.
 public class NodeQueue {
     IGraph graph;
     TriangulationAlgorithm heuristic;
-    WeightedNodeQueue queue;
+    IncreasingWeightedNodeQueue queue;
 
     public NodeQueue(IGraph g, TriangulationAlgorithm h) {
         graph = g;
         heuristic = h;
-        queue = new WeightedNodeQueue(g.getNodes());
+        queue = new IncreasingWeightedNodeQueue(g.getNodes());
     }
 
 

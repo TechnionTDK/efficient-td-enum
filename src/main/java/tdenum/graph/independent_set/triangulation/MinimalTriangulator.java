@@ -85,7 +85,7 @@ public class MinimalTriangulator {
     private IChordalGraph getMinimalTriangulationUsingMSCM(IGraph g)
     {
         IChordalGraph triangulation = new ChordalGraph(g);
-        WeightedNodeQueue queue =new WeightedNodeQueue(g.getNodes());
+        IncreasingWeightedNodeQueue queue =new IncreasingWeightedNodeQueue(g.getNodes());
         TdMap<Boolean> handled = new TdListMap<>(g.getNumberOfNodes(), false);
         while(!queue.isEmpty())
         {

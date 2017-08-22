@@ -26,7 +26,7 @@ public class Converter
     {
         Set<MinimalSeparator> minimalSeparators = new HashSet<>();
         TdMap<Boolean> isVisited = new TdListMap<>(g.getNumberOfNodes(), false);
-        WeightedNodeQueue queue = new WeightedNodeQueue(g.getNodes());
+        IncreasingWeightedNodeQueue queue = new IncreasingWeightedNodeQueue(g.getNodes());
         int previousNumberOfNeighbors = -1;
         while (!queue.isEmpty())
         {
