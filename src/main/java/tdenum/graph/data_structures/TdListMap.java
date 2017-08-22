@@ -54,20 +54,20 @@ public class TdListMap<T> extends TdMap<T> {
     @Override
     public T get(Object key) {
         Node v = (Node) key;
-        return list.get(v.intValue());
+        return list.get(v.value);
     }
 
     @Override
     public T put(Node key, T value) {
 
-        for (int i= list.size(); i <= key.intValue(); i++)
+        for (int i= list.size(); i <= key.value; i++)
         {
             list.add(i, null);
         }
         Node v = (Node) key;
         keys.add(key);
 
-        list.set(v.intValue(), value);
+        list.set(v.value, value);
 
 
         return value;
@@ -77,7 +77,7 @@ public class TdListMap<T> extends TdMap<T> {
     public T remove(Object key) {
         Node v = (Node) key;
         keys.remove(key);
-        return list.remove((v.intValue()));
+        return list.remove((v.value));
     }
 
     @Override

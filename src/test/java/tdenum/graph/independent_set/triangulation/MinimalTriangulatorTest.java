@@ -3,7 +3,6 @@ package tdenum.graph.independent_set.triangulation;
 import org.junit.Test;
 import tdenum.graph.TestsUtils;
 import tdenum.graph.data_structures.Node;
-import tdenum.graph.graphs.Graph;
 import tdenum.graph.graphs.interfaces.IGraph;
 
 import java.util.Collection;

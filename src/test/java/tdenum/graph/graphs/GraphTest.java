@@ -3,7 +3,6 @@ package tdenum.graph.graphs;
 import org.junit.Test;
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
-import tdenum.graph.graphs.Graph;
 
 import java.util.HashSet;
 

@@ -47,6 +47,7 @@ public class ChordalGraph extends Graph implements IChordalGraph
             {
                 NodeSetProducer cliqueProducer = new NodeSetProducer(getNumberOfNodes());
                 cliqueProducer.insert(previousNode);
+//                for (Node v : getNeighborsCopy(previousNode))
                 for (Node v : getNeighbors(previousNode))
                 {
                     if (isVisited.get(v))
@@ -57,6 +58,7 @@ public class ChordalGraph extends Graph implements IChordalGraph
                 cliques.add(cliqueProducer.produce());
             }
 
+//            for (Node v : getNeighborsCopy(currentNode))
             for (Node v : getNeighbors(currentNode))
             {
                 if (!isVisited.get(v))
@@ -70,6 +72,7 @@ public class ChordalGraph extends Graph implements IChordalGraph
         }
         NodeSetProducer cliqueProducer = new NodeSetProducer(getNumberOfNodes());
         cliqueProducer.insert(previousNode);
+//        for (Node v : getNeighborsCopy(previousNode))
         for (Node v : getNeighbors(previousNode))
         {
             cliqueProducer.insert(v);
@@ -85,6 +88,7 @@ public class ChordalGraph extends Graph implements IChordalGraph
         List<Edge> edges = new ArrayList<>();
         for (Node v : nodes)
         {
+//            for (Node u : getNeighborsCopy(v))
             for (Node u : getNeighbors(v))
             {
                 if (v.intValue() < u.intValue() && !origin.areNeighbors(v, u))

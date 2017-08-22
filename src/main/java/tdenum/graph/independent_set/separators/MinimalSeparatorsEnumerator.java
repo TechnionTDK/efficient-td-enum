@@ -20,7 +20,7 @@ public class MinimalSeparatorsEnumerator
         scorer = new SeparatorScorer(g, c);
         for (Node v : g.getNodes())
         {
-            NodeSet vAndNeighbors = graph.getNeighbors(v);
+            NodeSet vAndNeighbors = graph.getNeighborsCopy(v);
             vAndNeighbors.add(v);
             for (NodeSet nodeSet : graph.getComponents(vAndNeighbors))
             {
@@ -46,7 +46,7 @@ public class MinimalSeparatorsEnumerator
         separatorsExtended.add(s);
         for (Node x : s)
         {
-            NodeSet xNeighborsAndS = graph.getNeighbors(x);
+            NodeSet xNeighborsAndS = graph.getNeighborsCopy(x);
             xNeighborsAndS.addAll(s);
             for (NodeSet nodeSet : graph.getComponents(xNeighborsAndS))
             {

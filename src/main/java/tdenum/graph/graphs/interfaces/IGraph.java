@@ -30,6 +30,8 @@ public interface IGraph
 
     int getNumberOfNodes();
 
+    NodeSet getNeighborsCopy(Node v);
+
     NodeSet getNeighbors(Node v);
 
 //    NodeSet getNeighbors(int v);

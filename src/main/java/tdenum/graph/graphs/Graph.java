@@ -201,7 +201,7 @@ public class Graph implements IGraph
     }
 
     @Override
-    public NodeSet getNeighbors(Node v)
+    public NodeSet getNeighborsCopy(Node v)
     {
 
         if (!isValidNode(v))
@@ -212,6 +212,10 @@ public class Graph implements IGraph
         return new NodeSet(neighborSets.get(v));
     }
 
+    @Override
+    public final NodeSet getNeighbors(Node v) {
+        return neighborSets.get(v);
+    }
 
 
     @Override
@@ -262,7 +266,8 @@ public class Graph implements IGraph
     public TdMap<Boolean> getNeighborsMap(Node v)
     {
         TdMap<Boolean>  result = new TdListMap<>(numberOfNodes, false);
-        for (Node u : getNeighbors(v))
+//        for (Node u : getNeighbors(v))
+        for (Node u : neighborSets.get(v))
         {
             result.put(u, true);
         }
@@ -322,7 +327,8 @@ public class Graph implements IGraph
         while (!q.isEmpty())
         {
             v = q.poll();
-            final NodeSet neighbors = getNeighbors(v);
+            final NodeSet neighbors = neighborSets.get(v);
+//            final NodeSet neighbors = getNeighbors(v);
             for (Node neighbor : neighbors)
             {
                 if (!insertedNodes.get(neighbor))
@@ -378,7 +384,8 @@ public class Graph implements IGraph
             while(!bfsQueue.isEmpty())
             {
                 Node v = bfsQueue.poll();
-                for (Node u : getNeighbors(v))
+                for (Node u :neighborSets.get(v))
+//                for (Node u : getNeighbors(v))
                 {
                     if (visitedList.get(u) == 0)
                     {

@@ -7,7 +7,6 @@ import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
 import tdenum.graph.graphs.Graph;
 import tdenum.graph.graphs.interfaces.IGraph;
-import tdenum.graph.independent_set.Converter;
 
 import java.util.HashSet;
 import java.util.Set;

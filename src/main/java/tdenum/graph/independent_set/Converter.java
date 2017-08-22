@@ -5,9 +5,7 @@ import tdenum.graph.graphs.ChordalGraph;
 import tdenum.graph.graphs.interfaces.IChordalGraph;
 import tdenum.graph.graphs.interfaces.IGraph;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -38,6 +36,7 @@ public class Converter
             if (currentNumberOfNeighbors <= previousNumberOfNeighbors)
             {
                 NodeSetProducer separatorProducer = new NodeSetProducer(g.getNumberOfNodes());
+//                for (Node v : g.getNeighbors(currentNode))
                 for (Node v : g.getNeighbors(currentNode))
                 {
                     Boolean iv = isVisited.get(v);
@@ -52,6 +51,7 @@ public class Converter
                     minimalSeparators.add(currentSeparator);
                 }
             }
+//            for (Node v : g.getNeighbors(currentNode))
             for (Node v : g.getNeighbors(currentNode))
             {
                 Boolean iv = isVisited.get(v);

@@ -1,6 +1,5 @@
 package tdenum.graph.independent_set.triangulation;
 
-import tdenum.common.Utils;
 import tdenum.graph.data_structures.*;
 import tdenum.graph.graphs.ChordalGraph;
 import tdenum.graph.graphs.interfaces.IChordalGraph;
@@ -66,7 +65,7 @@ public class MinimalTriangulator {
 
     private Set<NodeSet> getSubstars(IGraph g, IGraph gi, Node v)
     {
-        NodeSet removedNodes = gi.getNeighbors(v);
+        NodeSet removedNodes = gi.getNeighborsCopy(v);
         removedNodes.add(v);
         List<NodeSet>components = g.getComponents(removedNodes);
         Set<NodeSet> substars = new HashSet<>();
@@ -99,6 +98,7 @@ public class MinimalTriangulator {
             {
                 reachedByMaxWeight.add(new NodeSet());
             }
+//            for (Node u : g.getNeighbors(v))
             for (Node u : g.getNeighbors(v))
             {
                 if (!handled.get(u))
@@ -114,7 +114,8 @@ public class MinimalTriangulator {
                 {
                     NodeSet ns = reachedByMaxWeight.get(maxWeight);
                     Node w = ns.remove(ns.size()-1);
-                    for (Node u : g.getNeighbors(w))
+//                    for (Node u : g.getNeighbors(w))
+                    for(Node u: g.getNeighbors(w))
                     {
                         if (!handled.get(u) && !reached.get(u))
                         {

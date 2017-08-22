@@ -34,6 +34,7 @@ public class NodeQueue {
 
     int getFill(final IGraph g, Node v)
     {
+//        final NodeSet neighborsSet = g.getNeighborsCopy(v);
         final NodeSet neighborsSet = g.getNeighbors(v);
         int twiceFillEdges = 0;
         TdMap<Boolean> notNeighborsOfCurrentNode = g.getNeighborsMap(v);
