@@ -10,6 +10,7 @@ import tdenum.graph.graphs.interfaces.IGraph;
 import tdenum.graph.graphs.interfaces.ISubGraph;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by dvird on 17/07/10.

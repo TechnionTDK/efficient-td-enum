@@ -190,6 +190,7 @@ public class MaximalIndependentSetsEnumerator <T>{
                 nextIndependentSet = generatedSet;
                 nextSetReady = true;
 //                System.out.println("new set found");
+//                System.out.println(generatedSet);
                 return true;
             }
 

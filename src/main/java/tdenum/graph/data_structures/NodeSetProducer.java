@@ -53,13 +53,23 @@ public class NodeSetProducer
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        for (Node v : isMemeberMap.keySet())
+
+        List<Boolean> values = (ArrayList)isMemeberMap.values();
+        for (int i =0; i < values.size(); i++)
         {
-            if (isMemeberMap.get(v))
+            if (values.get(i))
             {
-                members.add(v);
+                members.add(new Node(i));
             }
         }
+//
+//        for (Node v : isMemeberMap.keySet())
+//        {
+//            if (isMemeberMap.get(v))
+//            {
+//                members.add(v);
+//            }
+//        }
 //        for (int i =0; i < isMemeberMap.size(); i++)
 //        {
 //            if (isMemeberMap.get(i))
