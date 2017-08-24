@@ -1,6 +1,7 @@
 package tdenum.graph.independent_set.separators;
 
 import org.junit.Test;
+import tdenum.common.IO.GraphReader;
 import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
@@ -233,6 +234,15 @@ public class MinimalSeparatorsEnumeratorTest {
 
 
 
+    }
+
+    @Test
+    public void realGraphTest()
+    {
+        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\Easy\\Random\\Probability70percent\\20.csv");
+
+        MinimalSeparatorsEnumerator gEnumerator = new MinimalSeparatorsEnumerator(g, UNIFORM);
+        assertEquals(69, countSeparators(gEnumerator));
     }
 
     int countSeparators(MinimalSeparatorsEnumerator e) {

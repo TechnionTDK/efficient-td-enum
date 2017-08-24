@@ -105,12 +105,14 @@ public class TdListMap<T> extends TdMap<T> {
 
     @Override
     public Collection<T> values() {
-        Collection<T> collection = new ArrayList<>();
-        for (Node key : keys)
-        {
-            collection.add(get(key));
-        }
-        return collection;
+//        Collection<T> collection = new ArrayList<>();
+//        collection.addAll()
+//        for (Node key : keys)
+//        {
+//            collection.add(get(key));
+//        }
+//        return collection;
+        return list;
     }
 
     @Override

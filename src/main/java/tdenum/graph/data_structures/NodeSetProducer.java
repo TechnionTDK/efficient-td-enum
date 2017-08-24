@@ -3,7 +3,11 @@ package tdenum.graph.data_structures;
 import tdenum.common.Utils;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by dvir.dukhan on 7/5/2017.
@@ -72,13 +76,24 @@ public class NodeSetProducer
 
         T members = (T) new NodeSet();
 
-        for (Node v : isMemeberMap.keySet())
+        List<Boolean> values = (ArrayList)isMemeberMap.values();
+
+
+        for (int i =0; i < values.size(); i++)
         {
-            if (isMemeberMap.get(v))
+            if (values.get(i))
             {
-                members.add(v);
+                members.add(new Node(i));
             }
         }
+
+//        for (Node v : isMemeberMap.keySet())
+//        {
+//            if (isMemeberMap.get(v))
+//            {
+//                members.add(v);
+//            }
+//        }
 //        for (int i =0; i < isMemeberMap.size(); i++)
 //        {
 //            if (isMemeberMap.get(i))
@@ -86,6 +101,7 @@ public class NodeSetProducer
 //                members.add(new Node(i));
 //            }
 //        }
+//        System.out.println("members " + members);
         return members;
     }
 }

@@ -65,7 +65,7 @@ public class MinimalTriangulator {
 
     private Set<NodeSet> getSubstars(IGraph g, IGraph gi, Node v)
     {
-        NodeSet removedNodes = gi.getNeighborsCopy(v);
+        Set<Node> removedNodes = gi.getNeighborsCopy(v);
         removedNodes.add(v);
         List<NodeSet>components = g.getComponents(removedNodes);
         Set<NodeSet> substars = new HashSet<>();

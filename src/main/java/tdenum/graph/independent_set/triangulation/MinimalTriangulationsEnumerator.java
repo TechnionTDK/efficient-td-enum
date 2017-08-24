@@ -12,6 +12,8 @@ import tdenum.graph.independent_set.MaximalIndependentSetsEnumerator;
 import tdenum.graph.independent_set.separators.SeparatorsScoringCriterion;
 import tdenum.graph.independent_set.Converter;
 
+import static tdenum.graph.independent_set.triangulation.TriangulationAlgorithm.SEPARATORS;
+
 /**
  * Created by dvir.dukhan on 7/11/2017.
  */
@@ -35,6 +37,9 @@ public class MinimalTriangulationsEnumerator {
         sepExtender = new IndSetExtBySeparators(graph);
         scorer = new IndSetScorerByTriangulation(graph, triC);
         setsEnumerator = new MaximalIndependentSetsEnumerator<MinimalSeparator>(seperatorGraph, triExtender, scorer);
+        if (heuristic == SEPARATORS){
+            setsEnumerator = new MaximalIndependentSetsEnumerator<MinimalSeparator>(seperatorGraph, sepExtender, scorer);
+        }
     }
 
     public boolean hasNext()

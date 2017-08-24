@@ -158,14 +158,14 @@ public  class WeightedQueue<T >
         return  data.isEmpty();
     }
 
-//    public int size()
-//    {
-////        System.out.println("in size map size " + data.size() + " tree size " + queue.size() + " " +this.hashCode());
-//        return data.size();
-//    }
-//
-//    public Collection<T> getKeys()
-//    {
-//        return data.keySet();
-//    }
+    public int size()
+    {
+//        System.out.println("in size map size " + data.size() + " tree size " + queue.size() + " " +this.hashCode());
+        return data.size();
+    }
+
+    public Collection<T> getKeys()
+    {
+        return data.keySet();
+    }
 }

@@ -201,15 +201,15 @@ public class Graph implements IGraph
     }
 
     @Override
-    public NodeSet getNeighborsCopy(Node v)
+    public Set<Node> getNeighborsCopy(Node v)
     {
 
         if (!isValidNode(v))
         {
             System.out.println("Error: Requesting access to invalid node");
-            return new NodeSet();
+            return new HashSet<>();
         }
-        return new NodeSet(neighborSets.get(v));
+        return new HashSet<>(neighborSets.get(v));
     }
 
     @Override
@@ -241,10 +241,10 @@ public class Graph implements IGraph
     }
 
     @Override
-    public NodeSet getNeighbors(NodeSet nodes)
+    public NodeSet getNeighbors(NodeSet nodeSet)
     {
         NodeSetProducer neighborsProducer = new NodeSetProducer(numberOfNodes);
-        for (Node v : nodes)
+        for (Node v : nodeSet)
         {
             if (!isValidNode(v))
             {
@@ -255,7 +255,7 @@ public class Graph implements IGraph
                 neighborsProducer.insert(u);
             }
         }
-        for (Node v : nodes)
+        for (Node v : nodeSet)
         {
             neighborsProducer.remove(v);
         }
@@ -276,7 +276,7 @@ public class Graph implements IGraph
     }
 
     @Override
-    public List<NodeSet> getComponents(List<Node> removeNodes)
+    public List<NodeSet> getComponents(Set<Node> removeNodes)
     {
         TdMap<Integer> visitedList = new TdListMap<>(numberOfNodes, 0);
         for (Node v : removeNodes)
