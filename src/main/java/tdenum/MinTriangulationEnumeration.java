@@ -229,6 +229,7 @@ public class MinTriangulationEnumeration {
                 break;
             }
         }
+        enumerator.printMemebershipStatistics();
         if (print != NEVER)
         {
             detailedOutput.close();
