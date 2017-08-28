@@ -16,7 +16,7 @@ import static tdenum.graph.independent_set.AlgorithmStep.ITERATING_SETS;
 /**
  * Created by dvir.dukhan on 7/11/2017.
  */
-public class MaximalIndependentSetsEnumerator <T>{
+public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependentSetsEnumerator{
 
 
     ISuccinctGraphRepresentation<T> graph;
