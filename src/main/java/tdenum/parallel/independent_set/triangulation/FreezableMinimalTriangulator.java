@@ -10,33 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static tdenum.parallel.independent_set.triangulation.FreezableMinimalTriangulator.STATE.*;
+import static tdenum.graph.independent_set.triangulation.TriangulationAlgorithm.COMBINED;
+import static tdenum.graph.independent_set.triangulation.TriangulationAlgorithm.MCS_M;
+
 
 public class FreezableMinimalTriangulator implements Callable<IChordalGraph> {
 
 
-    enum STATE
-    {
-        BEFORE_INIT, IN_FOR , IN_WHILE, UPDATE
-    }
 
 
     private TriangulationAlgorithm heuristic;
-    IGraph g;
-    IChordalGraph triangulation;
-    IncreasingWeightedNodeQueue queue;
-    TdMap<Boolean> handled;
-
-    Node v;
-    NodeSet nodesToUpdate;
-    TdMap<Boolean> reached;
-
-    List<NodeSet> reachedByMaxWeight;
-
-    int maxWeight;
-
-    boolean finished = false;
-    STATE state = BEFORE_INIT;
+    int time = 0;
+    IFreezableMinimalTriangulator triangulator;
 
 
 
@@ -48,12 +33,17 @@ public class FreezableMinimalTriangulator implements Callable<IChordalGraph> {
 
     public void setGraph(IGraph graph)
     {
-        g = graph;
-        finished = false;
-        state = BEFORE_INIT;
-        triangulation = new ChordalGraph(g);
-        handled = new TdListMap<>(g.getNumberOfNodes(), false);
+        time++;
+        if(heuristic == MCS_M || (heuristic == COMBINED && time % 2 ==0))
+        {
+            triangulator = new McsmFreezableMinimalTriangulator();
 
+        }
+        else
+        {
+            triangulator = new LBTriangFreezableMinimalTriangulator();
+        }
+        triangulator.setGraph(graph);
 
     }
 
@@ -61,142 +51,8 @@ public class FreezableMinimalTriangulator implements Callable<IChordalGraph> {
     @Override
     public IChordalGraph call() {
 
-
-        return recoverTriangulation();
-
+        return triangulator.continueTriangulate();
 
     }
 
-
-    private IChordalGraph getMinimalTriangulationUsingMSCM()
-    {
-
-        while(!queue.isEmpty() && !Thread.currentThread().isInterrupted())
-        {
-            init();
-            loopForMaxWeight();
-            updateQueueAndTriangulation();
-        }
-        if (queue.isEmpty())
-        {
-            finished = true;
-        }
-
-        return  triangulation;
-    }
-
-    void init()
-    {
-        v = queue.pop();
-        handled.put(v, true);
-        nodesToUpdate = new NodeSet();
-        reached = new TdListMap(g.getNumberOfNodes(), false);
-        reachedByMaxWeight = new ArrayList<>();
-        for (int i = 0; i< g.getNumberOfNodes(); i++)
-        {
-            reachedByMaxWeight.add(new NodeSet());
-        }
-        for (Node u : g.getNeighbors(v))
-        {
-            if (!handled.get(u))
-            {
-                nodesToUpdate.add(u);
-                reached.put(u, true);
-                reachedByMaxWeight.get(queue.getWeight(u)).add(u);
-            }
-        }
-
-        state = IN_FOR;
-    }
-
-    void loopForMaxWeight()
-    {
-        for (maxWeight = 0; maxWeight < g.getNumberOfNodes() && !Thread.currentThread().isInterrupted() ; maxWeight++)
-        {
-            state = IN_WHILE;
-            loopWhileNotReachedByMaxWeightEmpty();
-        }
-        if(maxWeight == g.getNumberOfNodes())
-        {
-            state = UPDATE;
-        }
-
-    }
-
-    void loopWhileNotReachedByMaxWeightEmpty()
-    {
-
-        while(!reachedByMaxWeight.get(maxWeight).isEmpty()  && !Thread.currentThread().isInterrupted())
-        {
-            NodeSet ns = reachedByMaxWeight.get(maxWeight);
-            Node w = ns.remove(ns.size()-1);
-//                    for (Node u : g.getNeighbors(w))
-            for(Node u: g.getNeighbors(w))
-            {
-                if (!handled.get(u) && !reached.get(u))
-                {
-                    if (queue.getWeight(u) > maxWeight)
-                    {
-                        nodesToUpdate.add(u);
-                    }
-                    reached.put(u , true);
-                    reachedByMaxWeight.get(Math.max(maxWeight, queue.getWeight(u))).add(u);
-                }
-            }
-        }
-        if (reachedByMaxWeight.get(maxWeight).isEmpty())
-        state = IN_FOR;
-    }
-
-
-
-
-    void updateQueueAndTriangulation()
-    {
-        for (Node u : nodesToUpdate)
-        {
-            queue.increaseWeight(u);
-            triangulation.addEdge(u, v);
-        }
-        state = BEFORE_INIT;
-    }
-
-    IChordalGraph recoverTriangulation()
-    {
-        if (finished)
-        {
-            return triangulation;
-        }
-        else
-        {
-            switch (state)
-            {
-                case BEFORE_INIT:
-                {
-                    return getMinimalTriangulationUsingMSCM();
-                }
-
-                case IN_FOR:
-                {
-                    loopForMaxWeight();
-                    updateQueueAndTriangulation();
-                    return  getMinimalTriangulationUsingMSCM();
-                }
-
-                case IN_WHILE:
-                {
-                    loopWhileNotReachedByMaxWeightEmpty();
-                    loopForMaxWeight();
-                    updateQueueAndTriangulation();
-                    return  getMinimalTriangulationUsingMSCM();
-                }
-                case UPDATE:
-                {
-                    updateQueueAndTriangulation();
-                    return  getMinimalTriangulationUsingMSCM();
-                }
-            }
-        }
-        return  null;
-    }
 }
