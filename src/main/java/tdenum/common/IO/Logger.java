@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class Logger {
@@ -218,6 +219,67 @@ public class Logger {
 
     DuplicatedSaturatedGraphs duplicatedSaturatedGraphs = new DuplicatedSaturatedGraphs();
 
+    class ExtendCallTiming
+    {
+        long startTime;
+        List<Long> callTimes = new ArrayList<>();
+
+        void startCall()
+        {
+
+            startTime = System.nanoTime();
+        }
+
+        void finishCall()
+        {
+            callTimes.add(TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime));
+        }
+
+
+        void printLog()
+        {
+
+
+
+          String fields = dataToCSV("total calls", "avarage call time (ns)", "max call time (ns)",
+                  "min call time ");
+          String data = dataToCSV(callTimes.size(), callTimes.stream().mapToLong(Long::longValue).average().getAsDouble(),
+                   callTimes.stream().max(Comparator.naturalOrder()).get(),
+                  callTimes.stream().min(Comparator.naturalOrder()).get());
+
+
+
+
+            File logFile = createFile("Extend_Call_Times_Summary.csv");
+
+            try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile))) {
+                output.println(fields.toString());
+                output.println(data.toString());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            fields = dataToCSV("call, time(ns)");
+            StringBuilder sb = new StringBuilder();
+            for (int i =0; i< callTimes.size(); i++)
+            {
+                sb.append(i+1).append(",").append(callTimes.get(i)).append(System.lineSeparator());
+            }
+            data = sb.toString();
+
+            logFile = createFile("Extend_Call_Times.csv");
+            try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile))) {
+                output.println(fields.toString());
+                output.println(data.toString());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    ExtendCallTiming extendCallTiming = new ExtendCallTiming();
+
     private Logger()
     {
             readProperties();
@@ -301,6 +363,7 @@ public class Logger {
         getInstance().printDuplicateMISLog();
         getInstance().printDuplicateSetsToExtendLog();
         getInstance().printDuplicatedSaturatedGraphs();
+        getInstance().printExtendCallTimes();
     }
 
     private void printDuplicateMISLog()
@@ -325,6 +388,14 @@ public class Logger {
         if(logDuplicatesSaturatedGraphs)
         {
             duplicatedSaturatedGraphs.printLog();
+        }
+    }
+
+    private void printExtendCallTimes()
+    {
+        if (logExtendRuntime)
+        {
+            extendCallTiming.printLog();
         }
     }
 
@@ -401,6 +472,23 @@ public class Logger {
         if(logDuplicatesSaturatedGraphs)
         {
             getInstance().duplicatedSaturatedGraphs.logSaturatedGraph(graph,generatedFrom);
+        }
+    }
+
+
+    public static void startExtendCall()
+    {
+        if (logExtendRuntime)
+        {
+            getInstance().extendCallTiming.startCall();
+        }
+    }
+
+    public static void finishExtendCall()
+    {
+        if(logExtendRuntime)
+        {
+            getInstance().extendCallTiming.finishCall();
         }
     }
 
