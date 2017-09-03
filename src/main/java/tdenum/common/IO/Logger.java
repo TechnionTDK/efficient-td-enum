@@ -1,5 +1,7 @@
 package tdenum.common.IO;
 
+import tdenum.graph.graphs.interfaces.IGraph;
+
 import java.io.*;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -81,10 +83,6 @@ public class Logger {
         }
 
 
-
-
-
-
         void addDuplication(Set<T> duplication, MIS_DUPLICATION_HIT mis_duplication_hit)
         {
             if(!duplicatationMap.containsKey(duplication))
@@ -112,7 +110,7 @@ public class Logger {
 
         void logSetToExtend(Set setToExetend) {
             if (!extendedSets.containsKey(setToExetend)) {
-                extendedSets.put(setToExetend, 0);
+                extendedSets.put(setToExetend, 1);
             } else {
                 extendedSets.put(setToExetend, extendedSets.get(setToExetend) + 1);
             }
@@ -125,7 +123,7 @@ public class Logger {
                 String fields = dataToCSV("field", "type", "graph", "separators", "results", "time",
                         "sets to extend set size", "total sets generated", "max duplications", "min duplications", "avg duplications","duplication%", "results-duplication ratio" );
 
-                List<Integer> duplications = extendedSets.values().stream().filter(e->e>0).collect(Collectors.toList());
+                List<Integer> duplications = extendedSets.values().stream().filter(e->e>1).collect(Collectors.toList());
 
                 String data = dataToCSV(field, type, graph, separators, results, time,
                         extendedSets.size(),
@@ -148,6 +146,78 @@ public class Logger {
 
     DuplicateSetsToExtend duplicateSetsToExtend = new DuplicateSetsToExtend();
 
+
+    class DuplicatedSaturatedGraphs
+    {
+        Map<IGraph, Integer> saturatedGraphs = new HashMap<>();
+        Map<IGraph, Set<Set>> generatedFromMap = new HashMap<>();
+
+        void logSaturatedGraph(IGraph saturatedGraph, Set generatedFrom)
+        {
+            if(!saturatedGraphs.containsKey(saturatedGraph))
+            {
+                saturatedGraphs.put(saturatedGraph, 1);
+            }
+            else
+            {
+                saturatedGraphs.put(saturatedGraph, saturatedGraphs.get(saturatedGraph)+1);
+            }
+
+            if (!generatedFromMap.containsKey(saturatedGraph))
+            {
+                generatedFromMap.put(saturatedGraph, new HashSet<>());
+            }
+            generatedFromMap.get(saturatedGraph).add(generatedFrom);
+        }
+
+
+
+        void printLog()
+        {
+            File logfile = createFile("Saturated_Graphs_Duplications.csv");
+            try(PrintWriter output = new PrintWriter(new FileOutputStream(logfile)))
+            {
+
+                List<Integer> duplications = saturatedGraphs.values().stream().filter(e->e>1).collect(Collectors.toList());
+                String fields = dataToCSV("field", "type", "graph", "separators", "results", "time",
+                                            "generated graphs set size", "total saturated graphs generated",
+                                            "max duplications", "min duplications", "avg duplications",
+                                            "duplication%", "results-duplication ratio",
+                                            "graphs with more that one source set",
+                                            "graphs with duplicated source set");
+                String data = dataToCSV(field, type, graph, separators, results, time,
+                                        saturatedGraphs.size(), saturatedGraphs.values().stream().mapToInt(Integer::intValue).sum(),
+                                        duplications.stream().max(Comparator.naturalOrder()).get(),
+                                        duplications.stream().min(Comparator.naturalOrder()).get(),
+                                        duplications.stream().mapToInt(Integer::intValue).average().getAsDouble(),
+                                        (double)duplications.stream().mapToInt(Integer::intValue).sum()/
+                                                saturatedGraphs.values().stream().mapToInt(Integer::intValue).sum()*100,
+                                        (double)results / duplications.stream().mapToInt(Integer::intValue).sum()*100,
+                                        generatedFromMap.values().stream().filter(e->e.size()>1).collect(Collectors.toList()).size(),
+                                        generatedFromMap.values().stream().filter(e-> {
+                                            for(Set s : e)
+                                            {
+                                               if( duplicateSetsToExtend.extendedSets.containsKey(s))
+                                               {
+                                                   return true;
+                                               }
+                                            }
+                                            return false;
+                                        })
+                                            .collect(Collectors.toList()).size()
+
+                        );
+                output.println(fields);
+                output.println(data);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    DuplicatedSaturatedGraphs duplicatedSaturatedGraphs = new DuplicatedSaturatedGraphs();
+
     private Logger()
     {
             readProperties();
@@ -165,6 +235,11 @@ public class Logger {
             logForLoopsRuntime = Boolean.valueOf(prop.getProperty("logForLoopsRuntime"));
 
             logsFolder = prop.getProperty("logsFolder");
+
+            if(logDuplicatesSaturatedGraphs)
+            {
+                logDuplicateSetsToExtend = true;
+            }
 
 
         } catch (FileNotFoundException e) {
@@ -225,6 +300,7 @@ public class Logger {
     {
         getInstance().printDuplicateMISLog();
         getInstance().printDuplicateSetsToExtendLog();
+        getInstance().printDuplicatedSaturatedGraphs();
     }
 
     private void printDuplicateMISLog()
@@ -241,6 +317,14 @@ public class Logger {
         if(logDuplicateSetsToExtend)
         {
             duplicateSetsToExtend.printLog();
+        }
+    }
+
+    private void printDuplicatedSaturatedGraphs()
+    {
+        if(logDuplicatesSaturatedGraphs)
+        {
+            duplicatedSaturatedGraphs.printLog();
         }
     }
 
@@ -308,6 +392,15 @@ public class Logger {
         if(logDuplicateSetsToExtend)
         {
             getInstance().duplicateSetsToExtend.logSetToExtend(setToExtend);
+        }
+    }
+
+
+    public static void addSaturatedGraph(IGraph graph, Set generatedFrom)
+    {
+        if(logDuplicatesSaturatedGraphs)
+        {
+            getInstance().duplicatedSaturatedGraphs.logSaturatedGraph(graph,generatedFrom);
         }
     }
 
