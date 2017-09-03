@@ -1,5 +1,6 @@
 package tdenum.graph.independent_set;
 
+import tdenum.common.IO.Logger;
 import tdenum.graph.data_structures.WeightedQueue;
 import tdenum.graph.graphs.interfaces.ISuccinctGraphRepresentation;
 import tdenum.graph.independent_set.interfaces.IIndependentSetExtender;
@@ -37,13 +38,6 @@ public class MaximalIndependentSetsEnumerator <T>{
     Iterator<T> nodesIterator;
     Iterator<Set<T>> setsIterator;
 
-
-    //dvirdu-testing membership time
-    long membershipTime = 0;
-    //dvirdu-testing membership hit miss
-    int setsExtendedHits = 0;
-    int setsNotExtendedHits = 0;
-    Map<Set<T>, Integer> duplicatationMap = new HashMap<>();
 
 
 
@@ -190,7 +184,8 @@ public class MaximalIndependentSetsEnumerator <T>{
 
     boolean newSetFound(final Set<T> generatedSet)
     {
-        Date start = new Date();
+
+        Logger.startMISDuplicationCheck();
         if (!setsExtended.contains(generatedSet))
         {
             if(setsNotExtended.add(generatedSet))
@@ -200,34 +195,25 @@ public class MaximalIndependentSetsEnumerator <T>{
                 nextSetReady = true;
 //                System.out.println("new set found");
 //                System.out.println(generatedSet);
-                Date finish = new Date();
-                membershipTime += finish.getTime()-start.getTime();
+
+                Logger.finishMISDuplicationCheck();
                 return true;
             }
             else
             {
-               if(!duplicatationMap.containsKey(generatedSet))
-               {
-                   duplicatationMap.put(generatedSet,0);
-               }
-               duplicatationMap.put(generatedSet,duplicatationMap.get(generatedSet)+1);
-               setsNotExtendedHits++;
+                Logger.addMISDuplication(generatedSet, Logger.MIS_DUPLICATION_HIT.SETS_NOT_EXTENDED);
 
             }
 
         }
         else
         {
-            if(!duplicatationMap.containsKey(generatedSet))
-            {
-                duplicatationMap.put(generatedSet,0);
-            }
-            duplicatationMap.put(generatedSet,duplicatationMap.get(generatedSet)+1);
-            setsExtendedHits++;
+
+            Logger.addMISDuplication(generatedSet, Logger.MIS_DUPLICATION_HIT.SETS_EXTENDED);
+
         }
 //        System.out.println("no new set");
-        Date finish = new Date();
-        membershipTime += finish.getTime()-start.getTime();
+        Logger.finishMISDuplicationCheck();
         return false;
     }
 
@@ -278,17 +264,6 @@ public class MaximalIndependentSetsEnumerator <T>{
         }
 
         return false;
-    }
-
-    public void printMembershipStatistics()
-    {
-        System.out.println("time in membeership " + (double)membershipTime/1000);
-        System.out.println("sets Extended duplication " + setsExtendedHits);
-        System.out.println("sets not extended duplication " + setsNotExtendedHits);
-        System.out.println("total duplications " + duplicatationMap.size());
-        System.out.println("maximum duplications " + duplicatationMap.values().stream().max(Comparator.naturalOrder()));
-        System.out.println("minimum duplications " + duplicatationMap.values().stream().min(Comparator.naturalOrder()));
-        System.out.println("avarage duplications " + duplicatationMap.values().stream().mapToInt(Integer::intValue).average());
     }
 
 

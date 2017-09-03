@@ -60,10 +60,7 @@ public class MinimalTriangulationsEnumerator {
 
     }
 
-    public void printMemebershipStatistics()
-    {
-        setsEnumerator.printMembershipStatistics();
-    }
+
 
 
 
