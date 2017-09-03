@@ -179,6 +179,8 @@ public class MaximalIndependentSetsEnumerator <T>{
                 baseNodes.add(t);
             }
         }
+        Logger.addSetToExtend(baseNodes);
+
         return extender.extendToMaxIndependentSet(baseNodes);
     }
 

@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Logger {
 
@@ -53,12 +54,7 @@ public class Logger {
 
 
             File logFile = createFile("MIS_Duplications.csv");
-            try {
-                logFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            logFile.mkdirs();
+
             try (PrintWriter output = new PrintWriter(new FileOutputStream(logFile))) {
 
                 String fields = dataToCSV("field", "type", "graph", "separators", "results", "time",
@@ -84,6 +80,11 @@ public class Logger {
 
         }
 
+
+
+
+
+
         void addDuplication(Set<T> duplication, MIS_DUPLICATION_HIT mis_duplication_hit)
         {
             if(!duplicatationMap.containsKey(duplication))
@@ -104,6 +105,48 @@ public class Logger {
     }
 
     DuplicateMISRecord duplicatMISRecord = new DuplicateMISRecord();
+
+
+    class DuplicateSetsToExtend<T> {
+        Map<Set<T>, Integer> extendedSets = new HashMap<>();
+
+        void logSetToExtend(Set setToExetend) {
+            if (!extendedSets.containsKey(setToExetend)) {
+                extendedSets.put(setToExetend, 0);
+            } else {
+                extendedSets.put(setToExetend, extendedSets.get(setToExetend) + 1);
+            }
+        }
+
+        void printLog() {
+            File logFile = createFile("Sets_To_Extend_Duplications.csv");
+            try (PrintWriter output = new PrintWriter(new FileOutputStream(logFile))) {
+
+                String fields = dataToCSV("field", "type", "graph", "separators", "results", "time",
+                        "sets to extend set size", "total sets generated", "max duplications", "min duplications", "avg duplications","duplication%", "results-duplication ratio" );
+
+                List<Integer> duplications = extendedSets.values().stream().filter(e->e>0).collect(Collectors.toList());
+
+                String data = dataToCSV(field, type, graph, separators, results, time,
+                        extendedSets.size(),
+                        extendedSets.values().stream().mapToInt(Integer::intValue).sum(),
+                        duplications.stream().max(Comparator.naturalOrder()).get(),
+                        duplications.stream().min(Comparator.naturalOrder()).get(),
+                        duplications.stream().mapToInt(Integer::intValue).average(),
+                        (double)duplications.stream().mapToInt(Integer::intValue).sum()/
+                                extendedSets.values().stream().mapToInt(Integer::intValue).sum()*100,
+                        (double)results / duplications.stream().mapToInt(Integer::intValue).sum()*100
+                    );
+
+                output.println(fields);
+                output.println(data);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    DuplicateSetsToExtend duplicateSetsToExtend = new DuplicateSetsToExtend();
 
     private Logger()
     {
@@ -181,6 +224,7 @@ public class Logger {
     public static void printLogs()
     {
         getInstance().printDuplicateMISLog();
+        getInstance().printDuplicateSetsToExtendLog();
     }
 
     private void printDuplicateMISLog()
@@ -188,6 +232,15 @@ public class Logger {
         if (logDuplicateMIS)
         {
             duplicatMISRecord.printLog();
+        }
+    }
+
+
+    private void printDuplicateSetsToExtendLog()
+    {
+        if(logDuplicateSetsToExtend)
+        {
+            duplicateSetsToExtend.printLog();
         }
     }
 
@@ -210,10 +263,7 @@ public class Logger {
         return  logFile;
     }
 
-    private void printDuplicateSetsToExtendLog()
-    {
 
-    }
 
     static String dataToCSV(Object... args)
     {
@@ -253,6 +303,13 @@ public class Logger {
         }
     }
 
+    public static void addSetToExtend(Set setToExtend)
+    {
+        if(logDuplicateSetsToExtend)
+        {
+            getInstance().duplicateSetsToExtend.logSetToExtend(setToExtend);
+        }
+    }
 
 
 
