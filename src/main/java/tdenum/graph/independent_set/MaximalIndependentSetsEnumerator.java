@@ -80,24 +80,29 @@ public class MaximalIndependentSetsEnumerator <T>{
                     if(newSetFound(generetedNodes))
                     {
                         step = ITERATING_NODES;
+                        Logger.addForLoopResult();
                         return true;
                     }
 
                 }
+                Logger.finishIterationPhase(ITERATING_NODES);
                 while(setsNotExtended.isEmpty() && graph.hasNextNode())
                 {
                     currentNode = graph.nextNode();
                     nodesGenerated.add(currentNode);
                     setsIterator = setsExtended.iterator();
+                    Logger.startForLoop();
                     while(setsIterator.hasNext())
                     {
                         Set<T> generatedSet = extendSetInDirectionOfNode(setsIterator.next(), currentNode);
                         if(newSetFound(generatedSet))
                         {
                             step = ITERATING_SETS;
+                            Logger.addForLoopResult();
                             return true;
                         }
                     }
+                    Logger.finishIterationPhase(ITERATING_SETS);
                 }
                 return  runFullEnumeration();
             }
@@ -109,23 +114,28 @@ public class MaximalIndependentSetsEnumerator <T>{
                     if(newSetFound(generatedSet))
                     {
                         step = ITERATING_SETS;
+                        Logger.addForLoopResult();
                         return true;
                     }
                 }
+                Logger.finishIterationPhase(ITERATING_SETS);
                 while (setsNotExtended.isEmpty() && graph.hasNextNode())
                 {
                     currentNode = graph.nextNode();
                     nodesGenerated.add(currentNode);
                     setsIterator = setsExtended.iterator();
+                    Logger.startForLoop();
                     while(setsIterator.hasNext())
                     {
                         Set<T> generatedSet = extendSetInDirectionOfNode(setsIterator.next(), currentNode);
                         if(newSetFound(generatedSet))
                         {
                             step = ITERATING_SETS;
+                            Logger.addForLoopResult();
                             return true;
                         }
                     }
+                    Logger.finishIterationPhase(ITERATING_SETS);
                 }
                 return runFullEnumeration();
             }
@@ -228,6 +238,7 @@ public class MaximalIndependentSetsEnumerator <T>{
             getNextSetToExtend();
 
             nodesIterator = nodesGenerated.iterator();
+            Logger.startForLoop();
             while (nodesIterator.hasNext())
             {
                 T node = nodesIterator.next();
@@ -237,11 +248,14 @@ public class MaximalIndependentSetsEnumerator <T>{
                 if (newSetFound(generatedSet))
                 {
                     step = ITERATING_NODES;
+                    Logger.addForLoopResult();
                     return true;
                 }
             }
+            Logger.finishIterationPhase(ITERATING_NODES);
 
         }
+
 
 //        System.out.println("setsNotExtended.isEmpty() " + setsNotExtended.isEmpty() );
 //        System.out.println("setsNotExtended.size() " + setsNotExtended.size());
@@ -252,6 +266,7 @@ public class MaximalIndependentSetsEnumerator <T>{
             nodesGenerated.add(currentNode);
 //            System.out.println("new node " +  currentNode);
             setsIterator = setsExtended.iterator();
+            Logger.startForLoop();
             while(setsIterator.hasNext())
             {
                 Set<T> s = setsIterator.next();
@@ -259,9 +274,11 @@ public class MaximalIndependentSetsEnumerator <T>{
                 if (newSetFound(generatedSet))
                 {
                     step = ITERATING_SETS;
+                    Logger.addForLoopResult();
                     return true;
                 }
             }
+            Logger.finishIterationPhase(ITERATING_SETS);
 
         }
 

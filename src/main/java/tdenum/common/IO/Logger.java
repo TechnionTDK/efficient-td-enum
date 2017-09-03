@@ -1,6 +1,7 @@
 package tdenum.common.IO;
 
 import tdenum.graph.graphs.interfaces.IGraph;
+import tdenum.graph.independent_set.AlgorithmStep;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -38,6 +39,8 @@ public class Logger {
     {
         SETS_EXTENDED, SETS_NOT_EXTENDED
     }
+
+
 
     class DuplicateMISRecord<T>
     {
@@ -280,6 +283,283 @@ public class Logger {
 
     ExtendCallTiming extendCallTiming = new ExtendCallTiming();
 
+
+    class ForLoopsRuntime
+    {
+
+        class Phase
+        {
+            AlgorithmStep algorithmStep;
+            long duration;
+            int results;
+
+            public Phase(AlgorithmStep algorithmStep, long duration, int results) {
+                this.algorithmStep = algorithmStep;
+                this.duration = duration;
+                this.results = results;
+            }
+
+            public AlgorithmStep getAlgorithmStep() {
+                return algorithmStep;
+            }
+
+            public long getDuration() {
+                return duration;
+            }
+
+            public int getResults() {
+                return results;
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (!(o instanceof Phase)) return false;
+
+                Phase phase = (Phase) o;
+
+                if (getDuration() != phase.getDuration()) return false;
+                if (getResults() != phase.getResults()) return false;
+                return getAlgorithmStep() == phase.getAlgorithmStep();
+            }
+
+            @Override
+            public int hashCode() {
+                int result = getAlgorithmStep().hashCode();
+                result = 31 * result + (int) (getDuration() ^ (getDuration() >>> 32));
+                result = 31 * result + getResults();
+                return result;
+            }
+
+            @Override
+            public String toString() {
+                final StringBuilder sb = new StringBuilder("Phase{");
+                sb.append("algorithmStep=").append(algorithmStep);
+                sb.append(", duration=").append(duration);
+                sb.append(", results=").append(results);
+                sb.append('}');
+                return sb.toString();
+            }
+
+            public String toCsv()
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.append(algorithmStep).append(",").append(duration).append(",").append(results);
+                return sb.toString();
+            }
+        }
+
+        List<Long> durations = new ArrayList<>();
+
+        Map<Integer, Long> setIterationsDurations = new HashMap<>();
+        Map<Integer, Long> nodesIterationsDurations = new HashMap<>();
+        Map<Integer, List> setIterationResultsTime = new HashMap<>();
+        Map<Integer, List> nodesIterationsResultsTime = new HashMap<>();
+
+        Map<Integer, Phase> phases = new HashMap<>();
+
+
+        long startTime;
+
+
+        void startLoop()
+        {
+            startTime = System.nanoTime();
+        }
+
+        void newResult()
+        {
+            durations.add( TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
+        }
+
+        void stopLoop(AlgorithmStep algorithmStep)
+        {
+
+            long totalDuration = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime);
+            if(algorithmStep == AlgorithmStep.ITERATING_SETS)
+            {
+                setIterationsDurations.put(setIterationsDurations.size()+1, totalDuration);
+                setIterationResultsTime.put(setIterationResultsTime.size()+1, new ArrayList(durations));
+            }
+            else
+            {
+                nodesIterationsDurations.put(nodesIterationsDurations.size()+1, totalDuration);
+                nodesIterationsResultsTime.put(nodesIterationsResultsTime.size()+1, new ArrayList(durations));
+            }
+
+            Phase phase = new Phase(algorithmStep, totalDuration, durations.size());
+            phases.put(phases.size()+1, phase);
+            durations.clear();
+        }
+
+        void printLog()
+        {
+            String fields = dataToCSV("sets iteration phases", "nodes iterations phases",
+                    "avg sets iteration phase time",
+                    "avg nodes iteration phase time",
+                    "max sets iteration phase time",
+                    "max nodes iteration phase time",
+                    "min sets iteration phase time",
+                    "min nodes iteration phase time",
+                    "avg sets iteration phase results",
+                    "avg nodes iteration phase results",
+                    "max sets iteration phase results",
+                    "max nodes iteration phase results",
+                    "min sets iteration phase results",
+                    "min nodes iteration phase results");
+
+            String data = dataToCSV(setIterationsDurations.size(), nodesIterationsDurations.size(),
+                    setIterationsDurations.values().stream().mapToLong(Long::longValue).average().getAsDouble(),
+                    nodesIterationsDurations.values().stream().mapToLong(Long::longValue).average().getAsDouble(),
+                    setIterationsDurations.values().stream().max(Comparator.naturalOrder()).get(),
+                    nodesIterationsDurations.values().stream().max(Comparator.naturalOrder()).get(),
+                    setIterationsDurations.values().stream().min(Comparator.naturalOrder()).get(),
+                    nodesIterationsDurations.values().stream().min(Comparator.naturalOrder()).get(),
+                    setIterationResultsTime.values().stream().mapToInt(e->e.size()).average().getAsDouble(),
+                    nodesIterationsResultsTime.values().stream().mapToInt(e->e.size()).average().getAsDouble(),
+                    setIterationResultsTime.values().stream().mapToInt(e->e.size()).max().getAsInt(),
+                    nodesIterationsResultsTime.values().stream().mapToInt(e->e.size()).max().getAsInt(),
+                    setIterationResultsTime.values().stream().mapToInt(e->e.size()).min().getAsInt(),
+                    nodesIterationsResultsTime.values().stream().mapToInt(e->e.size()).min().getAsInt());
+
+            File logFile = createFile("Iterations_Phases_Summary.csv");
+
+
+            try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile))) {
+                output.println(fields.toString());
+                output.println(data.toString());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            fields = "phase, duration(ms), results,";
+
+            StringBuilder sb = new StringBuilder();
+            for (Integer phase : setIterationsDurations.keySet().stream().sorted().collect(Collectors.toList()))
+            {
+                sb.append(phase).append(",").append( setIterationsDurations.get(phase)).append(",").
+                        append( setIterationResultsTime.get(phase).size()).append(System.lineSeparator());
+            }
+            data = sb.toString();
+
+            logFile = createFile("Sets_Iterations_Phases.csv");
+
+            try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile))) {
+                output.println(fields.toString());
+                output.println(data.toString());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            sb = new StringBuilder();
+            for (Integer phase : nodesIterationsDurations.keySet().stream().sorted().collect(Collectors.toList()))
+            {
+                sb.append(phase).append(",").append( nodesIterationsDurations.get(phase)).append(",").
+                        append( nodesIterationsResultsTime.get(phase).size()).append(System.lineSeparator());
+            }
+            data = sb.toString();
+
+            logFile = createFile("Nodes_Iterations_Phases.csv");
+
+            try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile))) {
+                output.println(fields.toString());
+                output.println(data.toString());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            fields = "phase, type, duration, results";
+            sb = new StringBuilder();
+            for (Integer phase : phases.keySet().stream().sorted().collect(Collectors.toList()))
+            {
+                sb.append(phase).append(",").append(phases.get(phase).toCsv()).append(System.lineSeparator());
+            }
+
+            data = sb.toString();
+
+            logFile = createFile("General_Iterations_Phases.csv");
+
+            try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile))) {
+                output.println(fields.toString());
+                output.println(data.toString());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            fields = "iteration,result time(ms), result duration(ms)";
+
+            sb = new StringBuilder();
+            List<Long> bestPhase = setIterationResultsTime.values().stream().filter(e->e.size() ==
+                    setIterationResultsTime.values().stream().mapToInt(e1->e1.size()).max().getAsInt()).
+                    collect(Collectors.toList()).get(0);
+
+            for (int i = 0; i < bestPhase.size(); i++)
+            {
+                sb.append(i+1).append(",").append(bestPhase.get(i));
+                if(i!=0)
+                {
+                    sb.append(",").append(bestPhase.get(i)-bestPhase.get(i-1));
+                }
+                else
+                {
+                    sb.append(",").append(bestPhase.get(i));
+                }
+                sb.append(System.lineSeparator());
+            }
+
+            data = sb.toString();
+
+            logFile = createFile("Best_Sets_Iteration_Phase.csv");
+
+            try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile))) {
+                output.println(fields.toString());
+                output.println(data.toString());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            sb = new StringBuilder();
+           bestPhase = nodesIterationsResultsTime.values().stream().filter(e->e.size() ==
+                   nodesIterationsResultsTime.values().stream().mapToInt(e1->e1.size()).max().getAsInt()).
+                    collect(Collectors.toList()).get(0);
+
+
+            for (int i = 0; i < bestPhase.size(); i++)
+            {
+                sb.append(i+1).append(",").append(bestPhase.get(i));
+                if(i!=0)
+                {
+                    sb.append(",").append(bestPhase.get(i)-bestPhase.get(i-1));
+                }
+                else
+                {
+                    sb.append(",").append(bestPhase.get(i));
+                }
+                sb.append(System.lineSeparator());
+            }
+
+            data = sb.toString();
+
+            logFile = createFile("Best_Nodes_Iteration_Phase.csv");
+
+            try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile))) {
+                output.println(fields.toString());
+                output.println(data.toString());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
+
+
+
+
+        }
+    }
+
+
+    ForLoopsRuntime forLoopsRuntime = new ForLoopsRuntime();
+
     private Logger()
     {
             readProperties();
@@ -364,6 +644,7 @@ public class Logger {
         getInstance().printDuplicateSetsToExtendLog();
         getInstance().printDuplicatedSaturatedGraphs();
         getInstance().printExtendCallTimes();
+        getInstance().printForLoopsRuntime();
     }
 
     private void printDuplicateMISLog()
@@ -396,6 +677,14 @@ public class Logger {
         if (logExtendRuntime)
         {
             extendCallTiming.printLog();
+        }
+    }
+
+    private void printForLoopsRuntime()
+    {
+        if(logForLoopsRuntime)
+        {
+            forLoopsRuntime.printLog();
         }
     }
 
@@ -489,6 +778,32 @@ public class Logger {
         if(logExtendRuntime)
         {
             getInstance().extendCallTiming.finishCall();
+        }
+    }
+
+
+
+    public static void startForLoop()
+    {
+        if (logForLoopsRuntime)
+        {
+            getInstance().forLoopsRuntime.startLoop();
+        }
+    }
+
+    public static void addForLoopResult()
+    {
+        if(logForLoopsRuntime)
+        {
+            getInstance().forLoopsRuntime.newResult();
+        }
+    }
+
+    public static void finishIterationPhase(AlgorithmStep algorithmStep)
+    {
+        if(logForLoopsRuntime)
+        {
+            getInstance().forLoopsRuntime.stopLoop(algorithmStep);
         }
     }
 
