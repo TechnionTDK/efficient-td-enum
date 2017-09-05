@@ -763,6 +763,37 @@ public class Logger {
                 e.printStackTrace();
             }
 
+            logFile = createFile("duplicated results where final result equals source MIS.json");
+            try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile, true))) {
+                resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
+                {
+                    return resultDataIntegerEntry.getKey().isResultEqualsSourceMIS() && resultDataIntegerEntry.getValue()>1;
+                }).forEach(resultDataIntegerEntry -> output.println(resultDataIntegerEntry.getKey()));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            logFile = createFile("duplicated results where Jv equals source MIS.json");
+            try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile, true))) {
+                resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
+                {
+                    return resultDataIntegerEntry.getKey().isJvEqualsSourceMIS() && resultDataIntegerEntry.getValue()>1;
+                }).forEach(resultDataIntegerEntry -> output.println(resultDataIntegerEntry.getKey()));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
+            logFile = createFile("duplicated results where v in source MIS.json");
+
+            try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile, true))) {
+                resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
+                {
+                    return resultDataIntegerEntry.getKey().isVinSourceMIS() && resultDataIntegerEntry.getValue()>1;
+                }).forEach(resultDataIntegerEntry -> output.println(resultDataIntegerEntry.getKey()));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
 
 
         }
