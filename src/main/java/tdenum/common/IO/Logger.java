@@ -4,8 +4,6 @@ import tdenum.graph.graphs.interfaces.IGraph;
 import tdenum.graph.independent_set.AlgorithmStep;
 
 import java.io.*;
-import java.nio.file.Paths;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -22,6 +20,8 @@ public class Logger {
 
     private static boolean logExtendRuntime = false;
     private static boolean logForLoopsRuntime = false;
+
+    private static boolean logResultData = false;
 
     private String filename;
     private String logsFolder;
@@ -560,6 +560,216 @@ public class Logger {
 
     ForLoopsRuntime forLoopsRuntime = new ForLoopsRuntime();
 
+    class DuplicatedResultsRootCause<T>
+    {
+        class ResultData<T>
+        {
+            Set<T> result;
+            Set<T> sourceMIS;
+            T v;
+            Set<T> jv;
+
+            public ResultData(Set<T> result, Set<T> sourceMIS, T v, Set<T> jv) {
+                this.result = result;
+                this.sourceMIS = sourceMIS;
+                this.v = v;
+                this.jv = jv;
+            }
+
+            public boolean isResultEqualsSourceMIS()
+            {
+                return result.equals(sourceMIS);
+            }
+
+            public boolean isJvEqualsSourceMIS()
+            {
+                return jv.equals(sourceMIS);
+            }
+
+            public boolean isResultEqualsSourceMISAndJv()
+            {
+                return isJvEqualsSourceMIS() && result.equals(jv);
+            }
+
+            public boolean isVinSourceMIS()
+            {
+                return sourceMIS.contains(v);
+            }
+
+            public boolean isVinResult()
+            {
+                return result.contains(v);
+            }
+
+
+            public boolean isVInSourceMISAndNotInResult()
+            {
+                return  isVinSourceMIS() && !isVinResult();
+            }
+
+            public boolean isVInResultAndNotInSourceMIS()
+            {
+                return  !isVinSourceMIS() && isVinResult();
+            }
+
+
+            public Set<T> getResult() {
+                return result;
+            }
+
+            public void setResult(Set<T> result) {
+                this.result = result;
+            }
+
+            public Set<T> getSourceMIS() {
+                return sourceMIS;
+            }
+
+            public void setSourceMIS(Set<T> sourceMIS) {
+                this.sourceMIS = sourceMIS;
+            }
+
+            public T getV() {
+                return v;
+            }
+
+            public void setV(T v) {
+                this.v = v;
+            }
+
+            public Set<T> getJv() {
+                return jv;
+            }
+
+            public void setJv(Set<T> jv) {
+                this.jv = jv;
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (!(o instanceof ResultData)) return false;
+
+                ResultData<?> that = (ResultData<?>) o;
+
+                if (getResult() != null ? !getResult().equals(that.getResult()) : that.getResult() != null)
+                    return false;
+                if (getSourceMIS() != null ? !getSourceMIS().equals(that.getSourceMIS()) : that.getSourceMIS() != null)
+                    return false;
+                if (getV() != null ? !getV().equals(that.getV()) : that.getV() != null) return false;
+                return getJv() != null ? getJv().equals(that.getJv()) : that.getJv() == null;
+            }
+
+            @Override
+            public int hashCode() {
+                int result1 = getResult() != null ? getResult().hashCode() : 0;
+                result1 = 31 * result1 + (getSourceMIS() != null ? getSourceMIS().hashCode() : 0);
+                result1 = 31 * result1 + (getV() != null ? getV().hashCode() : 0);
+                result1 = 31 * result1 + (getJv() != null ? getJv().hashCode() : 0);
+                return result1;
+            }
+
+            @Override
+            public String toString() {
+                final StringBuilder sb = new StringBuilder("ResultData{");
+                sb.append("result=").append(result);
+                sb.append(", sourceMIS=").append(sourceMIS);
+                sb.append(", v=").append(v);
+                sb.append(", jv=").append(jv);
+                sb.append('}');
+                return sb.toString();
+            }
+        }
+
+        Map<ResultData, Integer> resultDataMap = new HashMap<>();
+        public void logResultData(Set<T> result, Set<T> sourceMIS, T v, Set<T> jv )
+        {
+            ResultData resultData = new ResultData(result, sourceMIS, v, jv);
+            if (!resultDataMap.containsKey(resultData))
+            {
+                resultDataMap.put(resultData, 1);
+            }
+            else
+            {
+                resultDataMap.put(resultData, resultDataMap.get(resultData)+1);
+            }
+        }
+
+
+        public void writeLog()
+        {
+            String fields = dataToCSV("field", "type", "graph", "separators", "results", "time",
+                    "total results generated",
+                    "results where final result equals source MIS",
+                    "duplicated results where final result equals source MIS",
+                    "results where Jv equals source MIS",
+                    "duplicated results where Jv equals source MIS",
+                    "results where v in source MIS",
+                    "duplicated results where v in source MIS");
+
+            String data = dataToCSV(field, type, graph, separators, results, time,
+                    //"total results generated"
+                    resultDataMap.values().stream().mapToInt(Integer::intValue).sum(),
+
+                    //  "results where final result equals source MIS"
+                    resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
+                    {
+                        return resultDataIntegerEntry.getKey().isResultEqualsSourceMIS();
+                    }).mapToInt(value -> value.getValue()).sum(),
+
+                    //"duplicated results where final result equals source MIS"
+                    resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
+                    {
+                        return resultDataIntegerEntry.getKey().isResultEqualsSourceMIS() && resultDataIntegerEntry.getValue()>1;
+                    }).mapToInt(entry -> entry.getValue()).sum(),
+
+                    //"results where Jv equals source MIS"
+
+                    resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
+                    {
+                        return  resultDataIntegerEntry.getKey().isJvEqualsSourceMIS();
+                    }).mapToInt(entry->entry.getValue()).sum(),
+
+                    // "duplicated results where Jv equals source MIS",
+
+                    resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
+                    {
+                        return  resultDataIntegerEntry.getKey().isJvEqualsSourceMIS() && resultDataIntegerEntry.getValue()>1;
+                    }).mapToInt(entry->entry.getValue()).sum(),
+
+                    //"results where v in source MIS",
+                    resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
+                    {
+                        return  resultDataIntegerEntry.getKey().isVinSourceMIS();
+                    }).mapToInt(entry->entry.getValue()).sum(),
+
+                    //"duplicated results where v in source MIS"
+                    resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
+                    {
+                        return  resultDataIntegerEntry.getKey().isVinSourceMIS() && resultDataIntegerEntry.getValue()>1;
+                    }).mapToInt(entry->entry.getValue()).sum()
+
+
+
+
+                    );
+
+            File logFile = createFile("Duplication_Results_Root_Cause_Summary.csv");
+
+            try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile))) {
+                output.println(fields.toString());
+                output.println(data.toString());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
+
+        }
+    }
+
+    DuplicatedResultsRootCause duplicatedResultsRootCause = new DuplicatedResultsRootCause();
+
     private Logger()
     {
             readProperties();
@@ -575,6 +785,7 @@ public class Logger {
             logDuplicatesSaturatedGraphs = Boolean.valueOf(prop.getProperty("logDuplicatesSaturatedGraphs"));
             logExtendRuntime = Boolean.valueOf(prop.getProperty("logExtendRuntime"));
             logForLoopsRuntime = Boolean.valueOf(prop.getProperty("logForLoopsRuntime"));
+            logResultData = Boolean.valueOf(prop.getProperty("logResultData"));
 
             logsFolder = prop.getProperty("logsFolder");
 
@@ -645,6 +856,14 @@ public class Logger {
         getInstance().printDuplicatedSaturatedGraphs();
         getInstance().printExtendCallTimes();
         getInstance().printForLoopsRuntime();
+        getInstance().printDuplicatedResultsRootCause();
+    }
+
+    private void printDuplicatedResultsRootCause() {
+        if(logResultData)
+        {
+            duplicatedResultsRootCause.writeLog();
+        }
     }
 
     private void printDuplicateMISLog()
@@ -804,6 +1023,14 @@ public class Logger {
         if(logForLoopsRuntime)
         {
             getInstance().forLoopsRuntime.stopLoop(algorithmStep);
+        }
+    }
+
+    public static void logResultData(Set result, Set sourceMIS, Object v, Set jv )
+    {
+        if (logResultData)
+        {
+            getInstance().duplicatedResultsRootCause.logResultData(result, sourceMIS, v, jv);
         }
     }
 
