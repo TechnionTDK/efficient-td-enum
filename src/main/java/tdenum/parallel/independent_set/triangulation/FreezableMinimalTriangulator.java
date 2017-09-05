@@ -41,7 +41,7 @@ public class FreezableMinimalTriangulator implements Callable<IChordalGraph> {
         }
         else
         {
-            triangulator = new LBTriangFreezableMinimalTriangulator();
+            triangulator = new LBTriangFreezableMinimalTriangulator(heuristic);
         }
         triangulator.setGraph(graph);
 
