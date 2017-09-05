@@ -1,5 +1,6 @@
 package tdenum.graph.independent_set;
 
+import tdenum.common.IO.Logger;
 import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.graphs.Graph;
 import tdenum.graph.graphs.interfaces.IChordalGraph;
@@ -26,10 +27,14 @@ public class IndSetExtByTriangulation implements IIndependentSetExtender<Minimal
 
     @Override
     public Set<MinimalSeparator> extendToMaxIndependentSet(Set<MinimalSeparator> s) {
+        Logger.startExtendCall();
         IGraph saturatedGraph = new Graph(graph);
         saturatedGraph.saturateNodeSets(s);
+
+        Logger.addSaturatedGraph(saturatedGraph, s);
         IChordalGraph minimalTriangulation = triangulator.triangulate(saturatedGraph);
         Set<MinimalSeparator> minimalSeparators = Converter.triangulationToMinimalSeparators(minimalTriangulation);
+        Logger.finishExtendCall();
         return minimalSeparators;
 
     }

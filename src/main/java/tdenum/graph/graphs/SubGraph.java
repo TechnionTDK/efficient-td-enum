@@ -95,7 +95,8 @@ public class SubGraph extends Graph implements ISubGraph
         {
             fatherNodesInSub.remove(nodeInFather);
 //            NodeSet neighbors = fatherGraph.getNeighbors(nodeInFather);
-            NodeSet neighbors = fatherGraph.getNeighbors(nodeInFather);
+//            NodeSet neighbors = fatherGraph.getNeighbors(nodeInFather);
+            Set<Node> neighbors = fatherGraph.getNeighbors(nodeInFather);
             for (Node neighborInFather : neighbors)
             {
                 if (fatherNodesInSub.contains(neighborInFather))

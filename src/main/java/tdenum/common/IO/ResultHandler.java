@@ -265,5 +265,7 @@ public class ResultHandler {
         System.out.println(sb.toString());
     }
 
-
+    public int getResultsFound() {
+        return resultsFound;
+    }
 }

@@ -1,13 +1,12 @@
 package tdenum.graph.independent_set;
 
+import tdenum.common.IO.Logger;
 import tdenum.graph.data_structures.WeightedQueue;
 import tdenum.graph.graphs.interfaces.ISuccinctGraphRepresentation;
 import tdenum.graph.independent_set.interfaces.IIndependentSetExtender;
 import tdenum.graph.independent_set.interfaces.IIndependentSetScorer;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 import static tdenum.graph.independent_set.AlgorithmStep.BEGINNING;
 import static tdenum.graph.independent_set.AlgorithmStep.ITERATING_NODES;
@@ -38,6 +37,9 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
 
     Iterator<T> nodesIterator;
     Iterator<Set<T>> setsIterator;
+
+
+
 
 
     public MaximalIndependentSetsEnumerator(MaximalIndependentSetsEnumerator m)
@@ -78,24 +80,29 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
                     if(newSetFound(generetedNodes))
                     {
                         step = ITERATING_NODES;
+                        Logger.addForLoopResult();
                         return true;
                     }
 
                 }
+                Logger.finishIterationPhase(ITERATING_NODES);
                 while(setsNotExtended.isEmpty() && graph.hasNextNode())
                 {
                     currentNode = graph.nextNode();
                     nodesGenerated.add(currentNode);
                     setsIterator = setsExtended.iterator();
+                    Logger.startForLoop();
                     while(setsIterator.hasNext())
                     {
                         Set<T> generatedSet = extendSetInDirectionOfNode(setsIterator.next(), currentNode);
                         if(newSetFound(generatedSet))
                         {
                             step = ITERATING_SETS;
+                            Logger.addForLoopResult();
                             return true;
                         }
                     }
+                    Logger.finishIterationPhase(ITERATING_SETS);
                 }
                 return  runFullEnumeration();
             }
@@ -107,23 +114,28 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
                     if(newSetFound(generatedSet))
                     {
                         step = ITERATING_SETS;
+                        Logger.addForLoopResult();
                         return true;
                     }
                 }
+                Logger.finishIterationPhase(ITERATING_SETS);
                 while (setsNotExtended.isEmpty() && graph.hasNextNode())
                 {
                     currentNode = graph.nextNode();
                     nodesGenerated.add(currentNode);
                     setsIterator = setsExtended.iterator();
+                    Logger.startForLoop();
                     while(setsIterator.hasNext())
                     {
                         Set<T> generatedSet = extendSetInDirectionOfNode(setsIterator.next(), currentNode);
                         if(newSetFound(generatedSet))
                         {
                             step = ITERATING_SETS;
+                            Logger.addForLoopResult();
                             return true;
                         }
                     }
+                    Logger.finishIterationPhase(ITERATING_SETS);
                 }
                 return runFullEnumeration();
             }
@@ -177,11 +189,15 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
                 baseNodes.add(t);
             }
         }
+        Logger.addSetToExtend(baseNodes);
+
         return extender.extendToMaxIndependentSet(baseNodes);
     }
 
     boolean newSetFound(final Set<T> generatedSet)
     {
+
+        Logger.startMISDuplicationCheck();
         if (!setsExtended.contains(generatedSet))
         {
             if(setsNotExtended.add(generatedSet))
@@ -191,11 +207,25 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
                 nextSetReady = true;
 //                System.out.println("new set found");
 //                System.out.println(generatedSet);
+
+                Logger.finishMISDuplicationCheck();
                 return true;
+            }
+            else
+            {
+                Logger.addMISDuplication(generatedSet, Logger.MIS_DUPLICATION_HIT.SETS_NOT_EXTENDED);
+
             }
 
         }
+        else
+        {
+
+            Logger.addMISDuplication(generatedSet, Logger.MIS_DUPLICATION_HIT.SETS_EXTENDED);
+
+        }
 //        System.out.println("no new set");
+        Logger.finishMISDuplicationCheck();
         return false;
     }
 
@@ -208,6 +238,7 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
             getNextSetToExtend();
 
             nodesIterator = nodesGenerated.iterator();
+            Logger.startForLoop();
             while (nodesIterator.hasNext())
             {
                 T node = nodesIterator.next();
@@ -217,11 +248,14 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
                 if (newSetFound(generatedSet))
                 {
                     step = ITERATING_NODES;
+                    Logger.addForLoopResult();
                     return true;
                 }
             }
+            Logger.finishIterationPhase(ITERATING_NODES);
 
         }
+
 
 //        System.out.println("setsNotExtended.isEmpty() " + setsNotExtended.isEmpty() );
 //        System.out.println("setsNotExtended.size() " + setsNotExtended.size());
@@ -232,6 +266,7 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
             nodesGenerated.add(currentNode);
 //            System.out.println("new node " +  currentNode);
             setsIterator = setsExtended.iterator();
+            Logger.startForLoop();
             while(setsIterator.hasNext())
             {
                 Set<T> s = setsIterator.next();
@@ -239,16 +274,16 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
                 if (newSetFound(generatedSet))
                 {
                     step = ITERATING_SETS;
+                    Logger.addForLoopResult();
                     return true;
                 }
             }
+            Logger.finishIterationPhase(ITERATING_SETS);
 
         }
 
         return false;
     }
-
-
 
 
 

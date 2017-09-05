@@ -1,9 +1,6 @@
 package tdenum;
 
-import tdenum.common.IO.GraphReader;
-import tdenum.common.IO.InputFile;
-import tdenum.common.IO.ResultHandler;
-import tdenum.common.IO.WhenToPrint;
+import tdenum.common.IO.*;
 import tdenum.graph.graphs.interfaces.IChordalGraph;
 import tdenum.graph.graphs.interfaces.IGraph;
 import tdenum.graph.independent_set.separators.SeparatorsScoringCriterion;
@@ -205,6 +202,12 @@ public class MinTriangulationEnumeration {
 
         }
 
+        Logger.setField(inputFile.getField());
+        Logger.setType(inputFile.getType());
+        Logger.setGraph(inputFile.getName());
+        Logger.setFileName(inputFile.getPath());
+
+
         StringBuilder sb = new StringBuilder();
         sb.
                 append("Starting enumeration for ").append(inputFile.getField()).append("\\").
@@ -229,6 +232,8 @@ public class MinTriangulationEnumeration {
                 break;
             }
         }
+
+
         if (print != NEVER)
         {
             detailedOutput.close();
@@ -254,6 +259,13 @@ public class MinTriangulationEnumeration {
                 append(g.getNumberOfEdges()).append(" edges. ").
                 append(separators).append(" minimal separators were generated in the process.");
         System.out.println(sb.toString());
+
+
+        Logger.setResults(results.getResultsFound());
+        Logger.setTime((long)totalTimeInSeconds);
+        Logger.setSeparators(separators);
+
+        Logger.printLogs();
 
 
 

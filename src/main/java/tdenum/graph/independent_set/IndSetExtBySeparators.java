@@ -107,8 +107,8 @@ public class IndSetExtBySeparators implements IIndependentSetExtender<MinimalSep
         Node v = unconnectedNodes.get(0);
         Node u = unconnectedNodes.get(1);
 
-        NodeSet uNeighbors = graph.getNeighbors(u);
-
+//        NodeSet uNeighbors = graph.getNeighbors(u);
+        Set<Node> uNeighbors = graph.getNeighbors(u);
         NodeSet vComponent = graph.getComponent(v, uNeighbors);
 
         return graph.getNeighbors(vComponent);

@@ -21,7 +21,9 @@ public class Graph implements IGraph
 
 
 
-    TdMap<NodeSet> neighborSets = new TdListMap<>();
+//    TdMap<NodeSet> neighborSets = new TdListMap<>();
+
+    TdMap<Set<Node>> neighborSets = new TdListMap<>();
 
 
     public Graph()
@@ -37,9 +39,11 @@ public class Graph implements IGraph
         {
             Node v = new Node(i);
             nodes.add(v);
-            neighborSets.put(v, new NodeSet()
-            {
-            });
+//            neighborSets.put(v, new NodeSet()
+//            {
+//            });
+
+            neighborSets.put(v, new HashSet<>());
         }
 
     }
@@ -51,7 +55,8 @@ public class Graph implements IGraph
         nodes.addAll(g.getNodes());
         for (Node v : nodes)
         {
-            NodeSet set = new NodeSet();
+//            NodeSet set = new NodeSet();
+            Set set = new HashSet();
             set.addAll(g.getNeighborSets().get(v));
             neighborSets.put(v, set);
         }
@@ -213,7 +218,11 @@ public class Graph implements IGraph
     }
 
     @Override
-    public final NodeSet getNeighbors(Node v) {
+//    public final NodeSet getNeighbors(Node v) {
+//        return neighborSets.get(v);
+//    }
+
+    public final Set<Node> getNeighbors(Node v) {
         return neighborSets.get(v);
     }
 
@@ -327,7 +336,41 @@ public class Graph implements IGraph
         while (!q.isEmpty())
         {
             v = q.poll();
-            final NodeSet neighbors = neighborSets.get(v);
+//            final NodeSet neighbors = neighborSets.get(v);
+            final Set<Node> neighbors = neighborSets.get(v);
+//            final NodeSet neighbors = getNeighbors(v);
+            for (Node neighbor : neighbors)
+            {
+                if (!insertedNodes.get(neighbor))
+                {
+                    q.push(neighbor);
+                    insertedNodes.put(neighbor, true);
+                    component.add(neighbor);
+                }
+            }
+        }
+        return component;
+    }
+
+    @Override
+    public NodeSet getComponent(Node v, Set<Node> removedNodes) {
+        ArrayDeque<Node> q = new ArrayDeque<>();
+        TdMap<Boolean> insertedNodes = new TdListMap<>(numberOfNodes,false);
+        NodeSet component = new NodeSet();
+        for (Node removed : removedNodes)
+        {
+            insertedNodes.put(removed, true);
+        }
+
+        component.add(v);
+        q.push(v);
+        insertedNodes.put(v, true);
+
+        while (!q.isEmpty())
+        {
+            v = q.poll();
+//            final NodeSet neighbors = neighborSets.get(v);
+            final Set<Node> neighbors = neighborSets.get(v);
 //            final NodeSet neighbors = getNeighbors(v);
             for (Node neighbor : neighbors)
             {
@@ -435,7 +478,10 @@ public class Graph implements IGraph
     }
 
     @Override
-    public TdMap<NodeSet> getNeighborSets() {
+//    public TdMap<NodeSet> getNeighborSets() {
+//        return neighborSets;
+//    }
+    public TdMap<Set<Node>> getNeighborSets() {
         return neighborSets;
     }
 }

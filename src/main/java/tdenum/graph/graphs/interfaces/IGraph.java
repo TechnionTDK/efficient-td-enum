@@ -32,7 +32,8 @@ public interface IGraph
 
     Set<Node> getNeighborsCopy(Node v);
 
-    NodeSet getNeighbors(Node v);
+//    NodeSet getNeighbors(Node v);
+    Set<Node> getNeighbors(Node v);
 
 //    NodeSet getNeighbors(int v);
 
@@ -48,11 +49,16 @@ public interface IGraph
 
     NodeSet getComponent(Node v, final NodeSet removedNodes);
 
+    NodeSet getComponent(Node v, final Set<Node> removedNodes);
+
+
     boolean areNeighbors(Node u, Node v);
 
     TdMap<Integer> getComponentsMap(final NodeSet removedNodes);
 
-    TdMap<NodeSet> getNeighborSets();
+//    TdMap<NodeSet> getNeighborSets();
+
+    TdMap<Set<Node>> getNeighborSets();
 
 
 }
