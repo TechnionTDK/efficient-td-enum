@@ -11,6 +11,14 @@ import tdenum.graph.independent_set.IndSetExtByTriangulation;
 import tdenum.graph.independent_set.MaximalIndependentSetsEnumerator;
 import tdenum.graph.independent_set.separators.SeparatorsScoringCriterion;
 import tdenum.graph.independent_set.Converter;
+import tdenum.loggable.independent_set.LoggableIndSetExtBySeparators;
+import tdenum.loggable.independent_set.LoggableIndSetExtByTriangulation;
+import tdenum.loggable.independent_set.LoggableMaximalIndependentSetsEnumerator;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import static tdenum.graph.independent_set.triangulation.TriangulationAlgorithm.SEPARATORS;
 
@@ -33,13 +41,40 @@ public class MinimalTriangulationsEnumerator {
         graph = new Graph(g);
         seperatorGraph = new SeparatorGraph(graph, sepC);
         triangulator = new MinimalTriangulator(heuristic);
-        triExtender = new IndSetExtByTriangulation(graph, triangulator);
-        sepExtender = new IndSetExtBySeparators(graph);
         scorer = new IndSetScorerByTriangulation(graph, triC);
-        setsEnumerator = new MaximalIndependentSetsEnumerator<MinimalSeparator>(seperatorGraph, triExtender, scorer);
-        if (heuristic == SEPARATORS){
-            setsEnumerator = new MaximalIndependentSetsEnumerator<MinimalSeparator>(seperatorGraph, sepExtender, scorer);
+
+
+        Properties prop = new Properties();
+        try (InputStream input = new FileInputStream("config.properties"))
+        {
+              prop.load(input);
+              if (Boolean.valueOf(prop.getProperty("logging")))
+              {
+                  triExtender = new LoggableIndSetExtByTriangulation(graph, triangulator);
+                  sepExtender = new LoggableIndSetExtBySeparators(graph);
+                  setsEnumerator = new LoggableMaximalIndependentSetsEnumerator<MinimalSeparator>(seperatorGraph, triExtender, scorer);
+                  if (heuristic == SEPARATORS){
+                      setsEnumerator = new LoggableMaximalIndependentSetsEnumerator<MinimalSeparator>(seperatorGraph, sepExtender, scorer);
+                  }
+
+              }
+              else
+              {
+                  triExtender = new IndSetExtByTriangulation(graph, triangulator);
+
+                  sepExtender = new IndSetExtBySeparators(graph);
+                  setsEnumerator = new MaximalIndependentSetsEnumerator<MinimalSeparator>(seperatorGraph, triExtender, scorer);
+                  if (heuristic == SEPARATORS){
+                      setsEnumerator = new MaximalIndependentSetsEnumerator<MinimalSeparator>(seperatorGraph, sepExtender, scorer);
+                  }
+              }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+
+
     }
 
     public boolean hasNext()
