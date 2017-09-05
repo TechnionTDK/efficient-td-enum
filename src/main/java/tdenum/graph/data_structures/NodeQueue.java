@@ -3,6 +3,8 @@ package tdenum.graph.data_structures;
 import tdenum.graph.graphs.interfaces.IGraph;
 import tdenum.graph.independent_set.triangulation.TriangulationAlgorithm;
 
+import java.util.Set;
+
 import static tdenum.graph.independent_set.triangulation.TriangulationAlgorithm.*;
 
 /**
@@ -35,7 +37,8 @@ public class NodeQueue {
     int getFill(final IGraph g, Node v)
     {
 //        final NodeSet neighborsSet = g.getNeighborsCopy(v);
-        final NodeSet neighborsSet = g.getNeighbors(v);
+//        final NodeSet neighborsSet = g.getNeighbors(v);
+        final Set<Node> neighborsSet = g.getNeighbors(v);
         int twiceFillEdges = 0;
         TdMap<Boolean> notNeighborsOfCurrentNode = g.getNeighborsMap(v);
         for (Node u : neighborsSet)

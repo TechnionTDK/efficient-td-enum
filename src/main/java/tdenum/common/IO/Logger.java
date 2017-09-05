@@ -134,7 +134,7 @@ public class Logger {
                         extendedSets.values().stream().mapToInt(Integer::intValue).sum(),
                         duplications.stream().max(Comparator.naturalOrder()).get(),
                         duplications.stream().min(Comparator.naturalOrder()).get(),
-                        duplications.stream().mapToInt(Integer::intValue).average(),
+                        duplications.stream().mapToInt(Integer::intValue).average().getAsDouble(),
                         (double)duplications.stream().mapToInt(Integer::intValue).sum()/
                                 extendedSets.values().stream().mapToInt(Integer::intValue).sum()*100,
                         (double)results / duplications.stream().mapToInt(Integer::intValue).sum()*100
