@@ -1,4 +1,4 @@
-package tdenum.cachable.graphs;
+package tdenum.single_thread_improvments.cachable.graphs;
 
 import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.graphs.SeparatorGraph;

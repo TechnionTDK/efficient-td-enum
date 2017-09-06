@@ -1,5 +1,6 @@
 package tdenum.graph.independent_set.triangulation;
 
+import tdenum.single_thread_improvments.cachable.graphs.CachableSeparatorGraph;
 import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.graphs.Graph;
 import tdenum.graph.graphs.SeparatorGraph;
@@ -48,7 +49,15 @@ public class MinimalTriangulationsEnumerator {
         try (InputStream input = new FileInputStream("config.properties"))
         {
               prop.load(input);
-              if (Boolean.valueOf(prop.getProperty("logging")))
+              if (Boolean.valueOf(prop.getProperty("caching")))
+              {
+                  if (Boolean.valueOf(prop.getProperty("cacheEdgesBetweenSeparators")))
+                  {
+                      seperatorGraph = new CachableSeparatorGraph(graph, sepC);
+                  }
+
+              }
+              else if (Boolean.valueOf(prop.getProperty("logging")))
               {
                   triExtender = new LoggableIndSetExtByTriangulation(graph, triangulator);
                   sepExtender = new LoggableIndSetExtBySeparators(graph);
