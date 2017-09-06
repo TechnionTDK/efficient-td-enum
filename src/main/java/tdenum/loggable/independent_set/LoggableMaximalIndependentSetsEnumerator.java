@@ -123,9 +123,12 @@ public class LoggableMaximalIndependentSetsEnumerator<T> extends MaximalIndepend
                 baseNodes.add(t);
             }
         }
-        Logger.addSetToExtend(baseNodes);
 
-        return extender.extendToMaxIndependentSet(baseNodes);
+        Set<T> result = extender.extendToMaxIndependentSet(baseNodes);
+        Logger.addSetToExtend(baseNodes);
+        Logger.logResultData(result, s, node, baseNodes);
+
+        return result;
     }
 
     @Override
