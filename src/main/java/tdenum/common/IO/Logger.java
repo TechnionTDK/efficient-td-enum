@@ -564,135 +564,159 @@ public class Logger {
     {
         class ResultData<T>
         {
+            class ResultDataTuple<T>
+            {
+                Set<T> mis;
+                Set<T> jv;
+                T v;
+
+                public ResultDataTuple(Set<T> mis, Set<T> jv, T v) {
+                    this.mis = mis;
+                    this.jv = jv;
+                    this.v = v;
+                }
+
+
+                @Override
+                public boolean equals(Object o) {
+                    if (this == o) return true;
+                    if (!(o instanceof ResultDataTuple)) return false;
+
+                    ResultDataTuple that = (ResultDataTuple) o;
+
+                    if (mis != null ? !mis.equals(that.mis) : that.mis != null) return false;
+                    if (jv != null ? !jv.equals(that.jv) : that.jv != null) return false;
+                    return v != null ? v.equals(that.v) : that.v == null;
+                }
+
+                @Override
+                public int hashCode() {
+                    int result = mis != null ? mis.hashCode() : 0;
+                    result = 31 * result + (jv != null ? jv.hashCode() : 0);
+                    result = 31 * result + (v != null ? v.hashCode() : 0);
+                    return result;
+                }
+
+
+                @Override
+                public String toString() {
+                    final StringBuilder sb = new StringBuilder("ResultDataTuple{");
+                    sb.append("mis=").append(mis);
+                    sb.append(", jv=").append(jv);
+                    sb.append(", v=").append(v);
+                    sb.append('}');
+                    return sb.toString();
+                }
+            }
+
             Set<T> result;
-            Set<T> sourceMIS;
-            T v;
-            Set<T> jv;
+            Map<Set<T>, Integer> sources = new HashMap<>();
+            Map<Set<T>, Integer> jvs =new HashMap();
 
-            public ResultData(Set<T> result, Set<T> sourceMIS, T v, Set<T> jv) {
-                this.result = result;
-                this.sourceMIS = sourceMIS;
-                this.v = v;
-                this.jv = jv;
-            }
+            Set<ResultDataTuple> generatedFrom = new HashSet<>();
 
-            public boolean isResultEqualsSourceMIS()
+            int count = 0;
+
+            int sameSource = 0;
+            int sameJv = 0;
+
+            int sourceEqualsJv = 0;
+            int sourceContainsV = 0;
+            int resultContainsV = 0;
+
+            public ResultData(Set<T> result)
             {
-                return result.equals(sourceMIS);
-            }
-
-            public boolean isJvEqualsSourceMIS()
-            {
-                return jv.equals(sourceMIS);
-            }
-
-            public boolean isResultEqualsSourceMISAndJv()
-            {
-                return isJvEqualsSourceMIS() && result.equals(jv);
-            }
-
-            public boolean isVinSourceMIS()
-            {
-                return sourceMIS.contains(v);
-            }
-
-            public boolean isVinResult()
-            {
-                return result.contains(v);
-            }
-
-
-            public boolean isVInSourceMISAndNotInResult()
-            {
-                return  isVinSourceMIS() && !isVinResult();
-            }
-
-            public boolean isVInResultAndNotInSourceMIS()
-            {
-                return  !isVinSourceMIS() && isVinResult();
-            }
-
-
-            public Set<T> getResult() {
-                return result;
-            }
-
-            public void setResult(Set<T> result) {
                 this.result = result;
             }
 
-            public Set<T> getSourceMIS() {
-                return sourceMIS;
+            public void log(Set<T> source, Set<T> jv, T v)
+            {
+
+                count++;
+                logSource(source);
+                logJv(jv);
+                generatedFrom.add(new ResultDataTuple(source, jv,v));
+
+
+                if (source.equals(jv))
+                {
+                    sourceEqualsJv++;
+                }
+                if(source.contains(v))
+                {
+                    sourceContainsV++;
+                }
+
+                if(result.contains(v))
+                {
+                    resultContainsV++;
+                }
+
+                if(result.equals(jv))
+                {
+                    sameJv++;
+                }
             }
 
-            public void setSourceMIS(Set<T> sourceMIS) {
-                this.sourceMIS = sourceMIS;
+            void logSource(Set<T> source)
+            {
+                if(!sources.containsKey(source))
+                {
+                    sources.put(source,0);
+                }
+                sources.put(source, sources.get(source)+1);
+                if(result.equals(source))
+                {
+                    sameSource++;
+                }
             }
 
-            public T getV() {
-                return v;
+            void logJv(Set<T> jv)
+            {
+                if (!jvs.containsKey(jv))
+                {
+                    jvs.put(jv,0);
+                }
+                jvs.put(jv, jvs.get(jv)+1);
             }
 
-            public void setV(T v) {
-                this.v = v;
+
+
+            public int getAmountOfSourceMIS()
+            {
+                return sources.values().stream().mapToInt(Integer::intValue).sum();
             }
-
-            public Set<T> getJv() {
-                return jv;
-            }
-
-            public void setJv(Set<T> jv) {
-                this.jv = jv;
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                if (this == o) return true;
-                if (!(o instanceof ResultData)) return false;
-
-                ResultData<?> that = (ResultData<?>) o;
-
-                if (getResult() != null ? !getResult().equals(that.getResult()) : that.getResult() != null)
-                    return false;
-                if (getSourceMIS() != null ? !getSourceMIS().equals(that.getSourceMIS()) : that.getSourceMIS() != null)
-                    return false;
-                if (getV() != null ? !getV().equals(that.getV()) : that.getV() != null) return false;
-                return getJv() != null ? getJv().equals(that.getJv()) : that.getJv() == null;
-            }
-
-            @Override
-            public int hashCode() {
-                int result1 = getResult() != null ? getResult().hashCode() : 0;
-                result1 = 31 * result1 + (getSourceMIS() != null ? getSourceMIS().hashCode() : 0);
-                result1 = 31 * result1 + (getV() != null ? getV().hashCode() : 0);
-                result1 = 31 * result1 + (getJv() != null ? getJv().hashCode() : 0);
-                return result1;
+            public int getAmountOfDuplicatedSourceMIS()
+            {
+                return sources.values().stream().mapToInt(Integer::intValue).filter(i->i>1).sum();
             }
 
             @Override
             public String toString() {
                 final StringBuilder sb = new StringBuilder("ResultData{");
                 sb.append("result=").append(result);
-                sb.append(", sourceMIS=").append(sourceMIS);
-                sb.append(", v=").append(v);
-                sb.append(", jv=").append(jv);
+                sb.append(", generatedFrom=").append(generatedFrom);
                 sb.append('}');
                 return sb.toString();
             }
         }
 
-        Map<ResultData, Integer> resultDataMap = new HashMap<>();
+        Map<Set<T>, ResultData> resultDataMap = new HashMap<>();
+
+
+
+        public DuplicatedResultsRootCause() {
+
+        }
+
         public void logResultData(Set<T> result, Set<T> sourceMIS, T v, Set<T> jv )
         {
-            ResultData resultData = new ResultData(result, sourceMIS, v, jv);
-            if (!resultDataMap.containsKey(resultData))
+
+            if (!resultDataMap.containsKey(result))
             {
-                resultDataMap.put(resultData, 1);
+                resultDataMap.put(result, new ResultData(result));
             }
-            else
-            {
-                resultDataMap.put(resultData, resultDataMap.get(resultData)+1);
-            }
+            resultDataMap.get(result).log(sourceMIS,jv,v);
         }
 
 
@@ -700,58 +724,44 @@ public class Logger {
         {
             String fields = dataToCSV("field", "type", "graph", "separators", "results", "time",
                     "total results generated",
+
                     "results where final result equals source MIS",
-                    "duplicated results where final result equals source MIS",
+                    "generated results where final result equals source MIS",
+                    "average duplication where source MIS equals result",
+
+
                     "results where Jv equals source MIS",
-                    "duplicated results where Jv equals source MIS",
+                    "generated results where Jv equals source MIS",
+                    "average duplication where Jv equals source MIS",
+
                     "results where v in source MIS",
-                    "duplicated results where v in source MIS");
+                    "generated results where v in source MIS",
+                    "average duplication where v in source MIS");
 
             String data = dataToCSV(field, type, graph, separators, results, time,
                     //"total results generated"
-                    resultDataMap.values().stream().mapToInt(Integer::intValue).sum(),
+                    resultDataMap.values().stream().mapToInt(e->e.count).sum(),
 
                     //  "results where final result equals source MIS"
-                    resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
-                    {
-                        return resultDataIntegerEntry.getKey().isResultEqualsSourceMIS();
-                    }).mapToInt(value -> value.getValue()).sum(),
+                    resultDataMap.values().stream().mapToInt(e->e.sameSource).filter(i->i>0).count(),
+                    //"generated results where final result equals source MIS"
+                    resultDataMap.values().stream().mapToInt(e->e.sameSource).filter(i->i>0).sum(),
+                    //"average duplication where source MIS equals result"
+                    resultDataMap.values().stream().mapToInt(e->e.sameSource).filter(i->i>0).average().getAsDouble(),
 
-                    //"duplicated results where final result equals source MIS"
-                    resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
-                    {
-                        return resultDataIntegerEntry.getKey().isResultEqualsSourceMIS() && resultDataIntegerEntry.getValue()>1;
-                    }).mapToInt(entry -> entry.getValue()).sum(),
-
-                    //"results where Jv equals source MIS"
-
-                    resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
-                    {
-                        return  resultDataIntegerEntry.getKey().isJvEqualsSourceMIS();
-                    }).mapToInt(entry->entry.getValue()).sum(),
-
-                    // "duplicated results where Jv equals source MIS",
-
-                    resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
-                    {
-                        return  resultDataIntegerEntry.getKey().isJvEqualsSourceMIS() && resultDataIntegerEntry.getValue()>1;
-                    }).mapToInt(entry->entry.getValue()).sum(),
+                    //"results where Jv equals source MIS",
+                    resultDataMap.values().stream().mapToInt(e->e.sourceEqualsJv).filter(i->i>0).count(),
+                    //"generated results where Jv equals source MIS",
+                    resultDataMap.values().stream().mapToInt(e->e.sourceEqualsJv).filter(i->i>0).sum(),
+                    //"average duplication where Jv equals source MIS",
+                    resultDataMap.values().stream().mapToInt(e->e.sourceEqualsJv).filter(i->i>0).average().getAsDouble(),
 
                     //"results where v in source MIS",
-                    resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
-                    {
-                        return  resultDataIntegerEntry.getKey().isVinSourceMIS();
-                    }).mapToInt(entry->entry.getValue()).sum(),
-
-                    //"duplicated results where v in source MIS"
-                    resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
-                    {
-                        return  resultDataIntegerEntry.getKey().isVinSourceMIS() && resultDataIntegerEntry.getValue()>1;
-                    }).mapToInt(entry->entry.getValue()).sum()
-
-
-
-
+                    resultDataMap.values().stream().mapToInt(e->e.sourceContainsV).filter(i->i>0).count(),
+                    //"generated results where v in source MIS",
+                    resultDataMap.values().stream().mapToInt(e->e.sourceContainsV).filter(i->i>0).sum(),
+                    //"average duplication where v in source MIS"
+                    resultDataMap.values().stream().mapToInt(e->e.sourceContainsV).filter(i->i>0).average().getAsDouble()
                     );
 
             File logFile = createFile("Duplication_Results_Root_Cause_Summary.csv");
@@ -765,20 +775,16 @@ public class Logger {
 
             logFile = createFile("duplicated results where final result equals source MIS.json");
             try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile, true))) {
-                resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
-                {
-                    return resultDataIntegerEntry.getKey().isResultEqualsSourceMIS() && resultDataIntegerEntry.getValue()>1;
-                }).forEach(resultDataIntegerEntry -> output.println(resultDataIntegerEntry.getKey()));
+                resultDataMap.values().stream().filter(e->e.sameSource>1).limit(5)
+                .forEach(e -> output.println(e));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
 
             logFile = createFile("duplicated results where Jv equals source MIS.json");
             try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile, true))) {
-                resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
-                {
-                    return resultDataIntegerEntry.getKey().isJvEqualsSourceMIS() && resultDataIntegerEntry.getValue()>1;
-                }).forEach(resultDataIntegerEntry -> output.println(resultDataIntegerEntry.getKey()));
+                resultDataMap.values().stream().filter(e->e.sourceEqualsJv>1).limit(5)
+                        .forEach(e -> output.println(e));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -787,10 +793,8 @@ public class Logger {
             logFile = createFile("duplicated results where v in source MIS.json");
 
             try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile, true))) {
-                resultDataMap.entrySet().stream().filter(resultDataIntegerEntry ->
-                {
-                    return resultDataIntegerEntry.getKey().isVinSourceMIS() && resultDataIntegerEntry.getValue()>1;
-                }).forEach(resultDataIntegerEntry -> output.println(resultDataIntegerEntry.getKey()));
+                resultDataMap.values().stream().filter(e->e.sourceContainsV>1).limit(5)
+                        .forEach(e -> output.println(e));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
