@@ -60,5 +60,7 @@ public interface IGraph
 
     TdMap<Set<Node>> getNeighborSets();
 
+    Set<Set<Node>> getEdgesDelta(NodeSet nodes);
+
 
 }

@@ -6,7 +6,7 @@
 
     <groupId>TechnionTDK</groupId>
     <artifactId>efficient-td-enum</artifactId>
-    <version>1.0.1.4</version>
+    <version>1.0.2.4</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

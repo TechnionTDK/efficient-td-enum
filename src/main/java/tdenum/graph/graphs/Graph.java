@@ -484,4 +484,26 @@ public class Graph implements IGraph
     public TdMap<Set<Node>> getNeighborSets() {
         return neighborSets;
     }
+
+    @Override
+    public Set<Set<Node>> getEdgesDelta(NodeSet nodes) {
+        Set edges = new HashSet();
+        for (Node u : nodes)
+        {
+            for (Node v : nodes)
+            {
+                if (u.intValue() < v.intValue())
+                {
+                    if (!areNeighbors(u,v))
+                    {
+                        Set edge = new HashSet();
+                        edge.add(u);
+                        edge.add(v);
+                        edges.add(edge);
+                    }
+                }
+            }
+        }
+        return edges;
+    }
 }
