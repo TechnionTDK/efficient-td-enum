@@ -132,9 +132,9 @@ public class Logger {
                 String data = dataToCSV(field, type, graph, separators, results, time,
                         extendedSets.size(),
                         extendedSets.values().stream().mapToInt(Integer::intValue).sum(),
-                        duplications.stream().max(Comparator.naturalOrder()).get(),
-                        duplications.stream().min(Comparator.naturalOrder()).get(),
-                        duplications.stream().mapToInt(Integer::intValue).average().getAsDouble(),
+                        duplications.stream().max(Comparator.naturalOrder()).orElse(0),
+                        duplications.stream().min(Comparator.naturalOrder()).orElse(0),
+                        duplications.stream().mapToInt(Integer::intValue).average().orElse(0),
                         (double)duplications.stream().mapToInt(Integer::intValue).sum()/
                                 extendedSets.values().stream().mapToInt(Integer::intValue).sum()*100,
                         (double)results / duplications.stream().mapToInt(Integer::intValue).sum()*100
@@ -191,9 +191,9 @@ public class Logger {
                                             "graphs with duplicated source set");
                 String data = dataToCSV(field, type, graph, separators, results, time,
                                         saturatedGraphs.size(), saturatedGraphs.values().stream().mapToInt(Integer::intValue).sum(),
-                                        duplications.stream().max(Comparator.naturalOrder()).get(),
-                                        duplications.stream().min(Comparator.naturalOrder()).get(),
-                                        duplications.stream().mapToInt(Integer::intValue).average().getAsDouble(),
+                                        duplications.stream().max(Comparator.naturalOrder()).orElse(0),
+                                        duplications.stream().min(Comparator.naturalOrder()).orElse(0),
+                                        duplications.stream().mapToInt(Integer::intValue).average().orElse(0),
                                         (double)duplications.stream().mapToInt(Integer::intValue).sum()/
                                                 saturatedGraphs.values().stream().mapToInt(Integer::intValue).sum()*100,
                                         (double)results / duplications.stream().mapToInt(Integer::intValue).sum()*100,

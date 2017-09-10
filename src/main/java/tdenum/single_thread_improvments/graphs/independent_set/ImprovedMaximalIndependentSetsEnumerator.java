@@ -34,15 +34,9 @@ public class ImprovedMaximalIndependentSetsEnumerator<T> extends MaximalIndepend
             while (nodesIterator.hasNext())
             {
                 T node = nodesIterator.next();
-                if(currentSet.contains(node))
-                {
-                    continue;
-                }
-                Set<T> generatedSet = extendSetInDirectionOfNode(currentSet, node);
-                if (newSetFound(generatedSet))
-                {
-                    step = ITERATING_NODES;
 
+                if (handleIterationNodePhase(node))
+                {
                     return true;
                 }
             }
@@ -57,11 +51,9 @@ public class ImprovedMaximalIndependentSetsEnumerator<T> extends MaximalIndepend
             while(setsIterator.hasNext())
             {
                 Set<T> s = setsIterator.next();
-                Set<T> generatedSet = extendSetInDirectionOfNode(s, currentNode);
-                if (newSetFound(generatedSet))
-                {
-                    step = ITERATING_SETS;
 
+                if(handleIterationSetPhase(s))
+                {
                     return true;
                 }
             }
@@ -87,18 +79,10 @@ public class ImprovedMaximalIndependentSetsEnumerator<T> extends MaximalIndepend
                 while(nodesIterator.hasNext())
                 {
                     T node =nodesIterator.next();
-                    if(currentSet.contains(node))
+                    if (handleIterationNodePhase(node))
                     {
-                        continue;
-                    }
-                    Set<T> generetedNodes = extendSetInDirectionOfNode(currentSet, node);
-                    if(newSetFound(generetedNodes))
-                    {
-                        step = ITERATING_NODES;
-
                         return true;
                     }
-
                 }
 
                 while(setsNotExtended.isEmpty() && graph.hasNextNode())
@@ -109,11 +93,10 @@ public class ImprovedMaximalIndependentSetsEnumerator<T> extends MaximalIndepend
 
                     while(setsIterator.hasNext())
                     {
-                        Set<T> generatedSet = extendSetInDirectionOfNode(setsIterator.next(), currentNode);
-                        if(newSetFound(generatedSet))
-                        {
-                            step = ITERATING_SETS;
+                        Set<T> s= setsIterator.next();
 
+                        if(handleIterationSetPhase(s))
+                        {
                             return true;
                         }
                     }
@@ -125,11 +108,10 @@ public class ImprovedMaximalIndependentSetsEnumerator<T> extends MaximalIndepend
             {
                 while(setsIterator.hasNext())
                 {
-                    Set<T> generatedSet = extendSetInDirectionOfNode(setsIterator.next(), currentNode);
-                    if(newSetFound(generatedSet))
-                    {
-                        step = ITERATING_SETS;
+                    Set<T> s= setsIterator.next();
 
+                    if(handleIterationSetPhase(s))
+                    {
                         return true;
                     }
                 }
@@ -142,11 +124,9 @@ public class ImprovedMaximalIndependentSetsEnumerator<T> extends MaximalIndepend
 
                     while(setsIterator.hasNext())
                     {
-                        Set<T> generatedSet = extendSetInDirectionOfNode(setsIterator.next(), currentNode);
-                        if(newSetFound(generatedSet))
+                        Set<T> s= setsIterator.next();
+                        if(handleIterationSetPhase(s))
                         {
-                            step = ITERATING_SETS;
-
                             return true;
                         }
                     }
@@ -154,6 +134,36 @@ public class ImprovedMaximalIndependentSetsEnumerator<T> extends MaximalIndepend
                 }
                 return runFullEnumeration();
             }
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean handleIterationNodePhase(T node)
+    {
+        if(currentSet.contains(node))
+        {
+           return false;
+        }
+        Set<T> generatedSet = extendSetInDirectionOfNode(currentSet, node);
+        if(newSetFound(generatedSet))
+        {
+            step = ITERATING_NODES;
+
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean handleIterationSetPhase(Set<T> s)
+    {
+        Set<T> generatedSet = extendSetInDirectionOfNode(s, currentNode);
+        if (newSetFound(generatedSet))
+        {
+            step = ITERATING_SETS;
+
+            return true;
         }
         return false;
     }

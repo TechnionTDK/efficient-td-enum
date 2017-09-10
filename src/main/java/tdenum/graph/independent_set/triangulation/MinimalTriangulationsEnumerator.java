@@ -15,6 +15,7 @@ import tdenum.graph.independent_set.Converter;
 import tdenum.loggable.independent_set.LoggableIndSetExtBySeparators;
 import tdenum.loggable.independent_set.LoggableIndSetExtByTriangulation;
 import tdenum.loggable.independent_set.LoggableMaximalIndependentSetsEnumerator;
+import tdenum.single_thread_improvments.graphs.independent_set.ImprovedMaximalIndependentSetsEnumerator;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -49,11 +50,32 @@ public class MinimalTriangulationsEnumerator {
         try (InputStream input = new FileInputStream("config.properties"))
         {
               prop.load(input);
-              if (Boolean.valueOf(prop.getProperty("caching")))
+              if (Boolean.valueOf(prop.getProperty("singleThreadImprovements")))
               {
+                  System.out.println("using single thread improving mechanism");
                   if (Boolean.valueOf(prop.getProperty("cacheEdgesBetweenSeparators")))
                   {
                       seperatorGraph = new CachableSeparatorGraph(graph, sepC);
+                  }
+                  if (Boolean.valueOf(prop.getProperty("logging")))
+                  {
+                      triExtender = new LoggableIndSetExtByTriangulation(graph, triangulator);
+                      sepExtender = new LoggableIndSetExtBySeparators(graph);
+                      setsEnumerator = new ImprovedMaximalIndependentSetsEnumerator<MinimalSeparator>(seperatorGraph, triExtender, scorer);
+                      if (heuristic == SEPARATORS){
+                          setsEnumerator = new ImprovedMaximalIndependentSetsEnumerator<MinimalSeparator>(seperatorGraph, sepExtender, scorer);
+                      }
+
+                  }
+                  else
+                  {
+                      triExtender = new IndSetExtByTriangulation(graph, triangulator);
+
+                      sepExtender = new IndSetExtBySeparators(graph);
+                      setsEnumerator = new ImprovedMaximalIndependentSetsEnumerator<MinimalSeparator>(seperatorGraph, triExtender, scorer);
+                      if (heuristic == SEPARATORS){
+                          setsEnumerator = new ImprovedMaximalIndependentSetsEnumerator<MinimalSeparator>(seperatorGraph, sepExtender, scorer);
+                      }
                   }
 
               }

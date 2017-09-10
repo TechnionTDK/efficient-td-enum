@@ -76,14 +76,11 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
             {
                 while(nodesIterator.hasNext())
                 {
-                    Set<T> generetedNodes = extendSetInDirectionOfNode(currentSet, nodesIterator.next());
-                    if(newSetFound(generetedNodes))
+                    T node =nodesIterator.next();
+                    if (handleIterationNodePhase(node))
                     {
-                        step = ITERATING_NODES;
-
                         return true;
                     }
-
                 }
 
                 while(setsNotExtended.isEmpty() && graph.hasNextNode())
@@ -94,11 +91,10 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
 
                     while(setsIterator.hasNext())
                     {
-                        Set<T> generatedSet = extendSetInDirectionOfNode(setsIterator.next(), currentNode);
-                        if(newSetFound(generatedSet))
-                        {
-                            step = ITERATING_SETS;
+                        Set<T> s= setsIterator.next();
 
+                        if(handleIterationSetPhase(s))
+                        {
                             return true;
                         }
                     }
@@ -110,11 +106,10 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
             {
                 while(setsIterator.hasNext())
                 {
-                    Set<T> generatedSet = extendSetInDirectionOfNode(setsIterator.next(), currentNode);
-                    if(newSetFound(generatedSet))
-                    {
-                        step = ITERATING_SETS;
+                    Set<T> s= setsIterator.next();
 
+                    if(handleIterationSetPhase(s))
+                    {
                         return true;
                     }
                 }
@@ -127,11 +122,10 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
 
                     while(setsIterator.hasNext())
                     {
-                        Set<T> generatedSet = extendSetInDirectionOfNode(setsIterator.next(), currentNode);
-                        if(newSetFound(generatedSet))
-                        {
-                            step = ITERATING_SETS;
+                        Set<T> s= setsIterator.next();
 
+                        if(handleIterationSetPhase(s))
+                        {
                             return true;
                         }
                     }
@@ -205,15 +199,9 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
                 extendingQueue.setWeight(generatedSet, scorer.scoreIndependentSet(generatedSet));
                 nextIndependentSet = generatedSet;
                 nextSetReady = true;
-//                System.out.println("new set found");
-//                System.out.println(generatedSet);
-
-
                 return true;
             }
-
         }
-
         return false;
     }
 
@@ -230,13 +218,8 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
             while (nodesIterator.hasNext())
             {
                 T node = nodesIterator.next();
-//                System.out.println("current node " + node + "from " + nodesGenerated);
-                Set<T> generatedSet = extendSetInDirectionOfNode(currentSet, node);
-//                System.out.println("generated set " + generatedSet);
-                if (newSetFound(generatedSet))
+                if (handleIterationNodePhase(node))
                 {
-                    step = ITERATING_NODES;
-
                     return true;
                 }
             }
@@ -244,10 +227,6 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
 
         }
 
-
-//        System.out.println("setsNotExtended.isEmpty() " + setsNotExtended.isEmpty() );
-//        System.out.println("setsNotExtended.size() " + setsNotExtended.size());
-//        System.out.println("graph.hasNextNode()" + graph.hasNextNode());
         while(setsNotExtended.isEmpty() && graph.hasNextNode())
         {
             currentNode = graph.nextNode();
@@ -274,6 +253,31 @@ public class MaximalIndependentSetsEnumerator <T> implements IMaximalIndependent
     }
 
 
+
+    protected boolean handleIterationNodePhase(T node)
+    {
+        Set<T> generatedSet = extendSetInDirectionOfNode(currentSet, node);
+        if(newSetFound(generatedSet))
+        {
+            step = ITERATING_NODES;
+
+            return true;
+        }
+        return false;
+    }
+
+
+    protected boolean handleIterationSetPhase(Set<T> s)
+    {
+        Set<T> generatedSet = extendSetInDirectionOfNode(s, currentNode);
+        if (newSetFound(generatedSet))
+        {
+            step = ITERATING_SETS;
+
+            return true;
+        }
+        return false;
+    }
 
 
 }
