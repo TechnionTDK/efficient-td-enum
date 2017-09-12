@@ -18,7 +18,7 @@ public class SeparatorScorer
         criterion = c;
     }
 
-     <T extends NodeSet> int scoreSeparator(final T s)
+     public <T extends NodeSet> int scoreSeparator(final T s)
     {
         if (criterion == SeparatorsScoringCriterion.UNIFORM)
         {

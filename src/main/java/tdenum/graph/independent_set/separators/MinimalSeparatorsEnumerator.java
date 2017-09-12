@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 /**
  * Created by dvird on 17/07/10.
  */
-public class MinimalSeparatorsEnumerator
+public class MinimalSeparatorsEnumerator implements IMinimalSeparatorsEnumerator
 {
     IGraph graph;
     SeparatorScorer scorer;
@@ -39,7 +39,7 @@ public class MinimalSeparatorsEnumerator
 //        System.out.println("seperators number" + separatorsToExtend.size());
 //        System.out.println("seperators " + separatorsToExtend.getKeys());
     }
-
+    @Override
     public MinimalSeparator next()
     {
         if (!hasNext())
@@ -65,11 +65,13 @@ public class MinimalSeparatorsEnumerator
         return s;
     }
 
+    @Override
     public boolean hasNext()
     {
         return !separatorsToExtend.isEmpty();
     }
 
+    @Override
     public <T extends NodeSet> void minimalSeparatorFound(final T s)
     {
 //        System.out.println("trying for " + s + "size = " + s.size() + " extended = " + separatorsExtended.contains(s));
