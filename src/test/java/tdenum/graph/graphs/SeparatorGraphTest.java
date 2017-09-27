@@ -3,14 +3,14 @@ package tdenum.graph.graphs;
 import org.junit.Test;
 import tdenum.graph.TestsUtils;
 import tdenum.graph.data_structures.MinimalSeparator;
-import tdenum.graph.graphs.interfaces.IGraph;
-import tdenum.graph.graphs.interfaces.ISeparatorGraph;
+import tdenum.graph.graphs.separator_graph.ISeparatorGraph;
+import tdenum.graph.graphs.separator_graph.single_thread.SeparatorGraph;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.Assert.*;
-import static tdenum.graph.independent_set.separators.SeparatorsScoringCriterion.UNIFORM;
+import static tdenum.graph.separators.SeparatorsScoringCriterion.UNIFORM;
 
 /**
  * Created by dvir.dukhan on 7/12/2017.

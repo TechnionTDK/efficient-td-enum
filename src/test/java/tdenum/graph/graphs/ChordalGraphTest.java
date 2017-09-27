@@ -4,7 +4,8 @@ import org.junit.Test;
 import tdenum.graph.TestsUtils;
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
-import tdenum.graph.graphs.interfaces.IChordalGraph;
+import tdenum.graph.graphs.chordal_graph.IChordalGraph;
+import tdenum.graph.graphs.chordal_graph.single_thread.ChordalGraph;
 
 import java.util.Set;
 

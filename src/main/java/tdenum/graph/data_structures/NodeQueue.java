@@ -1,11 +1,12 @@
 package tdenum.graph.data_structures;
 
-import tdenum.graph.graphs.interfaces.IGraph;
-import tdenum.graph.independent_set.triangulation.TriangulationAlgorithm;
+import tdenum.graph.data_structures.weighted_queue.single_thread.IncreasingWeightedNodeQueue;
+import tdenum.graph.graphs.IGraph;
+import tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm;
 
 import java.util.Set;
 
-import static tdenum.graph.independent_set.triangulation.TriangulationAlgorithm.*;
+import static tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm.*;
 
 /**
  * Created by dvir.dukhan on 7/11/2017.
@@ -58,7 +59,7 @@ public class NodeQueue {
 
     public Node pop()
     {
-        Node top = queue.top();
+        Node top = queue.peek();
         if (heuristic ==MIN_DEGREE_LB_TRIANG || heuristic == MIN_FILL_LB_TRIANG || heuristic == COMBINED)
         {
             int savedScore = queue.getWeight(top);
@@ -66,12 +67,12 @@ public class NodeQueue {
             while(currentScore > savedScore)
             {
                 queue.setWeight(top, currentScore);
-                top = queue.top();
+                top = queue.peek();
                 savedScore = queue.getWeight(top);
                 currentScore = score(top);
             }
         }
-        return queue.pop();
+        return queue.poll();
     }
 
     public boolean isEmpty()

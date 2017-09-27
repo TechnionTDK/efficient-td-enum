@@ -6,7 +6,7 @@ import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
 import tdenum.graph.graphs.Graph;
-import tdenum.graph.graphs.interfaces.IGraph;
+import tdenum.graph.graphs.IGraph;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -6,7 +6,7 @@
 
     <groupId>TechnionTDK</groupId>
     <artifactId>efficient-td-enum</artifactId>
-    <version>1.0.2.4</version>
+    <version>2.0.2.4</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -21,7 +21,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>tdenum.MinTriangulationEnumeration</mainClass>
+                            <mainClass>tdenum.TDEnum</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

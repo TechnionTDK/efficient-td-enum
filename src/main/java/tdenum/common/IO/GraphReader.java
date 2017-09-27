@@ -4,10 +4,9 @@ import org.apache.commons.io.FilenameUtils;
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
 import tdenum.graph.graphs.Graph;
-import tdenum.graph.graphs.interfaces.IGraph;
+import tdenum.graph.graphs.IGraph;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;

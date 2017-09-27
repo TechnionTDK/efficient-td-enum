@@ -4,13 +4,14 @@ import org.junit.Test;
 import tdenum.graph.TestsUtils;
 import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.data_structures.Node;
-import tdenum.graph.graphs.interfaces.IGraph;
-import tdenum.graph.independent_set.triangulation.MinimalTriangulator;
+import tdenum.graph.graphs.IGraph;
+import tdenum.graph.independent_set.set_extender.single_thread.IndSetExtByTriangulation;
+import tdenum.graph.triangulation.minimal_triangulators.MinimalTriangulator;
 
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static tdenum.graph.independent_set.triangulation.TriangulationAlgorithm.MCS_M;
+import static tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm.MCS_M;
 
 public class IndSetExtByTriangulationTest {
 

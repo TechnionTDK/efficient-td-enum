@@ -1,8 +1,6 @@
 package tdenum.graph.graphs;
 
-import tdenum.common.Utils;
 import tdenum.graph.data_structures.*;
-import tdenum.graph.graphs.interfaces.IGraph;
 
 import java.util.*;
 
@@ -15,15 +13,15 @@ public class Graph implements IGraph
 {
 
 
-    int numberOfNodes = 0;
-    int numberOfEdges = 0;
-    NodeSet nodes = new NodeSet();
+    protected int numberOfNodes = 0;
+    protected int numberOfEdges = 0;
+    protected NodeSet nodes = new NodeSet();
 
 
 
 //    TdMap<NodeSet> neighborSets = new TdListMap<>();
 
-    TdMap<Set<Node>> neighborSets = new TdListMap<>();
+    protected TdMap<Set<Node>> neighborSets = new TdListMap<>();
 
 
     public Graph()

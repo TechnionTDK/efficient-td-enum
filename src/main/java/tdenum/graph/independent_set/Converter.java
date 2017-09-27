@@ -1,9 +1,10 @@
 package tdenum.graph.independent_set;
 
 import tdenum.graph.data_structures.*;
-import tdenum.graph.graphs.ChordalGraph;
-import tdenum.graph.graphs.interfaces.IChordalGraph;
-import tdenum.graph.graphs.interfaces.IGraph;
+import tdenum.graph.data_structures.weighted_queue.single_thread.IncreasingWeightedNodeQueue;
+import tdenum.graph.graphs.chordal_graph.single_thread.ChordalGraph;
+import tdenum.graph.graphs.chordal_graph.IChordalGraph;
+import tdenum.graph.graphs.IGraph;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,9 +31,9 @@ public class Converter
         int previousNumberOfNeighbors = -1;
         while (!queue.isEmpty())
         {
-            Node currentNode = queue.top();
+            Node currentNode = queue.peek();
             int currentNumberOfNeighbors = queue.getWeight(currentNode);
-            queue.pop();
+            queue.poll();
             if (currentNumberOfNeighbors <= previousNumberOfNeighbors)
             {
                 NodeSetProducer separatorProducer = new NodeSetProducer(g.getNumberOfNodes());

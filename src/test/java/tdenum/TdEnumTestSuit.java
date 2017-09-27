@@ -6,11 +6,12 @@ import tdenum.graph.graphs.ChordalGraphTest;
 import tdenum.graph.graphs.GraphTest;
 import tdenum.graph.graphs.SeparatorGraphTest;
 import tdenum.graph.independent_set.IndSetExtByTriangulationTest;
-import tdenum.graph.independent_set.separators.MinimalSeparatorsEnumeratorTest;
-import tdenum.graph.independent_set.separators.SeparatorScorerTest;
-import tdenum.graph.independent_set.triangulation.IndSetScorerByTriangulationTest;
-import tdenum.graph.independent_set.triangulation.MinimalTriangulationsEnumeratorTest;
-import tdenum.graph.independent_set.triangulation.MinimalTriangulatorTest;
+import tdenum.graph.separators.MinimalSeparatorsEnumeratorTest;
+import tdenum.graph.separators.SeparatorScorerTest;
+import tdenum.graph.triangulation.IndSetScorerByTriangulationTest;
+import tdenum.graph.triangulation.LegacyMinimalTriangulationsEnumeratorTest;
+import tdenum.graph.triangulation.MinimalTriangulationEnumeratorTest;
+import tdenum.graph.triangulation.MinimalTriangulatorTest;
 import tdenum.graph.independent_set.ConverterTest;
 
 @RunWith(Suite.class)
@@ -21,7 +22,8 @@ import tdenum.graph.independent_set.ConverterTest;
                     ConverterTest.class,
                     MinimalTriangulatorTest.class,
                     IndSetExtByTriangulationTest.class,
-                    MinimalTriangulationsEnumeratorTest.class,
+                    LegacyMinimalTriangulationsEnumeratorTest.class,
+                    MinimalTriangulationEnumeratorTest.class,
                     IndSetScorerByTriangulationTest.class,
                     SeparatorScorerTest.class,
                     ChordalGraphTest.class})
