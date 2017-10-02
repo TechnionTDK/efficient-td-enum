@@ -39,7 +39,9 @@ public class SeparatorGraph extends AbstractSeparatorGraph
     public MinimalSeparator nextNode()
     {
         nodesGenerated++;
-        return nodesEnumerator.next();
+        MinimalSeparator separator = nodesEnumerator.next();
+        separator.setId(nodesGenerated);
+        return separator;
     }
 
 

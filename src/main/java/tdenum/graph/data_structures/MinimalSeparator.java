@@ -8,6 +8,8 @@ import java.util.Collection;
 public class MinimalSeparator extends NodeSet
 {
 
+    int id = -1;
+
     public MinimalSeparator()
     {
         super();
@@ -18,4 +20,20 @@ public class MinimalSeparator extends NodeSet
         super(s);
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+//        final StringBuilder sb = new StringBuilder("MinimalSeparator{");
+//        sb.append("id=").append(id);
+//        sb.append('}');
+        final StringBuilder sb = new StringBuilder(id);
+        return sb.toString();
+    }
 }
