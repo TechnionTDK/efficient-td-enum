@@ -19,8 +19,10 @@ public class SingleThreadSeparatorGraphFactory implements ISeparatorGraphFactory
         {
             if (SeparatorsGraphType.valueOf(TDEnumFactory.getProperties().getProperty("sepGraphType")).equals(VANILLA))
             {
+
                 return inject(new SeparatorGraph());
             }
+            System.out.println("producing cachable separators graph");
             return inject(new CachableSeparatorGraph());
         }
         return  graph;

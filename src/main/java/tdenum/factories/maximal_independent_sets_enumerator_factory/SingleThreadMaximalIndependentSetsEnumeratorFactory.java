@@ -13,13 +13,29 @@ public class SingleThreadMaximalIndependentSetsEnumeratorFactory implements IMax
     public IMaximalIndependentSetsEnumerator produce() {
 
 
-
-        if (    Boolean.valueOf(TDEnumFactory.getProperties().getProperty("logDuplicateMIS")) ||
-                Boolean.valueOf(TDEnumFactory.getProperties().getProperty("logDuplicateSetsToExtend"))  ||
-                Boolean.valueOf(TDEnumFactory.getProperties().getProperty("logResultData")))
+        MISEnumeratorType enumeratorType = MISEnumeratorType.valueOf(
+                TDEnumFactory.getProperties().getProperty("misEnumerator"));
+        switch (enumeratorType)
         {
-            return produceLoggableEnumerator();
+            case VANILLA:
+            {
+                System.out.println("producing baseline MIS enumerator");
+                return produceVanillaEnumerator();
+            }
+
+            case IMPROVED:
+            {
+                System.out.println("producing improved MIS enumerator");
+                return produceImproveEnumerator();
+            }
+            case VANILLA_LOGGABLE:
+            {
+                System.out.println("producing baseline loggable MIS enumerator");
+                return produceLoggableEnumerator();
+            }
+
         }
+
         return produceVanillaEnumerator();
 
     }
