@@ -1,7 +1,8 @@
 package tdenum.graph.independent_set;
 
+import tdenum.common.cache.ICache;
 import tdenum.graph.data_structures.weighted_queue.IWeightedQueue;
-import tdenum.graph.graphs.ISuccinctGraphRepresentation;
+import tdenum.graph.graphs.succinct_graphs.ISuccinctGraphRepresentation;
 import tdenum.graph.independent_set.scoring.IIndependentSetScorer;
 import tdenum.graph.independent_set.set_extender.IIndependentSetExtender;
 
@@ -21,6 +22,12 @@ public abstract class AbstractMaximalIndependentSetsEnumerator<T> implements IMa
     protected Set<T> V;
     protected Set<Set<T>> P;
     protected Set<Set<T>> setsNotExtended;
+
+
+    protected boolean nextSetReady;
+    protected Set<T> nextIndependentSet;
+
+    protected ICache jvCache;
 
 
     @Override
@@ -59,6 +66,35 @@ public abstract class AbstractMaximalIndependentSetsEnumerator<T> implements IMa
     public void setQ(IWeightedQueue<Set<T>> q) {
         this.Q = q;
     }
+
+    @Override
+    public void setCache(ICache cache) {
+        this.jvCache = cache;
+    }
+
+    protected abstract boolean timeLimitReached();
+
+    protected boolean newSetFound(final Set<T> generatedSet)
+    {
+
+
+        if (!P.contains(generatedSet))
+        {
+            if(setsNotExtended.add(generatedSet))
+            {
+                Q.setWeight(generatedSet, scorer.scoreIndependentSet(generatedSet));
+                nextIndependentSet = generatedSet;
+                nextSetReady = true;
+                return true;
+            }
+
+            return false;
+        }
+
+        return false;
+    }
+
+
 
 
 }

@@ -12,7 +12,10 @@ public interface IMinimalSeparatorsEnumerator {
 
     MinimalSeparator next();
     boolean hasNext();
+
+
     <T extends NodeSet> void minimalSeparatorFound(final T s);
+
 
     void setGraph(IGraph graph);
 

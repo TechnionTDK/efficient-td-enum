@@ -4,27 +4,17 @@ import tdenum.graph.independent_set.scoring.single_thread.IndSetScorerByTriangul
 import tdenum.graph.triangulation.minimal_triangulators.MinimalTriangulator;
 import tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm;
 import tdenum.graph.triangulation.TriangulationScoringCriterion;
-import tdenum.graph.graphs.separator_graph.single_thread.improvements.CachableSeparatorGraph;
 import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.graphs.Graph;
-import tdenum.graph.graphs.separator_graph.single_thread.SeparatorGraph;
+import tdenum.graph.graphs.succinct_graphs.separator_graph.single_thread.SeparatorGraph;
 import tdenum.graph.graphs.chordal_graph.IChordalGraph;
 import tdenum.graph.graphs.IGraph;
-import tdenum.graph.graphs.separator_graph.ISeparatorGraph;
+import tdenum.graph.graphs.succinct_graphs.separator_graph.ISeparatorGraph;
 import tdenum.graph.independent_set.set_extender.single_thread.IndSetExtBySeparators;
 import tdenum.graph.independent_set.set_extender.single_thread.IndSetExtByTriangulation;
 import tdenum.legacy.graph.independent_set.LegacyMaximalIndependentSetsEnumerator;
 import tdenum.graph.separators.SeparatorsScoringCriterion;
 import tdenum.graph.independent_set.Converter;
-import tdenum.graph.independent_set.set_extender.single_thread.loggable.LoggableIndSetExtBySeparators;
-import tdenum.graph.independent_set.set_extender.single_thread.loggable.LoggableIndSetExtByTriangulation;
-import tdenum.graph.independent_set.single_thread.loggable.LoggableMaximalIndependentSetsEnumerator;
-import tdenum.graph.independent_set.single_thread.improvements.ImprovedMaximalIndependentSetsEnumerator;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 import static tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm.SEPARATORS;
 
@@ -34,7 +24,7 @@ import static tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgo
 public class LegacyMinimalTriangulationsEnumerator {
 
     IGraph graph;
-    ISeparatorGraph seperatorGraph;
+    SeparatorGraph seperatorGraph;
     MinimalTriangulator triangulator;
     IndSetExtByTriangulation triExtender;
     IndSetExtBySeparators sepExtender;

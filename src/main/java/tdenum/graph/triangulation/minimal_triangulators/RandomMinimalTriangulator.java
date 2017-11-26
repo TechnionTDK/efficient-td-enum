@@ -1,94 +1,35 @@
 package tdenum.graph.triangulation.minimal_triangulators;
 
-import tdenum.graph.data_structures.*;
-import tdenum.graph.data_structures.NodeQueue;
+import tdenum.graph.data_structures.Node;
+import tdenum.graph.data_structures.NodeSet;
+import tdenum.graph.data_structures.TdListMap;
+import tdenum.graph.data_structures.TdMap;
+import tdenum.graph.data_structures.weighted_queue.single_thread.IncreasingWeightRandomizedNodeQueue;
 import tdenum.graph.data_structures.weighted_queue.single_thread.IncreasingWeightedNodeQueue;
-import tdenum.graph.graphs.chordal_graph.single_thread.ChordalGraph;
-import tdenum.graph.graphs.chordal_graph.IChordalGraph;
 import tdenum.graph.graphs.IGraph;
+import tdenum.graph.graphs.chordal_graph.IChordalGraph;
+import tdenum.graph.graphs.chordal_graph.single_thread.ChordalGraph;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import static tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm.COMBINED;
-import static tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm.LB_TRIANG;
-import static tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm.MCS_M;
+public class RandomMinimalTriangulator extends MinimalTriangulator {
 
-/**
- * Created by dvir.dukhan on 7/11/2017.
- */
-public class MinimalTriangulator extends AbstractMinimalTriangulator {
-
-    public MinimalTriangulator()
+    public RandomMinimalTriangulator()
     {
 
     }
 
-    public MinimalTriangulator(TriangulationAlgorithm heuristic)
+    public RandomMinimalTriangulator(TriangulationAlgorithm heuristic)
     {
         this.heuristic = heuristic;
     }
 
-
-    public IChordalGraph triangulate(final IGraph g)
-    {
-        time++;
-        if(heuristic == MCS_M || (heuristic == COMBINED && time % 2 ==0))
-        {
-            return getMinimalTriangulationUsingMSCM(g);
-        }
-        return getMinimalTriangulationUsingLBTriang(g, heuristic);
-
-
-    }
-
-    protected IChordalGraph getMinimalTriangulationUsingLBTriang(IGraph g, TriangulationAlgorithm heuristic) {
-
-        IChordalGraph result = new ChordalGraph(g);
-        if (heuristic == LB_TRIANG)
-        {
-            for (Node v: g.getNodes())
-            {
-                makeNodeLBSimplicial(g, result, v);
-            }
-        }
-        else
-        {
-            NodeQueue queue = new NodeQueue(result, heuristic);
-            while (!queue.isEmpty())
-            {
-                makeNodeLBSimplicial(g, result, queue.pop());
-            }
-        }
-        return result;
-    }
-
-
-    private Set<NodeSet> getSubstars(IGraph g, IGraph gi, Node v)
-    {
-        Set<Node> removedNodes = gi.getNeighborsCopy(v);
-        removedNodes.add(v);
-        List<NodeSet>components = g.getComponents(removedNodes);
-        Set<NodeSet> substars = new HashSet<>();
-        for (NodeSet componenet : components)
-        {
-            substars.add(g.getNeighbors(componenet));
-        }
-        return substars;
-    }
-
-    private void makeNodeLBSimplicial(IGraph g, IGraph gi, Node v)
-    {
-        Set<NodeSet> substars = getSubstars(g, gi, v);
-        gi.saturateNodeSets(substars);
-    }
-
+    @Override
     protected IChordalGraph getMinimalTriangulationUsingMSCM(IGraph g)
     {
         IChordalGraph triangulation = new ChordalGraph(g);
-        IncreasingWeightedNodeQueue queue =new IncreasingWeightedNodeQueue(g.getNodes());
+        IncreasingWeightRandomizedNodeQueue queue =new IncreasingWeightRandomizedNodeQueue(g.getNodes());
         TdMap<Boolean> handled = new TdListMap<>(g.getNumberOfNodes(), false);
         while(!queue.isEmpty())
         {

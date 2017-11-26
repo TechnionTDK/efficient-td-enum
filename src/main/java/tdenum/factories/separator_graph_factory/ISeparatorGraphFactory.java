@@ -1,7 +1,7 @@
 package tdenum.factories.separator_graph_factory;
 
 import tdenum.factories.IFactory;
-import tdenum.graph.graphs.separator_graph.ISeparatorGraph;
+import tdenum.graph.graphs.succinct_graphs.separator_graph.ISeparatorGraph;
 
 public interface ISeparatorGraphFactory extends IFactory<ISeparatorGraph>{
 

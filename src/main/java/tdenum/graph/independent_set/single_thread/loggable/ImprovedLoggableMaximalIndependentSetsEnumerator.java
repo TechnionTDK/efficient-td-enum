@@ -2,13 +2,12 @@ package tdenum.graph.independent_set.single_thread.loggable;
 
 import tdenum.common.IO.logger.LogInformation.LogInfoDuplicatedMIS;
 import tdenum.common.IO.logger.Logger;
-import tdenum.graph.independent_set.single_thread.MaximalIndependentSetsEnumerator;
+import tdenum.graph.independent_set.single_thread.improvements.ImprovedMaximalIndependentSetsEnumerator;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class LoggableMaximalIndependentSetsEnumerator<T> extends MaximalIndependentSetsEnumerator<T> {
-
+public class ImprovedLoggableMaximalIndependentSetsEnumerator<T> extends ImprovedMaximalIndependentSetsEnumerator<T> {
 
 
     @Override
@@ -26,6 +25,7 @@ public class LoggableMaximalIndependentSetsEnumerator<T> extends MaximalIndepend
         }
 
         Set<T> result = extender.extendToMaxIndependentSet(baseNodes);
+
         Logger.addSetToExtend(baseNodes);
         Logger.logResultData(result, s, node, baseNodes);
 
@@ -57,7 +57,5 @@ public class LoggableMaximalIndependentSetsEnumerator<T> extends MaximalIndepend
         }
         return false;
     }
-
-
 
 }

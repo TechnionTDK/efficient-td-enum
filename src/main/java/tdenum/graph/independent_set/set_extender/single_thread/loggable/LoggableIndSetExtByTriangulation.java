@@ -10,6 +10,7 @@ import tdenum.graph.independent_set.set_extender.single_thread.IndSetExtByTriang
 import tdenum.graph.triangulation.minimal_triangulators.MinimalTriangulator;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class LoggableIndSetExtByTriangulation extends IndSetExtByTriangulation {
 
@@ -25,12 +26,19 @@ public class LoggableIndSetExtByTriangulation extends IndSetExtByTriangulation {
     @Override
     public Set<MinimalSeparator> extendToMaxIndependentSet(Set<MinimalSeparator> s) {
 
+
+        long startTime = System.nanoTime();
         IGraph saturatedGraph = new Graph(graph);
         saturatedGraph.saturateNodeSets(s);
 
         Logger.addSaturatedGraph(saturatedGraph, s);
         IChordalGraph minimalTriangulation = triangulator.triangulate(saturatedGraph);
         Set<MinimalSeparator> minimalSeparators = Converter.triangulationToMinimalSeparators(minimalTriangulation);
+        long endTime = System.nanoTime();
+        long milis = TimeUnit.NANOSECONDS.toMillis(endTime -startTime);
+
+        Logger.logWidthPerTime(minimalTriangulation.getTreeWidth(), milis);
+
 
         return minimalSeparators;
 

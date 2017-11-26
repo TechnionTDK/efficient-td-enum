@@ -9,7 +9,7 @@ import java.util.*;
 public class Logger {
 
 
-    private static Logger instance;
+    private static Logger instance = null;
 
 
 
@@ -17,12 +17,17 @@ public class Logger {
     private static boolean logDuplicateSetsToExtend = false;
     private static boolean logDuplicatesSaturatedGraphs = false;
     private static boolean logResultData = false;
+    private static boolean logWidthPerTime = false;
+
+    private static boolean logCache = false;
 
 
     LogInfoDuplicatedMIS logInfoDuplicatedMIS = new LogInfoDuplicatedMIS();
     LogInfoDuplicatedSetsToExtend logInfoDuplicatedSetsToExtend = new LogInfoDuplicatedSetsToExtend();
     LogInfoDuplicatedSaturatedGraph logInfoDuplicatedSaturatedGraph = new LogInfoDuplicatedSaturatedGraph();
     LogInfoDuplicatedResultsRootCause logInfoDuplicatedResultsRootCause = new LogInfoDuplicatedResultsRootCause();
+    LogInfoWidthPerTime logInfoWidthPerTime = new LogInfoWidthPerTime();
+    LogInfoCache logInfoCache = new LogInfoCache();
 
 
 
@@ -38,6 +43,9 @@ public class Logger {
         logDuplicateSetsToExtend = Boolean.valueOf(prop.getProperty("logDuplicateSetsToExtend"));
         logDuplicatesSaturatedGraphs = Boolean.valueOf(prop.getProperty("logDuplicatesSaturatedGraphs"));
         logResultData = Boolean.valueOf(prop.getProperty("logResultData"));
+        logWidthPerTime = Boolean.valueOf(prop.getProperty("logWidthPerTime"));
+
+        logCache =Boolean.valueOf(prop.getProperty("logCache"));
         AbstractLogInfo.setLogsFolder(prop.getProperty("logsFolder"));
 
     }
@@ -89,12 +97,34 @@ public class Logger {
     }
 
 
+    public static void init()
+    {
+        getInstance();
+    }
+
     public static void printLogs()
     {
         getInstance().printDuplicateMISLog();
         getInstance().printDuplicateSetsToExtendLog();
         getInstance().printDuplicatedSaturatedGraphs();
         getInstance().printDuplicatedResultsRootCause();
+        getInstance().printWidthPerTime();
+        getInstance().printCacheLog();
+    }
+
+    private void printCacheLog() {
+
+        if (logCache)
+        {
+            logInfoCache.printLog();
+        }
+    }
+
+    private void printWidthPerTime() {
+        if(logWidthPerTime)
+        {
+            logInfoWidthPerTime.printLog();
+        }
     }
 
     private void printDuplicatedResultsRootCause() {
@@ -167,11 +197,18 @@ public class Logger {
     }
 
 
+    public static void logWidthPerTime(int treeWidth, long milis) {
+        if(logWidthPerTime)
+        {
+            getInstance().logInfoWidthPerTime.logWidthTime(treeWidth,milis);
+        }
+    }
 
-
-
-
-
-
-
+    public static void logCacheHit(Set hit,int distance)
+    {
+        if(logCache)
+        {
+            getInstance().logInfoCache.logHit(hit,distance);
+        }
+    }
 }

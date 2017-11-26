@@ -1,7 +1,8 @@
 package tdenum.graph.independent_set;
 
+import tdenum.common.cache.ICache;
 import tdenum.graph.data_structures.weighted_queue.IWeightedQueue;
-import tdenum.graph.graphs.ISuccinctGraphRepresentation;
+import tdenum.graph.graphs.succinct_graphs.ISuccinctGraphRepresentation;
 import tdenum.graph.independent_set.scoring.IIndependentSetScorer;
 import tdenum.graph.independent_set.set_extender.IIndependentSetExtender;
 
@@ -27,4 +28,6 @@ public interface IMaximalIndependentSetsEnumerator<T> {
     void setQ(IWeightedQueue<Set<T>> q);
 
     void doFirstStep();
+
+    void setCache(ICache cache);
 }

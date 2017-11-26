@@ -15,6 +15,8 @@ import java.util.Set;
 public class Converter
 {
 
+
+
     public static IChordalGraph minimalSeparatorsToTriangulation(final IGraph g,
                                                                  final Set<? extends NodeSet> minimalSeparators)
     {
@@ -47,6 +49,7 @@ public class Converter
                     }
                 }
                 MinimalSeparator currentSeparator = separatorProducer.produce(MinimalSeparator.class);
+
                 if (!currentSeparator.isEmpty())
                 {
                     minimalSeparators.add(currentSeparator);
@@ -67,4 +70,5 @@ public class Converter
         return minimalSeparators;
 
     }
+
 }

@@ -1,12 +1,9 @@
 package tdenum.factories.separator_graph_factory;
 
-import tdenum.TDEnum;
 import tdenum.factories.TDEnumFactory;
-import tdenum.graph.graphs.separator_graph.ISeparatorGraph;
-import tdenum.graph.graphs.separator_graph.single_thread.SeparatorGraph;
-import tdenum.graph.graphs.separator_graph.single_thread.improvements.CachableSeparatorGraph;
-
-import static tdenum.factories.separator_graph_factory.SeparatorsGraphType.VANILLA;
+import tdenum.graph.graphs.succinct_graphs.separator_graph.ISeparatorGraph;
+import tdenum.graph.graphs.succinct_graphs.separator_graph.single_thread.SeparatorGraph;
+import tdenum.graph.graphs.succinct_graphs.separator_graph.single_thread.improvements.CachableSeparatorGraph;
 
 public class SingleThreadSeparatorGraphFactory implements ISeparatorGraphFactory {
 
@@ -17,13 +14,25 @@ public class SingleThreadSeparatorGraphFactory implements ISeparatorGraphFactory
 
         if (graph == null)
         {
-            if (SeparatorsGraphType.valueOf(TDEnumFactory.getProperties().getProperty("sepGraphType")).equals(VANILLA))
-            {
 
-                return inject(new SeparatorGraph());
+            switch (SeparatorsGraphType.valueOf(TDEnumFactory.getProperties().getProperty("sepGraphType")))
+            {
+                case VANILLA:
+                {
+                    System.out.println("producing baseline separators graph");
+                    return inject(new SeparatorGraph());
+                }
+
+                case CACHED:
+                {
+                    System.out.println("producing cachable separators graph");
+                    return inject(new CachableSeparatorGraph());
+                }
+
+
+
             }
-            System.out.println("producing cachable separators graph");
-            return inject(new CachableSeparatorGraph());
+
         }
         return  graph;
 

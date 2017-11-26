@@ -4,8 +4,12 @@ import tdenum.RunningMode;
 import tdenum.TDEnum;
 import tdenum.common.IO.GraphReader;
 import tdenum.common.IO.InputFile;
+import tdenum.factories.cache_factory.ICacheFactory;
+import tdenum.factories.cache_factory.SingleThreadCacheFactory;
 import tdenum.factories.enumeration_runner_factory.IEnumerationRunnerFactory;
 import tdenum.factories.enumeration_runner_factory.SingleThreadEnumerationRunnerFactory;
+import tdenum.factories.idconverter_factory.IIDConverterFactory;
+import tdenum.factories.idconverter_factory.SingleThreadIDConverterFactory;
 import tdenum.factories.maximal_independent_sets_enumerator_factory.IMaximalIndependentSetsEnumeratorFactory;
 import tdenum.factories.maximal_independent_sets_enumerator_factory.ParallelMaximalIndependentSetsEnumeratorFactory;
 import tdenum.factories.maximal_independent_sets_enumerator_factory.SingleThreadMaximalIndependentSetsEnumeratorFactory;
@@ -60,6 +64,13 @@ public class TDEnumFactory {
 
 
 
+    static ICacheFactory cacheFactory;
+
+
+
+    static IIDConverterFactory converterFactory;
+
+
     static IGraph graph;
 
     static Properties properties = new Properties();
@@ -101,6 +112,11 @@ public class TDEnumFactory {
 
             enumerationRunnerFactory = new SingleThreadEnumerationRunnerFactory();
             resultHandlerFactory = new SingleThreadResultHandlerFactory();
+
+            cacheFactory = new SingleThreadCacheFactory();
+
+            converterFactory = new SingleThreadIDConverterFactory();
+
         }
 
         else
@@ -113,6 +129,7 @@ public class TDEnumFactory {
             weightedQueueFactory = new ParallelWeightedQueueFactory();
 
             resultHandlerFactory = new ParallelResultHandlerFactory();
+
 
 
         }
@@ -232,6 +249,23 @@ public class TDEnumFactory {
         TDEnumFactory.resultHandlerFactory = resultHandlerFactory;
     }
 
+
+    public static IIDConverterFactory getConverterFactory() {
+        return converterFactory;
+    }
+
+    public static void setConverterFactory(IIDConverterFactory converterFactory) {
+        TDEnumFactory.converterFactory = converterFactory;
+    }
+
+
+    public static ICacheFactory getCacheFactory() {
+        return cacheFactory;
+    }
+
+    public static void setCacheFactory(ICacheFactory cacheFactory) {
+        TDEnumFactory.cacheFactory = cacheFactory;
+    }
 
     public static String getGraphName() {
         return inputFile.getName();

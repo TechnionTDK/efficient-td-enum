@@ -2,10 +2,10 @@ package tdenum.graph.triangulation.parallel;
 
 import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.graphs.Graph;
-import tdenum.graph.graphs.separator_graph.single_thread.SeparatorGraph;
+import tdenum.graph.graphs.succinct_graphs.separator_graph.single_thread.SeparatorGraph;
 import tdenum.graph.graphs.chordal_graph.IChordalGraph;
 import tdenum.graph.graphs.IGraph;
-import tdenum.graph.graphs.separator_graph.ISeparatorGraph;
+import tdenum.graph.graphs.succinct_graphs.separator_graph.ISeparatorGraph;
 import tdenum.graph.independent_set.Converter;
 import tdenum.graph.independent_set.set_extender.single_thread.IndSetExtBySeparators;
 import tdenum.graph.independent_set.set_extender.single_thread.IndSetExtByTriangulation;

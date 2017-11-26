@@ -16,8 +16,7 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
 
 
 
-    protected boolean nextSetReady;
-    protected Set<T> nextIndependentSet;
+
 
     protected Set<T> currentSet;
     protected T currentNode;
@@ -45,7 +44,7 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
             }
             else if (step == ITERATING_NODES)
             {
-                while(nodesIterator.hasNext() && !Thread.currentThread().isInterrupted())
+                while(nodesIterator.hasNext() && !timeLimitReached())
                 {
                     T node =nodesIterator.next();
                     if (handleIterationNodePhase(node))
@@ -54,13 +53,13 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
                     }
                 }
 
-                while(setsNotExtended.isEmpty() && graph.hasNextNode() && !Thread.currentThread().isInterrupted())
+                while(setsNotExtended.isEmpty() && graph.hasNextNode() && !timeLimitReached())
                 {
                     currentNode = graph.nextNode();
                     V.add(currentNode);
                     setsIterator = P.iterator();
 
-                    while(setsIterator.hasNext() && !Thread.currentThread().isInterrupted())
+                    while(setsIterator.hasNext() && !timeLimitReached())
                     {
                         Set<T> s= setsIterator.next();
 
@@ -75,7 +74,7 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
             }
             else if( step == ITERATING_SETS)
             {
-                while(setsIterator.hasNext() && !Thread.currentThread().isInterrupted())
+                while(setsIterator.hasNext() && !timeLimitReached())
                 {
                     Set<T> s= setsIterator.next();
 
@@ -85,13 +84,13 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
                     }
                 }
 
-                while (setsNotExtended.isEmpty() && graph.hasNextNode() && !Thread.currentThread().isInterrupted())
+                while (setsNotExtended.isEmpty() && graph.hasNextNode() && !timeLimitReached())
                 {
                     currentNode = graph.nextNode();
                     V.add(currentNode);
                     setsIterator = P.iterator();
 
-                    while(setsIterator.hasNext() && !Thread.currentThread().isInterrupted())
+                    while(setsIterator.hasNext() && !timeLimitReached())
                     {
                         Set<T> s= setsIterator.next();
 
@@ -143,7 +142,7 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
     }
 
 
-    protected Set<T> extendSetInDirectionOfNode(final Set<T> s, final T node)
+    protected boolean extendSetInDirectionOfNode(final Set<T> s, final T node)
     {
 //        System.out.println("Extending set " + s + " in direction of node" + node);
         Set<T> baseNodes = new HashSet<>();
@@ -157,36 +156,21 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
         }
 
 
-        return extender.extendToMaxIndependentSet(baseNodes);
+        return newSetFound(extender.extendToMaxIndependentSet(baseNodes));
     }
 
-    protected boolean newSetFound(final Set<T> generatedSet)
-    {
 
-
-        if (!P.contains(generatedSet))
-        {
-            if(setsNotExtended.add(generatedSet))
-            {
-                Q.setWeight(generatedSet, scorer.scoreIndependentSet(generatedSet));
-                nextIndependentSet = generatedSet;
-                nextSetReady = true;
-                return true;
-            }
-        }
-        return false;
-    }
 
     protected boolean runFullEnumeration()
     {
-        while(!Q.isEmpty() && !Thread.currentThread().isInterrupted())
+        while(!Q.isEmpty() && !timeLimitReached())
         {
 
             getNextSetToExtend();
 
             nodesIterator = V.iterator();
 
-            while (nodesIterator.hasNext() && !Thread.currentThread().isInterrupted())
+            while (nodesIterator.hasNext() && !timeLimitReached())
             {
                 T node = nodesIterator.next();
                 if (handleIterationNodePhase(node))
@@ -198,16 +182,16 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
 
         }
 
-        while(setsNotExtended.isEmpty() && graph.hasNextNode() && !Thread.currentThread().isInterrupted())
+        while(setsNotExtended.isEmpty() && graph.hasNextNode() && !timeLimitReached())
         {
             currentNode = graph.nextNode();
             V.add(currentNode);
             setsIterator = P.iterator();
-            while(setsIterator.hasNext() && !Thread.currentThread().isInterrupted())
+            while(setsIterator.hasNext() && !timeLimitReached())
             {
                 Set<T> s = setsIterator.next();
-                Set<T> generatedSet = extendSetInDirectionOfNode(s, currentNode);
-                if (newSetFound(generatedSet))
+//                Set<T> generatedSet = extendSetInDirectionOfNode(s, currentNode);
+                if (extendSetInDirectionOfNode(s, currentNode))
                 {
                     step = ITERATING_SETS;
 
@@ -223,8 +207,8 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
 
     protected boolean handleIterationNodePhase(T node)
     {
-        Set<T> generatedSet = extendSetInDirectionOfNode(currentSet, node);
-        if(newSetFound(generatedSet))
+//        Set<T> generatedSet = extendSetInDirectionOfNode(currentSet, node);
+        if(extendSetInDirectionOfNode(currentSet, node))
         {
             step = ITERATING_NODES;
 
@@ -236,8 +220,8 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
 
     protected boolean handleIterationSetPhase(Set<T> s)
     {
-        Set<T> generatedSet = extendSetInDirectionOfNode(s, currentNode);
-        if (newSetFound(generatedSet))
+//        Set<T> generatedSet = extendSetInDirectionOfNode(s, currentNode);
+        if (extendSetInDirectionOfNode(s, currentNode))
         {
             step = ITERATING_SETS;
 
@@ -253,4 +237,11 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
         newSetFound(extender.extendToMaxIndependentSet(new HashSet<T>()));
         step = BEGINNING;
     }
+
+    @Override
+    protected boolean timeLimitReached() {
+        return Thread.currentThread().isInterrupted();
+    }
+
+
 }

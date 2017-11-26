@@ -2,14 +2,19 @@ package tdenum.graph.triangulation;
 
 import org.junit.Test;
 import tdenum.TDEnum;
+import tdenum.common.IO.GraphReader;
 import tdenum.factories.TDEnumFactory;
 import tdenum.graph.TestsUtils;
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.graphs.IGraph;
+import tdenum.graph.graphs.chordal_graph.IChordalGraph;
+import tdenum.graph.graphs.chordal_graph.single_thread.ChordalGraph;
 import tdenum.legacy.graph.triangulation.LegacyMinimalTriangulationsEnumerator;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -111,6 +116,29 @@ public class MinimalTriangulationEnumeratorTest {
             num++;
         }
         assertEquals(4, num);
+    }
+
+    @Test
+    public void testCompareVannilaToNew()
+    {
+        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\Easy\\BN\\CSP\\54.wcsp.uai");
+
+        TDEnumFactory.init(g);
+        IMinimalTriangulationsEnumerator enumerator = TDEnumFactory.getMinimalTriangulationsEnumeratorFactory().produce();
+        Set<IChordalGraph> newResultSet = new HashSet<>();
+        while (enumerator.hasNext())
+        {
+            newResultSet.add(enumerator.next());
+        }
+
+        LegacyMinimalTriangulationsEnumerator legacyEnumerator = new LegacyMinimalTriangulationsEnumerator(g, NONE, UNIFORM, MCS_M);
+        Set<IChordalGraph> legacyResults = new HashSet<>();
+        while (legacyEnumerator.hasNext())
+        {
+            legacyResults.add(legacyEnumerator.next());
+        }
+        assertEquals(legacyResults.size(), newResultSet.size());
+        assertEquals(legacyResults,newResultSet);
     }
 
     <T> int  findFrequency(T obj, Collection<T> collection)

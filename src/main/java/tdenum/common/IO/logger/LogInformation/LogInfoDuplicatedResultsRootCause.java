@@ -1,5 +1,10 @@
 package tdenum.common.IO.logger.LogInformation;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import tdenum.graph.data_structures.Node;
+import tdenum.graph.data_structures.NodeSet;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -14,6 +19,10 @@ import static tdenum.common.IO.CSVOperations.dataToCSV;
 public class LogInfoDuplicatedResultsRootCause<T> extends AbstractLogInfo {
 
 
+
+    Map<T, Integer> idMap = new HashMap<>();
+
+    int id = 1;
 
     class ResultData<T>
     {
@@ -53,12 +62,22 @@ public class LogInfoDuplicatedResultsRootCause<T> extends AbstractLogInfo {
 
             @Override
             public String toString() {
-                final StringBuilder sb = new StringBuilder("ResultDataTuple{");
-                sb.append("mis=").append(mis);
-                sb.append(", jv=").append(jv);
-                sb.append(", v=").append(v);
-                sb.append('}');
-                return sb.toString();
+//                final StringBuilder sb = new StringBuilder("ResultDataTuple{");
+//                sb.append("mis=").append(mis);
+//                sb.append(", jv=").append(jv);
+//                sb.append(", v=").append(v);
+//                sb.append('}');
+//                return sb.toString();
+                return toJson().toString();
+            }
+
+            public JsonObject toJson()
+            {
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("mis", mis.toString());
+                jsonObject.addProperty("jv", jv.toString());
+                jsonObject.addProperty("v", v.toString());
+                return jsonObject;
             }
         }
 
@@ -146,11 +165,25 @@ public class LogInfoDuplicatedResultsRootCause<T> extends AbstractLogInfo {
 
         @Override
         public String toString() {
-            final StringBuilder sb = new StringBuilder("ResultData{");
-            sb.append("result=").append(result);
-            sb.append(", generatedFrom=").append(generatedFrom);
-            sb.append('}');
-            return sb.toString();
+//            final StringBuilder sb = new StringBuilder("ResultData{");
+//            sb.append("result=").append(result);
+//            sb.append(", generatedFrom=").append(generatedFrom);
+//            sb.append('}');
+//            return sb.toString();
+            return toJson().toString();
+        }
+
+        public JsonObject toJson()
+        {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("result", result.toString());
+            JsonArray jsonArray = new JsonArray();
+            for (ResultDataTuple tuple: generatedFrom
+                 ) {
+                jsonArray.add(tuple.toJson());
+            }
+            jsonObject.add("generatedFrom",jsonArray);
+            return jsonObject;
         }
     }
 
@@ -166,6 +199,41 @@ public class LogInfoDuplicatedResultsRootCause<T> extends AbstractLogInfo {
             resultDataMap.put(result, new ResultData(result));
         }
         resultDataMap.get(result).log(sourceMIS,jv,v);
+
+        for (T t : result)
+        {
+            if (!idMap.containsKey(t))
+            {
+                idMap.put(t, id);
+                id++;
+            }
+        }
+
+        for (T t: sourceMIS)
+        {
+            if (!idMap.containsKey(t))
+            {
+                idMap.put(t, id);
+                id++;
+            }
+        }
+
+        for (T t: jv)
+        {
+            if (!idMap.containsKey(t))
+            {
+                idMap.put(t, id);
+                id++;
+            }
+        }
+
+        if (!idMap.containsKey(v))
+        {
+            idMap.put(v, id);
+            id++;
+        }
+
+
     }
     @Override
     public void printLog() {
@@ -190,21 +258,21 @@ public class LogInfoDuplicatedResultsRootCause<T> extends AbstractLogInfo {
                 //"generated results where final result equals source MIS"
                 resultDataMap.values().stream().mapToInt(e->e.sameSource).filter(i->i>0).sum(),
                 //"average duplication where source MIS equals result"
-                resultDataMap.values().stream().mapToInt(e->e.sameSource).filter(i->i>0).average().getAsDouble(),
+                resultDataMap.values().stream().mapToInt(e->e.sameSource).filter(i->i>0).average().orElse(0),
 
                 //"results where Jv equals source MIS",
                 resultDataMap.values().stream().mapToInt(e->e.sourceEqualsJv).filter(i->i>0).count(),
                 //"generated results where Jv equals source MIS",
                 resultDataMap.values().stream().mapToInt(e->e.sourceEqualsJv).filter(i->i>0).sum(),
                 //"average duplication where Jv equals source MIS",
-                resultDataMap.values().stream().mapToInt(e->e.sourceEqualsJv).filter(i->i>0).average().getAsDouble(),
+                resultDataMap.values().stream().mapToInt(e->e.sourceEqualsJv).filter(i->i>0).average().orElse(0),
 
                 //"results where v in source MIS",
                 resultDataMap.values().stream().mapToInt(e->e.sourceContainsV).filter(i->i>0).count(),
                 //"generated results where v in source MIS",
                 resultDataMap.values().stream().mapToInt(e->e.sourceContainsV).filter(i->i>0).sum(),
                 //"average duplication where v in source MIS"
-                resultDataMap.values().stream().mapToInt(e->e.sourceContainsV).filter(i->i>0).average().getAsDouble()
+                resultDataMap.values().stream().mapToInt(e->e.sourceContainsV).filter(i->i>0).average().orElse(0)
         );
 
         File logFile = createFile("Duplication_Results_Root_Cause_Summary.csv");
@@ -216,18 +284,27 @@ public class LogInfoDuplicatedResultsRootCause<T> extends AbstractLogInfo {
             e.printStackTrace();
         }
 
+
+
+
+
+
         logFile = createFile("duplicated results where final result equals source MIS.json");
         try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile, true))) {
+        output.println("[");
             resultDataMap.values().stream().filter(e->e.sameSource>1).limit(5)
-                    .forEach(e -> output.println(e));
+                    .forEach(e -> {output.print(mapToInt(e)); output.println(",");});
+            output.println("]");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
         logFile = createFile("duplicated results where Jv equals source MIS.json");
         try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile, true))) {
+            output.println("[");
             resultDataMap.values().stream().filter(e->e.sourceEqualsJv>1).limit(5)
-                    .forEach(e -> output.println(e));
+                    .forEach(e -> {output.print(mapToInt(e)); output.println(",");});
+            output.println("]");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -236,13 +313,96 @@ public class LogInfoDuplicatedResultsRootCause<T> extends AbstractLogInfo {
         logFile = createFile("duplicated results where v in source MIS.json");
 
         try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile, true))) {
+            JsonObject printResults = getJsonWithMapping();
+            JsonArray topResults = new JsonArray();
+
             resultDataMap.values().stream().filter(e->e.sourceContainsV>1).limit(5)
-                    .forEach(e -> output.println(e));
+                    .forEach(e -> {
+                                topResults.add(e.toJson());
+                            });
+            printResults.add("topResults", topResults);
+            output.println(printResults);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
+        logFile = createFile("most duplicated results sources.json");
+        try(PrintWriter output = new PrintWriter(new FileOutputStream(logFile, true))) {
+
+            JsonObject printResults = getJsonWithMapping();
+            JsonArray topResults = new JsonArray();
+            resultDataMap.values().stream().
+                    sorted((o1, o2) -> o2.count-o1.count).limit(20).forEach((e -> topResults.add(mapToInt(e).toJson())));
+            printResults.add("topResults",topResults);
+            output.println(printResults);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    JsonObject getJsonWithMapping()
+    {
+        JsonObject printResults = new JsonObject();
+        JsonObject mapping = new JsonObject();
+        for(Map.Entry<T,Integer> entry: idMap.entrySet())
+        {
+            JsonArray array = new JsonArray();
+            NodeSet nodes = (NodeSet) entry.getKey();
+            for (Node node : nodes)
+            {
+                array.add(node.intValue());
+            }
+            mapping.add(entry.getValue().toString(), array);
+        }
+        printResults.add("mapping", mapping);
+        return printResults;
+    }
+
+    ResultData<Integer> mapToInt(ResultData<T> tResultData)
+    {
+        Set resultsId = getSetIds(tResultData.result);
+        ResultData<Integer> intResultData = new ResultData<Integer>(resultsId);
+
+        for(ResultData.ResultDataTuple resultDataTuple : tResultData.generatedFrom)
+        {
+            Set<Integer> mis = getSetIds(resultDataTuple.mis);
+            Set<Integer> jv = getSetIds(resultDataTuple.jv);
+            Integer v = idMap.get(resultDataTuple.v);
+            intResultData.log(mis,jv,v);
+        }
+
+
+        intResultData.sameJv = tResultData.sameJv;
+        intResultData.resultContainsV =tResultData.resultContainsV;
+        intResultData.sourceEqualsJv = tResultData.sourceEqualsJv;
+        intResultData.sourceContainsV = tResultData.sourceContainsV;
+        intResultData.sameSource = tResultData.sameSource;
+        intResultData.count = tResultData.count;
+
+
+
+
+
+
+        return intResultData;
+
+
 
 
     }
+
+    Set<Integer> getSetIds(Set<T> tSet)
+    {
+        Set<Integer> ids = new HashSet<>();
+        for (T t : tSet)
+        {
+            ids.add(idMap.get(t));
+        }
+        return ids;
+    }
+
+
+
 }

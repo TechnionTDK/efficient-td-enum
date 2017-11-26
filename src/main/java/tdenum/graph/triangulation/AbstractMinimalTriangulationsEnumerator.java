@@ -2,7 +2,7 @@ package tdenum.graph.triangulation;
 
 
 import tdenum.graph.graphs.IGraph;
-import tdenum.graph.graphs.separator_graph.ISeparatorGraph;
+import tdenum.graph.graphs.succinct_graphs.ISuccinctGraphRepresentation;
 import tdenum.graph.independent_set.IMaximalIndependentSetsEnumerator;
 
 
@@ -10,7 +10,7 @@ public abstract class AbstractMinimalTriangulationsEnumerator implements IMinima
 
 
     protected IGraph graph;
-    protected ISeparatorGraph seperatorGraph;
+    protected ISuccinctGraphRepresentation seperatorGraph;
 
     protected IMaximalIndependentSetsEnumerator setsEnumerator;
 
@@ -22,7 +22,7 @@ public abstract class AbstractMinimalTriangulationsEnumerator implements IMinima
     }
 
     @Override
-    public void setSeparatorGraph(ISeparatorGraph separatorGraph) {
+    public void setSeparatorGraph(ISuccinctGraphRepresentation separatorGraph) {
         this.seperatorGraph = separatorGraph;
     }
 

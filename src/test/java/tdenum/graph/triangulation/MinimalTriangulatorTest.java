@@ -5,6 +5,7 @@ import tdenum.graph.TestsUtils;
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.graphs.IGraph;
 import tdenum.graph.triangulation.minimal_triangulators.MinimalTriangulator;
+import tdenum.graph.triangulation.minimal_triangulators.RandomMinimalTriangulator;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -18,7 +19,7 @@ public class MinimalTriangulatorTest {
     public void testThreeNodesCircleGraphMCS_M()
     {
         IGraph g = TestsUtils.circleGraph(3);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MCS_M);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MCS_M);
         IGraph h = triangulator.triangulate(g);
         assertEquals(g, h);
     }
@@ -26,7 +27,7 @@ public class MinimalTriangulatorTest {
     public void testFourNodesCircleGraphMCS_M()
     {
         IGraph g = TestsUtils.circleGraph(4);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MCS_M);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MCS_M);
         IGraph h = triangulator.triangulate(g);
         Node n0 = new Node(0);
         Node n1 = new Node(1);
@@ -40,7 +41,7 @@ public class MinimalTriangulatorTest {
     public void testFiveNodesCircleGraphMCS_M()
     {
         IGraph g = TestsUtils.circleGraph(5);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MCS_M);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MCS_M);
         IGraph h = triangulator.triangulate(g);
         assertEquals(7, h.getNumberOfEdges());
     }
@@ -49,7 +50,7 @@ public class MinimalTriangulatorTest {
     public void testPathGraphMCS_M()
     {
         IGraph g = TestsUtils.pathGraph(3);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MCS_M);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MCS_M);
         IGraph h = triangulator.triangulate(g);
         assertEquals(g, h);
     }
@@ -58,7 +59,7 @@ public class MinimalTriangulatorTest {
     public void testCliqueGraphMCS_M()
     {
         IGraph g = TestsUtils.cliqueGraph(4);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MCS_M);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MCS_M);
         IGraph h = triangulator.triangulate(g);
         assertEquals(g, h);
     }
@@ -67,7 +68,7 @@ public class MinimalTriangulatorTest {
     public void testLongNeckEightGraphMCS_M()
     {
         IGraph g = TestsUtils.longNeckEightGraph();
-        MinimalTriangulator triangulator = new MinimalTriangulator(MCS_M);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MCS_M);
         IGraph h = triangulator.triangulate(g);
         assertEquals(11, h.getNumberOfEdges());
         Node n0 = new Node(0);
@@ -90,7 +91,7 @@ public class MinimalTriangulatorTest {
     public void testThreeNodesCircleGraphMIN_DEGREE_LB_TRIANG()
     {
         IGraph g = TestsUtils.circleGraph(3);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MIN_DEGREE_LB_TRIANG);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MIN_DEGREE_LB_TRIANG);
         IGraph h = triangulator.triangulate(g);
         assertEquals(g, h);
     }
@@ -98,7 +99,7 @@ public class MinimalTriangulatorTest {
     public void testFourNodesCircleGraphMIN_DEGREE_LB_TRIANG()
     {
         IGraph g = TestsUtils.circleGraph(4);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MIN_DEGREE_LB_TRIANG);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MIN_DEGREE_LB_TRIANG);
         IGraph h = triangulator.triangulate(g);
         Node n0 = new Node(0);
         Node n1 = new Node(1);
@@ -112,7 +113,7 @@ public class MinimalTriangulatorTest {
     public void testFiveNodesCircleGraphMIN_DEGREE_LB_TRIANG()
     {
         IGraph g = TestsUtils.circleGraph(5);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MIN_DEGREE_LB_TRIANG);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MIN_DEGREE_LB_TRIANG);
         IGraph h = triangulator.triangulate(g);
         assertEquals(7, h.getNumberOfEdges());
     }
@@ -121,7 +122,7 @@ public class MinimalTriangulatorTest {
     public void testPathGraphMIN_DEGREE_LB_TRIANG()
     {
         IGraph g = TestsUtils.pathGraph(3);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MIN_DEGREE_LB_TRIANG);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MIN_DEGREE_LB_TRIANG);
         IGraph h = triangulator.triangulate(g);
         assertEquals(g, h);
     }
@@ -130,7 +131,7 @@ public class MinimalTriangulatorTest {
     public void testCliqueGraphMIN_DEGREE_LB_TRIANG()
     {
         IGraph g = TestsUtils.cliqueGraph(4);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MIN_DEGREE_LB_TRIANG);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MIN_DEGREE_LB_TRIANG);
         IGraph h = triangulator.triangulate(g);
         assertEquals(g, h);
     }
@@ -139,7 +140,7 @@ public class MinimalTriangulatorTest {
     public void testLongNeckEightGraphMIN_DEGREE_LB_TRIANG()
     {
         IGraph g = TestsUtils.longNeckEightGraph();
-        MinimalTriangulator triangulator = new MinimalTriangulator(MIN_FILL_LB_TRIANG);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MIN_FILL_LB_TRIANG);
         IGraph h = triangulator.triangulate(g);
         assertEquals(11, h.getNumberOfEdges());
         Node n0 = new Node(0);
@@ -161,7 +162,7 @@ public class MinimalTriangulatorTest {
     public void testThreeNodesCircleGraphMIN_FILL_LB_TRIANG()
     {
         IGraph g = TestsUtils.circleGraph(3);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MIN_FILL_LB_TRIANG);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MIN_FILL_LB_TRIANG);
         IGraph h = triangulator.triangulate(g);
         assertEquals(g, h);
     }
@@ -169,7 +170,7 @@ public class MinimalTriangulatorTest {
     public void testFourNodesCircleGraphMIN_FILL_LB_TRIANG()
     {
         IGraph g = TestsUtils.circleGraph(4);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MIN_FILL_LB_TRIANG);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MIN_FILL_LB_TRIANG);
         IGraph h = triangulator.triangulate(g);
         Node n0 = new Node(0);
         Node n1 = new Node(1);
@@ -183,7 +184,7 @@ public class MinimalTriangulatorTest {
     public void testFiveNodesCircleGraphMIN_FILL_LB_TRIANG()
     {
         IGraph g = TestsUtils.circleGraph(5);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MIN_FILL_LB_TRIANG);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MIN_FILL_LB_TRIANG);
         IGraph h = triangulator.triangulate(g);
         assertEquals(7, h.getNumberOfEdges());
     }
@@ -192,7 +193,7 @@ public class MinimalTriangulatorTest {
     public void testPathGraphMIN_FILL_LB_TRIANG()
     {
         IGraph g = TestsUtils.pathGraph(3);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MIN_FILL_LB_TRIANG);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MIN_FILL_LB_TRIANG);
         IGraph h = triangulator.triangulate(g);
         assertEquals(g, h);
     }
@@ -201,7 +202,7 @@ public class MinimalTriangulatorTest {
     public void testCliqueGraphMIN_FILL_LB_TRIANG()
     {
         IGraph g = TestsUtils.cliqueGraph(4);
-        MinimalTriangulator triangulator = new MinimalTriangulator(MIN_FILL_LB_TRIANG);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MIN_FILL_LB_TRIANG);
         IGraph h = triangulator.triangulate(g);
         assertEquals(g, h);
     }
@@ -210,7 +211,7 @@ public class MinimalTriangulatorTest {
     public void testLongNeckEightGraphMIN_FILL_LB_TRIANG()
     {
         IGraph g = TestsUtils.longNeckEightGraph();
-        MinimalTriangulator triangulator = new MinimalTriangulator(MIN_FILL_LB_TRIANG);
+        MinimalTriangulator triangulator = new RandomMinimalTriangulator(MIN_FILL_LB_TRIANG);
         IGraph h = triangulator.triangulate(g);
         assertEquals(11, h.getNumberOfEdges());
         Node n0 = new Node(0);

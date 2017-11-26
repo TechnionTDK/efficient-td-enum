@@ -2,7 +2,7 @@ package tdenum.legacy.graph.independent_set;
 
 
 import tdenum.graph.data_structures.weighted_queue.single_thread.WeightedQueue;
-import tdenum.graph.graphs.ISuccinctGraphRepresentation;
+import tdenum.graph.graphs.succinct_graphs.ISuccinctGraphRepresentation;
 import tdenum.graph.independent_set.AlgorithmStep;
 import tdenum.graph.independent_set.set_extender.IIndependentSetExtender;
 import tdenum.graph.independent_set.scoring.IIndependentSetScorer;

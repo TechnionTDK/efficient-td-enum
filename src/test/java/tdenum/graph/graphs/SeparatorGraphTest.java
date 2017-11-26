@@ -3,8 +3,8 @@ package tdenum.graph.graphs;
 import org.junit.Test;
 import tdenum.graph.TestsUtils;
 import tdenum.graph.data_structures.MinimalSeparator;
-import tdenum.graph.graphs.separator_graph.ISeparatorGraph;
-import tdenum.graph.graphs.separator_graph.single_thread.SeparatorGraph;
+import tdenum.graph.graphs.succinct_graphs.separator_graph.ISeparatorGraph;
+import tdenum.graph.graphs.succinct_graphs.separator_graph.single_thread.SeparatorGraph;
 
 import java.util.HashSet;
 import java.util.Set;

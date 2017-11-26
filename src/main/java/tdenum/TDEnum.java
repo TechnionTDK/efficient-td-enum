@@ -1,5 +1,6 @@
 package tdenum;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import tdenum.common.IO.GraphReader;
 import tdenum.common.IO.InputFile;
 import tdenum.common.IO.logger.Logger;
@@ -45,7 +46,7 @@ public class TDEnum {
         inputFile = new InputFile(filePath);
         TDEnumFactory.init(inputFile);
 
-
+        Logger.init();
         Logger.setField(inputFile.getField());
         Logger.setType(inputFile.getType());
         Logger.setGraph(inputFile.getName());
@@ -66,7 +67,8 @@ public class TDEnum {
 
         long startTime = System.nanoTime();
         long finishTime = startTime;
-        if (TDEnumFactory.getProperties().containsKey("time_limit"))
+        if (TDEnumFactory.getProperties().containsKey("time_limit") &&
+                !Boolean.valueOf(TDEnumFactory.getProperties().getProperty("enumeratorSelfTimer")))
         {
             timeLimit = Integer.parseInt(TDEnumFactory.getProperties().getProperty("time_limit"));
             runTimeLimited(executorService,Arrays.asList(runner), timeLimit);
@@ -74,6 +76,7 @@ public class TDEnum {
         else
         {
             runWithoutTimeLimit(executorService, Arrays.asList(runner));
+
         }
         finishTime = System.nanoTime() - startTime;
         separators = runner.getNumberOfMinimalSeparators();
@@ -112,8 +115,11 @@ public class TDEnum {
 
     static void runWithoutTimeLimit(ExecutorService executorService, List<Callable<Object>> callables) {
         try {
-            executorService.invokeAll(callables);
+            executorService.invokeAll(callables).get(0).get();
+
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
             e.printStackTrace();
         }
     }

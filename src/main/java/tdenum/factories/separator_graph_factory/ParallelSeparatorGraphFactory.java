@@ -1,8 +1,8 @@
 package tdenum.factories.separator_graph_factory;
 
 import tdenum.factories.TDEnumFactory;
-import tdenum.graph.graphs.separator_graph.ISeparatorGraph;
-import tdenum.graph.graphs.separator_graph.parallel.ConcurrentSeparatorsGraph;
+import tdenum.graph.graphs.succinct_graphs.separator_graph.ISeparatorGraph;
+import tdenum.graph.graphs.succinct_graphs.separator_graph.parallel.ConcurrentSeparatorsGraph;
 
 public class ParallelSeparatorGraphFactory implements ISeparatorGraphFactory {
     @Override
