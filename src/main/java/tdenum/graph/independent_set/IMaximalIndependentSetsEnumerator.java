@@ -1,5 +1,6 @@
 package tdenum.graph.independent_set;
 
+import tdenum.common.IO.result_printer.IResultPrinter;
 import tdenum.common.cache.ICache;
 import tdenum.graph.data_structures.weighted_queue.IWeightedQueue;
 import tdenum.graph.graphs.succinct_graphs.ISuccinctGraphRepresentation;
@@ -12,6 +13,8 @@ public interface IMaximalIndependentSetsEnumerator<T> {
 
     boolean hasNext();
     Set<T> next();
+
+    void setResultPrinter(IResultPrinter<Set<T>> resultPrinter);
 
     void setGraph(ISuccinctGraphRepresentation<T> graph);
 

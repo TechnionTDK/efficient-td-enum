@@ -1,7 +1,9 @@
 package tdenum.graph.triangulation;
 
 
+import tdenum.common.IO.result_printer.IResultPrinter;
 import tdenum.graph.graphs.IGraph;
+import tdenum.graph.graphs.chordal_graph.IChordalGraph;
 import tdenum.graph.graphs.succinct_graphs.ISuccinctGraphRepresentation;
 import tdenum.graph.independent_set.IMaximalIndependentSetsEnumerator;
 
@@ -13,6 +15,19 @@ public abstract class AbstractMinimalTriangulationsEnumerator implements IMinima
     protected ISuccinctGraphRepresentation seperatorGraph;
 
     protected IMaximalIndependentSetsEnumerator setsEnumerator;
+
+    public IResultPrinter<IChordalGraph> getResultPrinter() {
+        return resultPrinter;
+    }
+
+    @Override
+    public void setResultPrinter(IResultPrinter<IChordalGraph> resultPrinter) {
+        this.resultPrinter = resultPrinter;
+    }
+
+
+
+    protected IResultPrinter<IChordalGraph> resultPrinter;
 
 
 

@@ -1,12 +1,16 @@
 package tdenum.graph.triangulation.single_thread;
 
+import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.graphs.chordal_graph.IChordalGraph;
 import tdenum.graph.independent_set.Converter;
 import tdenum.graph.triangulation.AbstractMinimalTriangulationsEnumerator;
 
+import java.util.Set;
+
 public class MinimalTriangulationsEnumerator extends AbstractMinimalTriangulationsEnumerator{
 
 
+    IChordalGraph nextChordalGraph;
 
     @Override
     public boolean hasNext()
@@ -18,7 +22,8 @@ public class MinimalTriangulationsEnumerator extends AbstractMinimalTriangulatio
     @Override
     public IChordalGraph next()
     {
-        return Converter.minimalSeparatorsToTriangulation(graph, setsEnumerator.next());
+        setsEnumerator.next();
+        return nextChordalGraph;
     }
 
     @Override
@@ -28,4 +33,9 @@ public class MinimalTriangulationsEnumerator extends AbstractMinimalTriangulatio
 
     }
 
+    @Override
+    public void print(Set<MinimalSeparator> result) {
+        nextChordalGraph = Converter.minimalSeparatorsToTriangulation(graph, result);
+        resultPrinter.print(nextChordalGraph);
+    }
 }

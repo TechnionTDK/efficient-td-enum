@@ -1,241 +1,150 @@
 package tdenum.graph.independent_set.parallel;
 
 import tdenum.graph.independent_set.AbstractMaximalIndependentSetsEnumerator;
+import tdenum.graph.independent_set.single_thread.MaximalIndependentSetsEnumerator;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import static tdenum.graph.independent_set.AlgorithmStep.ITERATING_NODES;
+import static tdenum.graph.independent_set.AlgorithmStep.ITERATING_SETS;
 
-public class ParallelMaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndependentSetsEnumerator<T> implements Callable<Void> {
-    @Override
-    public Void call() throws Exception {
-        return null;
-    }
+
+public class ParallelMaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndependentSetsEnumerator<T> {
+
+
 
     @Override
     protected boolean timeLimitReached() {
-        return false;
+        return Thread.currentThread().isInterrupted();
     }
 
 
 
     @Override
     public boolean hasNext() {
-        return false;
+        if (nextSetReady)
+        {
+            return true;
+        }
+        else
+        {
+            runFullEnumeration();
+            return false;
+        }
     }
 
     @Override
     public Set<T> next() {
-        return null;
+        if (nextSetReady || hasNext()) {
+            nextSetReady = false;
+            resultPrinter.print(nextIndependentSet);
+            return nextIndependentSet;
+        }
+        return new HashSet<>();
     }
 
     @Override
     public void doFirstStep() {
+        newSetFound(extender.extendToMaxIndependentSet(new HashSet<T>()));
+    }
+
+
+    protected boolean parallelNewSetFound(final Set<T> generatedSet)
+    {
+
+        if (!P.contains(generatedSet))
+        {
+            if(setsNotExtended.add(generatedSet))
+            {
+                Q.setWeight(generatedSet, scorer.scoreIndependentSet(generatedSet));
+                resultPrinter.print(generatedSet);
+
+                return true;
+            }
+            return false;
+        }
+
+        return false;
+    }
+
+
+    protected void extendSetInDirectionOfNode(final Set<T> s, final T node)
+    {
+        Set<T> baseNodes = new HashSet<>();
+        baseNodes.add(node);
+        for (T t : s)
+        {
+            if(!graph.hasEdge(node, t))
+            {
+                baseNodes.add(t);
+            }
+        }
+
+        if(jvCache.add(baseNodes))
+        {
+            Set<T> result =   extender.extendToMaxIndependentSet(baseNodes);
+
+            parallelNewSetFound(result);
+        }
+    }
+
+
+    void runFullEnumeration()
+    {
+        while(!Q.isEmpty() && !timeLimitReached())
+        {
+            getNextSetToExtend();
+            handleIterationNodePhase();
+
+            while(setsNotExtended.isEmpty() && graph.hasNextNode() && !timeLimitReached())
+            {
+                currentNode = graph.nextNode();
+                V.add(currentNode);
+                handleIterationSetPhase();
+
+            }
+
+        }
+
+
+    }
+
+    protected void getNextSetToExtend()
+    {
+        Set<T> currentScoredSet = Q.peek();
+        if (scorer.mayScoreChange())
+        {
+
+            int currentScore = scorer.scoreIndependentSet(currentScoredSet);
+            while (currentScore > Q.getWeight(currentScoredSet))
+            {
+                Q.setWeight(currentScoredSet, currentScore);
+                currentScoredSet = Q.peek();
+                currentScore = scorer.scoreIndependentSet(currentScoredSet);
+            }
+        }
+        currentSet = currentScoredSet;
+        scorer.independentSetUsed(currentSet);
+        P.add(currentSet);
+        setsNotExtended.remove(currentSet);
+        Q.poll();
 
     }
 
 
-//    @Override
-//    protected boolean timeLimitReached() {
-//        return false;
-//    }
-//
-//    enum STATUS
-//    {
-//        RUNNING, WAITING, FINISHED
-//    }
-//
-//
-//    Map<Long, STATUS> statusMap;
-//
-//    AtomicInteger atomiceGeneralStatus;
-//
-//    Set<Long> waitingSet;
-//
-//    long threadID;
-//
-//
-//
-//    STATUS status = RUNNING;
-//
-//
-//
-//    protected boolean newSetFound(final Set<T> generatedSet)
-//    {
-//        Set<T2> codedGeneratedSet = convertTtoT2(generatedSet);
-//        if (!P.contains(codedGeneratedSet))
-//        {
-//            if(setsNotExtended.add(codedGeneratedSet))
-//            {
-//
-//                if(!atomiceGeneralStatus.compareAndSet(0,0))
-//                {
-//                    synchronized (statusMap)
-//                    {
-//                        statusMap.notify();
-//                    }
-//                }
-//
-//                return true;
-//            }
-//
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    protected Set<T2> convertTtoT2(Set<T> input) {
-//        return null;
-//    }
-//
-//
-//    void updateStatus(STATUS status)
-//    {
-//        this.status = status;
-//        synchronized (statusMap)
-//        {
-//            statusMap.put(threadID, status);
-//        }
-//    }
-//
-//    void runFullEnumeration()
-//    {
-//
-//
-//        Set<T> j = Q.poll();
-//        if(j != null)
-//        {
-//            P.add(j);
-//
-//            iterateNodes(j);
-//        }
-//        else
-//        {
-//            T v = graph.nextNode();
-//            if (v != null)
-//            {
-//                V.add(v);
-//                iterateSets(v);
-//            }
-//            else
-//            {
-//                checkForFinish();
-//            }
-//        }
-//    }
-//
-//
-//    void checkForFinish()
-//    {
-//        this.status = WAITING;
-//        synchronized (statusMap)
-//        {
-//
-//            for(Long otherThreadId : statusMap.keySet())
-//            {
-//
-//                if (otherThreadId.equals(this.threadID))
-//                {
-//                    continue;
-//                }
-//                STATUS otherStatus = statusMap.get(otherThreadId);
-//
-//                if (otherStatus.equals(FINISHED))
-//                {
-//                    break;
-//                }
-//                if(otherStatus.equals(RUNNING))
-//                {
-//                    atomiceGeneralStatus.incrementAndGet();
-//                    statusMap.put(threadID, WAITING);
-//                    try {
-//                        otherStatus.wait();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    //thread wakes up
-//                    atomiceGeneralStatus.decrementAndGet();
-//                    this.status = RUNNING;
-//                    statusMap.put(threadID,status);
-//                    break;
-//                }
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public Void call(){
-//
-//        this.threadID = Thread.currentThread().getId();
-//        while(status.equals(RUNNING) && !Thread.currentThread().isInterrupted())
-//        {
-//            runFullEnumeration();
-//        }
-//        updateStatus(FINISHED);
-//        statusMap.notifyAll();
-//
-//        System.out.println("Thread " + Thread.currentThread().getId() + " finished " + System.nanoTime());
-//        return null;
-//    }
-//
-//    void iterateSets(T v)
-//    {
-//        for(Set<T> j : P)
-//        {
-//            if (j.contains(v))
-//            {
-//                continue;
-//            }
-//            Set<T> generatedSet = extendSetInDirectionOfNode(j, v);
-//            newSetFound(generatedSet);
-//        }
-//    }
-//
-//    void iterateNodes(Set<T> j)
-//    {
-//        for (T v : V)
-//        {
-//            if (j.contains(v))
-//            {
-//                continue;
-//            }
-//            Set<T> generatedSet = extendSetInDirectionOfNode(j, v);
-//            newSetFound(generatedSet);
-//        }
-//    }
-//
-//
-//
-//    protected Set<T> extendSetInDirectionOfNode(final Set<T> s, final T node)
-//    {
-//        Set<T> baseNodes = new HashSet<>();
-//        baseNodes.add(node);
-//        for (T t : s)
-//        {
-//            if(!graph.hasEdge(node, t))
-//            {
-//                baseNodes.add(t);
-//            }
-//        }
-//        return extender.extendToMaxIndependentSet(baseNodes);
-//    }
-//
-//
-//    @Override
-//    public boolean hasNext() {
-//        return status != FINISHED;
-//    }
-//
-//    @Override
-//    public Set next() {
-//        return null;
-//    }
-//
-//    @Override
-//    public void doFirstStep() {
-//
-//    }
-//
+
+    protected void handleIterationNodePhase()
+    {
+        V.parallelStream().forEach(v->extendSetInDirectionOfNode(currentSet,v));
+    }
+
+
+    protected void handleIterationSetPhase()
+    {
+        P.parallelStream().forEach(extendedMis -> extendSetInDirectionOfNode(extendedMis, currentNode));
+    }
 
 
 

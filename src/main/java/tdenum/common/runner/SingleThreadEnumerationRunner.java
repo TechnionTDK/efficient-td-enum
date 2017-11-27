@@ -15,8 +15,10 @@ public class SingleThreadEnumerationRunner extends AbstractEnumerationRunner {
         resultHandler.setStartTime(startTime);
         while(minimalTriangulationsEnumerator.hasNext() && !Thread.currentThread().isInterrupted())
         {
-            IChordalGraph result = minimalTriangulationsEnumerator.next();
-            resultHandler.newResult(result);
+//            IChordalGraph result = minimalTriangulationsEnumerator.next();
+//            resultHandler.newResult(result);
+            minimalTriangulationsEnumerator.next();
+
         }
         long finishTime = System.nanoTime() - startTime;
 

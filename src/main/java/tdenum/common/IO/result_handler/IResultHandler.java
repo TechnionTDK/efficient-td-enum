@@ -1,12 +1,14 @@
 package tdenum.common.IO.result_handler;
 
 import tdenum.common.IO.WhenToPrint;
+import tdenum.common.IO.result_printer.IResultPrinter;
 import tdenum.graph.graphs.IGraph;
 import tdenum.graph.graphs.chordal_graph.IChordalGraph;
+import tdenum.graph.graphs.chordal_graph.single_thread.ChordalGraph;
 
 import java.io.PrintWriter;
 
-public interface IResultHandler {
+public interface IResultHandler extends IResultPrinter<IChordalGraph>{
 
     void newResult(final IChordalGraph triangulation);
 

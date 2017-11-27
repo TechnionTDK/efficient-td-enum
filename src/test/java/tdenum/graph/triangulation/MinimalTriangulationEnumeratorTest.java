@@ -1,5 +1,6 @@
 package tdenum.graph.triangulation;
 
+import org.junit.Before;
 import org.junit.Test;
 import tdenum.TDEnum;
 import tdenum.common.IO.GraphReader;
@@ -24,6 +25,15 @@ import static tdenum.graph.triangulation.TriangulationScoringCriterion.NONE;
 import static tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm.MCS_M;
 
 public class MinimalTriangulationEnumeratorTest {
+
+
+    @Before
+    public void readFile()
+    {
+        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\Easy\\BN\\CSP\\54.wcsp.uai");
+
+        TDEnumFactory.init(g);
+    }
 
     @Test
     public void testThreeCircleGraph()

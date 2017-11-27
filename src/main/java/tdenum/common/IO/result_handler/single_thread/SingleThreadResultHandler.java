@@ -3,6 +3,7 @@ package tdenum.common.IO.result_handler.single_thread;
 import tdenum.common.IO.result_handler.AbstractResultHandler;
 import tdenum.common.IO.result_handler.ResultInformation;
 import tdenum.graph.graphs.chordal_graph.IChordalGraph;
+import tdenum.graph.graphs.chordal_graph.single_thread.ChordalGraph;
 
 import static tdenum.common.IO.WhenToPrint.ALWAYS;
 import static tdenum.common.IO.WhenToPrint.NEVER;
@@ -104,5 +105,11 @@ public class SingleThreadResultHandler extends AbstractResultHandler {
         } else if (bagExpSize > maxBagExpSize) {
             maxBagExpSize = bagExpSize;
         }
+    }
+
+    @Override
+    public void print(IChordalGraph result) {
+        newResult(result);
+
     }
 }

@@ -141,9 +141,11 @@ public class SingleThreadMaximalIndependentSetsEnumeratorFactory implements IMax
 
         enumerator.setQ(TDEnumFactory.getWeightedQueueFactory().produce());
 
-        enumerator.doFirstStep();
+
 
         enumerator.setCache(TDEnumFactory.getCacheFactory().produce());
+        enumerator.doFirstStep();
+
 
         return enumerator;
     }

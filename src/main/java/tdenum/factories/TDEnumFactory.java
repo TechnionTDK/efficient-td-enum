@@ -81,6 +81,11 @@ public class TDEnumFactory {
 
     public static void init(IGraph graph)
     {
+        if(TDEnumFactory.inputFile==null)
+        {
+            TDEnumFactory.inputFile = new InputFile("");
+        }
+
         TDEnumFactory.graph = graph;
 
 

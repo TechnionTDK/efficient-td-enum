@@ -17,10 +17,15 @@ import static tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgo
 public class SingleThreadResultHandlerFactory implements IResultHandlerFactory {
 
 
+    IResultHandler resultHandler;
 
     @Override
     public IResultHandler produce() {
-        return  inject(new SingleThreadResultHandler());
+        if(resultHandler == null)
+        {
+            resultHandler =  inject(new SingleThreadResultHandler());
+        }
+        return resultHandler;
 
     }
 

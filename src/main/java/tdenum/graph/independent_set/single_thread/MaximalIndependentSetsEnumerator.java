@@ -18,8 +18,7 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
 
 
 
-    protected Set<T> currentSet;
-    protected T currentNode;
+
 
     protected AlgorithmStep step;
 
@@ -112,7 +111,7 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
     {
         if (nextSetReady || hasNext()) {
             nextSetReady = false;
-
+            resultPrinter.print(nextIndependentSet);
             return nextIndependentSet;
         }
         return new HashSet<>();

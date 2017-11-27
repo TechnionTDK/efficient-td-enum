@@ -1,5 +1,6 @@
 package tdenum.graph.independent_set;
 
+import tdenum.common.IO.result_printer.IResultPrinter;
 import tdenum.common.cache.ICache;
 import tdenum.graph.data_structures.weighted_queue.IWeightedQueue;
 import tdenum.graph.graphs.succinct_graphs.ISuccinctGraphRepresentation;
@@ -27,7 +28,19 @@ public abstract class AbstractMaximalIndependentSetsEnumerator<T> implements IMa
     protected boolean nextSetReady;
     protected Set<T> nextIndependentSet;
 
+    protected Set<T> currentSet;
+    protected T currentNode;
+
     protected ICache jvCache;
+
+
+
+    protected IResultPrinter<Set<T>> resultPrinter = new IResultPrinter<Set<T>>() {
+        @Override
+        public void print(Set<T> result) {
+
+        }
+    };
 
 
     @Override
@@ -83,6 +96,7 @@ public abstract class AbstractMaximalIndependentSetsEnumerator<T> implements IMa
             if(setsNotExtended.add(generatedSet))
             {
                 Q.setWeight(generatedSet, scorer.scoreIndependentSet(generatedSet));
+
                 nextIndependentSet = generatedSet;
                 nextSetReady = true;
                 return true;
@@ -92,6 +106,15 @@ public abstract class AbstractMaximalIndependentSetsEnumerator<T> implements IMa
         }
 
         return false;
+    }
+
+    public IResultPrinter<Set<T>> getResultPrinter() {
+        return resultPrinter;
+    }
+
+    @Override
+    public void setResultPrinter(IResultPrinter<Set<T>> resultPrinter) {
+        this.resultPrinter = resultPrinter;
     }
 
 
