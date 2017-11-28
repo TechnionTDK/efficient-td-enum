@@ -103,7 +103,6 @@ public class ParallelMaximalIndependentSetsEnumerator<T> extends AbstractMaximal
                 currentNode = graph.nextNode();
                 V.add(currentNode);
                 handleIterationSetPhase();
-
             }
 
         }
@@ -137,6 +136,7 @@ public class ParallelMaximalIndependentSetsEnumerator<T> extends AbstractMaximal
 
     protected void handleIterationNodePhase()
     {
+
         V.parallelStream().forEach(v->extendSetInDirectionOfNode(currentSet,v));
     }
 

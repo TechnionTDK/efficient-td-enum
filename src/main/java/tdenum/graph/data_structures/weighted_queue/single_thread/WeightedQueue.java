@@ -49,6 +49,10 @@ public  class WeightedQueue<T > implements IWeightedQueue<T>
         if(data.containsKey(v))
         {
             int prevWeight = data.get(v);
+            if(weight == prevWeight)
+            {
+                return;
+            }
             queue.get(prevWeight).remove(v);
             if (queue.get(prevWeight).size()==0)
             {

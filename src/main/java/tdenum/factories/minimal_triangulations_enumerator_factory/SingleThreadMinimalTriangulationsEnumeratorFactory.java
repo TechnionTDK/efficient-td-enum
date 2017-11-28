@@ -4,6 +4,7 @@ import tdenum.factories.TDEnumFactory;
 import tdenum.graph.independent_set.IMaximalIndependentSetsEnumerator;
 import tdenum.graph.separators.IMinimalSeparatorsEnumerator;
 import tdenum.graph.triangulation.IMinimalTriangulationsEnumerator;
+import tdenum.graph.triangulation.parallel.ParallelMinimalTriangulationsEnumerator;
 import tdenum.graph.triangulation.single_thread.MinimalTriangulationsEnumerator;
 
 public class SingleThreadMinimalTriangulationsEnumeratorFactory implements IMinimalTriangulationsEnumeratorFactory {

@@ -22,8 +22,9 @@ public class MinimalTriangulationsEnumerator extends AbstractMinimalTriangulatio
     @Override
     public IChordalGraph next()
     {
-        setsEnumerator.next();
-        return nextChordalGraph;
+//        setsEnumerator.next();
+//        return nextChordalGraph;
+        return Converter.minimalSeparatorsToTriangulation(graph, setsEnumerator.next());
     }
 
     @Override

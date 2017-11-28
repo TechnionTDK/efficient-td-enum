@@ -2,6 +2,7 @@ package tdenum.graph.triangulation;
 
 import org.junit.Before;
 import org.junit.Test;
+import tdenum.RunningMode;
 import tdenum.TDEnum;
 import tdenum.common.IO.GraphReader;
 import tdenum.factories.TDEnumFactory;
@@ -20,6 +21,9 @@ import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
+import static tdenum.RunningMode.PARALLEL;
+import static tdenum.RunningMode.SINGLE;
 import static tdenum.graph.separators.SeparatorsScoringCriterion.UNIFORM;
 import static tdenum.graph.triangulation.TriangulationScoringCriterion.NONE;
 import static tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm.MCS_M;
@@ -28,11 +32,13 @@ public class MinimalTriangulationEnumeratorTest {
 
 
     @Before
-    public void readFile()
+    public void checkLinear()
     {
         IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\Easy\\BN\\CSP\\54.wcsp.uai");
 
         TDEnumFactory.init(g);
+        RunningMode mode = RunningMode.valueOf(TDEnumFactory.getProperties().getProperty("mode"));
+        assumeTrue(mode.equals(SINGLE));
     }
 
     @Test

@@ -5,9 +5,16 @@ import tdenum.graph.graphs.succinct_graphs.separator_graph.ISeparatorGraph;
 import tdenum.graph.graphs.succinct_graphs.separator_graph.parallel.ConcurrentSeparatorsGraph;
 
 public class ParallelSeparatorGraphFactory implements ISeparatorGraphFactory {
+
+    ISeparatorGraph separatorGraph;
+
     @Override
     public ISeparatorGraph produce() {
-        return inject(new ConcurrentSeparatorsGraph());
+        if(separatorGraph == null)
+        {
+            separatorGraph = inject(new ConcurrentSeparatorsGraph());
+        }
+        return separatorGraph;
     }
 
     ISeparatorGraph inject(ISeparatorGraph separatorGraph)

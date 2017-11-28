@@ -50,6 +50,7 @@ public class ConcurrentQueueSet<T> implements IWeightedQueue<T>{
 
     @Override
     public boolean add(T t) {
+
         if(t != null &&queueSet.add(t))
         {
             queueQueue.add(t);
@@ -60,9 +61,9 @@ public class ConcurrentQueueSet<T> implements IWeightedQueue<T>{
 
     @Override
     public boolean remove(Object o) {
-        if(o != null && queueSet.remove(o))
+        if(o != null && queueQueue.remove(o))
         {
-            return queueQueue.remove(o);
+            return queueSet.remove(o);
         }
         return false;
 
@@ -131,12 +132,12 @@ public class ConcurrentQueueSet<T> implements IWeightedQueue<T>{
 
     @Override
     public T element() {
-        return queueQueue.iterator().next();
+        return queueQueue.element();
     }
 
     @Override
     public T peek() {
-        return queueQueue.iterator().next();
+        return queueQueue.peek();
     }
 
     @Override

@@ -1,19 +1,20 @@
 package tdenum.factories;
 
 import tdenum.RunningMode;
-import tdenum.TDEnum;
 import tdenum.common.IO.GraphReader;
 import tdenum.common.IO.InputFile;
 import tdenum.factories.cache_factory.ICacheFactory;
+import tdenum.factories.cache_factory.ParallelCacheFactory;
 import tdenum.factories.cache_factory.SingleThreadCacheFactory;
 import tdenum.factories.enumeration_runner_factory.IEnumerationRunnerFactory;
+import tdenum.factories.enumeration_runner_factory.ParallelEnumerationRunnerFactory;
 import tdenum.factories.enumeration_runner_factory.SingleThreadEnumerationRunnerFactory;
 import tdenum.factories.idconverter_factory.IIDConverterFactory;
-import tdenum.factories.idconverter_factory.SingleThreadIDConverterFactory;
 import tdenum.factories.maximal_independent_sets_enumerator_factory.IMaximalIndependentSetsEnumeratorFactory;
 import tdenum.factories.maximal_independent_sets_enumerator_factory.ParallelMaximalIndependentSetsEnumeratorFactory;
 import tdenum.factories.maximal_independent_sets_enumerator_factory.SingleThreadMaximalIndependentSetsEnumeratorFactory;
 import tdenum.factories.minimal_separators_enumerator_factory.IMinimalSeparatorsEnumeratorFactory;
+import tdenum.factories.minimal_separators_enumerator_factory.ParallelMinimalSeparatorsEnumeratorFactory;
 import tdenum.factories.minimal_separators_enumerator_factory.SingleThreadMinimalSeparatorsEnumeratorFactory;
 import tdenum.factories.minimal_triangulations_enumerator_factory.IMinimalTriangulationsEnumeratorFactory;
 import tdenum.factories.minimal_triangulations_enumerator_factory.ParallelMinimalTriangulationsEnumeratorFactory;
@@ -104,23 +105,27 @@ public class TDEnumFactory {
         setScorerFactory = new SetScorerFactory();
         setsExtenderFactory = new SetsExtenderFactory();
         separatorScorerFactory = new SeparatorScorerFactory();
+        separatorGraphFactory = new SingleThreadSeparatorGraphFactory();
+        minimalSeparatorsEnumeratorFactory = new SingleThreadMinimalSeparatorsEnumeratorFactory();
 
         //single thread
         if (!RunningMode.valueOf(properties.getProperty("mode")).equals(PARALLEL))
         {
             minimalTriangulationsEnumeratorFactory = new SingleThreadMinimalTriangulationsEnumeratorFactory();
             maximalIndependentSetsEnumeratorFactory = new SingleThreadMaximalIndependentSetsEnumeratorFactory();
-            minimalSeparatorsEnumeratorFactory = new SingleThreadMinimalSeparatorsEnumeratorFactory();
-            separatorGraphFactory = new SingleThreadSeparatorGraphFactory();
+
+
 
             weightedQueueFactory = new SingleThreadWeightedQueueFactory();
 
-            enumerationRunnerFactory = new SingleThreadEnumerationRunnerFactory();
+
             resultHandlerFactory = new SingleThreadResultHandlerFactory();
 
             cacheFactory = new SingleThreadCacheFactory();
 
-            converterFactory = new SingleThreadIDConverterFactory();
+            enumerationRunnerFactory = new SingleThreadEnumerationRunnerFactory();
+
+
 
         }
 
@@ -128,12 +133,17 @@ public class TDEnumFactory {
         {
             maximalIndependentSetsEnumeratorFactory = new ParallelMaximalIndependentSetsEnumeratorFactory();
             minimalTriangulationsEnumeratorFactory = new ParallelMinimalTriangulationsEnumeratorFactory();
-
-            separatorGraphFactory = new ParallelSeparatorGraphFactory();
+//            minimalSeparatorsEnumeratorFactory = new ParallelMinimalSeparatorsEnumeratorFactory();
+//            separatorGraphFactory = new ParallelSeparatorGraphFactory();
 
             weightedQueueFactory = new ParallelWeightedQueueFactory();
 
             resultHandlerFactory = new ParallelResultHandlerFactory();
+
+            separatorGraphFactory = new ParallelSeparatorGraphFactory();
+            cacheFactory = new ParallelCacheFactory();
+
+            enumerationRunnerFactory = new ParallelEnumerationRunnerFactory();
 
 
 

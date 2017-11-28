@@ -1,6 +1,10 @@
 package tdenum.graph.independent_set;
 
+import org.junit.Before;
 import org.junit.Test;
+import tdenum.RunningMode;
+import tdenum.common.IO.GraphReader;
+import tdenum.factories.TDEnumFactory;
 import tdenum.graph.TestsUtils;
 import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.data_structures.Node;
@@ -11,9 +15,21 @@ import tdenum.graph.triangulation.minimal_triangulators.MinimalTriangulator;
 import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
+import static tdenum.RunningMode.SINGLE;
 import static tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm.MCS_M;
 
 public class IndSetExtByTriangulationTest {
+
+    @Before
+    public void checkLinear()
+    {
+        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\Easy\\BN\\CSP\\54.wcsp.uai");
+
+        TDEnumFactory.init(g);
+        assumeTrue(RunningMode.valueOf(TDEnumFactory.getProperties().getProperty("mode")).equals(SINGLE));
+    }
+
 
     @Test
     public void testCircleGraph()
