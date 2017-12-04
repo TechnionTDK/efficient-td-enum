@@ -80,13 +80,15 @@ public class TDEnum {
         }
         finishTime = System.nanoTime() - startTime;
         separators = runner.getNumberOfMinimalSeparators();
+        ForkJoinPool.commonPool().shutdownNow();
         totalTimeInSeconds = TimeUnit.NANOSECONDS.toSeconds(finishTime);
         try {
-            executorService.awaitTermination(1, TimeUnit.SECONDS);
+            executorService.awaitTermination(10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         executorService.shutdown();
+        TDEnumFactory.getCacheManager().close();
 
 
     }
@@ -103,6 +105,7 @@ public class TDEnum {
             e.printStackTrace();
         }
 
+
         for(Future f : futures)
         {
             if(!f.isDone())
@@ -110,6 +113,7 @@ public class TDEnum {
                 f.cancel(true);
             }
         }
+
 
     }
 

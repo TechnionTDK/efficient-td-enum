@@ -59,7 +59,7 @@ public class ParallelMinimalTriangulationsEnumerator  extends AbstractMinimalTri
     public void print(Set<MinimalSeparator> result) {
         IChordalGraph chordalGraph= Converter.minimalSeparatorsToTriangulation(graph, result);
         nextChordalGraph = chordalGraph;
-        triangulations.add(chordalGraph);
+       // triangulations.add(chordalGraph);
 
         resultPrinter.print(chordalGraph);
     }

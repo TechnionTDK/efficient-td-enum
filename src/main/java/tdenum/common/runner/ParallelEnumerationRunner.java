@@ -2,6 +2,7 @@ package tdenum.common.runner;
 
 import tdenum.graph.graphs.chordal_graph.IChordalGraph;
 
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
 public class ParallelEnumerationRunner extends AbstractEnumerationRunner {
@@ -14,6 +15,7 @@ public class ParallelEnumerationRunner extends AbstractEnumerationRunner {
         {
             minimalTriangulationsEnumerator.next();
         }
+
         long finishTime = System.nanoTime() - startTime;
 
         resultHandler.setEndTime(TimeUnit.NANOSECONDS.toSeconds(finishTime));

@@ -2,6 +2,7 @@ package tdenum.factories.maximal_independent_sets_enumerator_factory;
 
 import tdenum.factories.TDEnumFactory;
 import tdenum.graph.independent_set.IMaximalIndependentSetsEnumerator;
+import tdenum.graph.independent_set.parallel.HorizontalParallelMaximalIndependentSetsEnumerator;
 import tdenum.graph.independent_set.parallel.ParallelMaximalIndependentSetsEnumerator;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,7 +16,20 @@ public class ParallelMaximalIndependentSetsEnumeratorFactory implements IMaximal
     public IMaximalIndependentSetsEnumerator produce() {
         if(enumerator == null)
         {
-            enumerator = inject(new ParallelMaximalIndependentSetsEnumerator());
+            switch (ParallelMISEnumeratorType.valueOf(TDEnumFactory.getProperties().getProperty("parallelMisEnumerator")))
+            {
+                case BASElINE:
+                {
+                    enumerator = inject(new ParallelMaximalIndependentSetsEnumerator());
+                    break;
+                }
+                case HORIZONTAL:
+                {
+                    enumerator = inject(new HorizontalParallelMaximalIndependentSetsEnumerator());
+                    break;
+                }
+            }
+
         }
         return  enumerator;
     }

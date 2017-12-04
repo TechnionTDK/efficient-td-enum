@@ -1,5 +1,7 @@
 package tdenum.factories;
 
+import org.ehcache.CacheManager;
+import org.ehcache.config.builders.CacheManagerBuilder;
 import tdenum.RunningMode;
 import tdenum.common.IO.GraphReader;
 import tdenum.common.IO.InputFile;
@@ -80,6 +82,9 @@ public class TDEnumFactory {
 
 
 
+    static CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build();
+
+
     public static void init(IGraph graph)
     {
         if(TDEnumFactory.inputFile==null)
@@ -107,7 +112,7 @@ public class TDEnumFactory {
         separatorScorerFactory = new SeparatorScorerFactory();
         separatorGraphFactory = new SingleThreadSeparatorGraphFactory();
         minimalSeparatorsEnumeratorFactory = new SingleThreadMinimalSeparatorsEnumeratorFactory();
-
+        cacheManager.init();
         //single thread
         if (!RunningMode.valueOf(properties.getProperty("mode")).equals(PARALLEL))
         {
@@ -148,6 +153,7 @@ public class TDEnumFactory {
 
 
         }
+
     }
 
 
@@ -302,5 +308,13 @@ public class TDEnumFactory {
 
     public static String getGraphField() {
         return inputFile.getField();
+    }
+
+    public static CacheManager getCacheManager() {
+        return cacheManager;
+    }
+
+    public static void setCacheManager(CacheManager cacheManager) {
+        TDEnumFactory.cacheManager = cacheManager;
     }
 }

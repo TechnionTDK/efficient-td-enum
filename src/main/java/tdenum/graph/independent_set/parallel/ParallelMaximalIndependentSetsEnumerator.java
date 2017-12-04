@@ -13,7 +13,7 @@ import static tdenum.graph.independent_set.AlgorithmStep.ITERATING_SETS;
 
 public class ParallelMaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndependentSetsEnumerator<T> {
 
-
+    protected Thread originalThread;
 
     @Override
     protected boolean timeLimitReached() {
@@ -51,7 +51,7 @@ public class ParallelMaximalIndependentSetsEnumerator<T> extends AbstractMaximal
     }
 
 
-    protected boolean parallelNewSetFound(final Set<T> generatedSet)
+    protected void parallelNewSetFound(final Set<T> generatedSet)
     {
 
         if (!P.contains(generatedSet))
@@ -60,13 +60,9 @@ public class ParallelMaximalIndependentSetsEnumerator<T> extends AbstractMaximal
             {
                 Q.setWeight(generatedSet, scorer.scoreIndependentSet(generatedSet));
                 resultPrinter.print(generatedSet);
-
-                return true;
             }
-            return false;
-        }
 
-        return false;
+        }
     }
 
 
@@ -91,8 +87,9 @@ public class ParallelMaximalIndependentSetsEnumerator<T> extends AbstractMaximal
     }
 
 
-    void runFullEnumeration()
+    protected void runFullEnumeration()
     {
+        originalThread = Thread.currentThread();
         while(!Q.isEmpty() && !timeLimitReached())
         {
             getNextSetToExtend();
@@ -137,13 +134,19 @@ public class ParallelMaximalIndependentSetsEnumerator<T> extends AbstractMaximal
     protected void handleIterationNodePhase()
     {
 
-        V.parallelStream().forEach(v->extendSetInDirectionOfNode(currentSet,v));
+        V.parallelStream().anyMatch(v->
+        {
+            extendSetInDirectionOfNode(currentSet, v);
+            return originalThread.isInterrupted();
+        });
     }
 
 
     protected void handleIterationSetPhase()
     {
-        P.parallelStream().forEach(extendedMis -> extendSetInDirectionOfNode(extendedMis, currentNode));
+        P.parallelStream().anyMatch(extendedMis ->{ extendSetInDirectionOfNode(extendedMis, currentNode);
+        return originalThread.isInterrupted();}
+        );
     }
 
 
