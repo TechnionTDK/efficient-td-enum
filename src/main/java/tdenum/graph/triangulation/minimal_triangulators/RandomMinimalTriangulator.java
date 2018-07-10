@@ -1,9 +1,6 @@
 package tdenum.graph.triangulation.minimal_triangulators;
 
-import tdenum.graph.data_structures.Node;
-import tdenum.graph.data_structures.NodeSet;
-import tdenum.graph.data_structures.TdListMap;
-import tdenum.graph.data_structures.TdMap;
+import tdenum.graph.data_structures.*;
 import tdenum.graph.data_structures.weighted_queue.single_thread.IncreasingWeightRandomizedNodeQueue;
 import tdenum.graph.data_structures.weighted_queue.single_thread.IncreasingWeightedNodeQueue;
 import tdenum.graph.graphs.IGraph;
@@ -12,6 +9,9 @@ import tdenum.graph.graphs.chordal_graph.single_thread.ChordalGraph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import static tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm.LB_TRIANG;
 
 public class RandomMinimalTriangulator extends MinimalTriangulator {
 
@@ -80,5 +80,31 @@ public class RandomMinimalTriangulator extends MinimalTriangulator {
             }
         }
         return  triangulation;
+    }
+
+    @Override
+    protected IChordalGraph getMinimalTriangulationUsingLBTriang(IGraph g, TriangulationAlgorithm heuristic) {
+
+        IChordalGraph result = new ChordalGraph(g);
+        if (heuristic == LB_TRIANG)
+        {
+            NodeSet nodes = new NodeSet(g.getNodes());
+            while(nodes.size() > 0)
+            {
+                Node v = nodes.get( new Random().nextInt(nodes.size()));
+                nodes.remove(v);
+                makeNodeLBSimplicial(g, result, v);
+            }
+
+        }
+        else
+        {
+            NodeQueue queue = new NodeQueue(result, heuristic);
+            while (!queue.isEmpty())
+            {
+                makeNodeLBSimplicial(g, result, queue.pop());
+            }
+        }
+        return result;
     }
 }

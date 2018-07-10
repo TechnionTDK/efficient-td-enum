@@ -6,14 +6,21 @@ import tdenum.common.IO.InputFile;
 import tdenum.common.IO.logger.Logger;
 import tdenum.common.IO.result_handler.IResultHandler;
 import tdenum.common.runner.IEnumerationRunner;
+import tdenum.common.runner.ParallelEnumerationRunner;
 import tdenum.factories.TDEnumFactory;
 import tdenum.graph.graphs.IGraph;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.*;
 
+import static tdenum.RunningMode.MIXED;
 import static tdenum.common.IO.CSVOperations.dataToCSV;
 
 
@@ -28,6 +35,7 @@ public class TDEnum {
     static long totalTimeInSeconds;
     static long timeLimit = Long.MAX_VALUE;
     static IEnumerationRunner runner;
+    static String configFile = null;
 
     public static void main(String[] args)
     {
@@ -35,17 +43,48 @@ public class TDEnum {
             System.out.println("No graph file specified");
             return;
         }
+        if (args.length ==2)
+        {
+            configFile = args[1];
+        }
         init(args[0]);
+
         run();
         printResults();
+        runIfMixed();
+        TDEnumFactory.getCacheManager().close();
+    }
+
+    private static void runIfMixed() {
+        if (RunningMode.valueOf(TDEnumFactory.getProperties().getProperty("mode")).equals(MIXED))
+        {
+            TDEnumFactory.setSingleThreadResults(runner.getResultHandler().getResultsFound());
+            TDEnumFactory.moveToParallel();
+            run();
+            printResults();
+        }
     }
 
 
     static void init(String filePath)
     {
         inputFile = new InputFile(filePath);
-        TDEnumFactory.init(inputFile);
 
+        if (configFile != null)
+        {
+            Properties properties = new Properties();
+            try (InputStream input = new FileInputStream(configFile))
+            {
+                properties.load(input);
+                TDEnumFactory.setProperties(properties);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        TDEnumFactory.init(inputFile);
         Logger.init();
         Logger.setField(inputFile.getField());
         Logger.setType(inputFile.getType());
@@ -79,16 +118,20 @@ public class TDEnum {
 
         }
         finishTime = System.nanoTime() - startTime;
-        separators = runner.getNumberOfMinimalSeparators();
-        ForkJoinPool.commonPool().shutdownNow();
+
+
+        executorService.shutdown();
         totalTimeInSeconds = TimeUnit.NANOSECONDS.toSeconds(finishTime);
         try {
             executorService.awaitTermination(10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        executorService.shutdown();
-        TDEnumFactory.getCacheManager().close();
+        ForkJoinPool.commonPool().shutdownNow();
+        executorService.shutdownNow();
+
+
+
 
 
     }
@@ -115,6 +158,7 @@ public class TDEnum {
         }
 
 
+
     }
 
     static void runWithoutTimeLimit(ExecutorService executorService, List<Callable<Object>> callables) {
@@ -132,6 +176,7 @@ public class TDEnum {
 
     static void printResults()
     {
+        separators = runner.getNumberOfMinimalSeparators();
         IResultHandler resultHandler = runner.getResultHandler();
         if (totalTimeInSeconds >=  timeLimit)
         {
@@ -142,6 +187,7 @@ public class TDEnum {
         {
             System.out.println("All minimal triangulations were generated!");
         }
+        resultHandler.setEndTime(totalTimeInSeconds);
         resultHandler.setSeparators(separators);
 
 

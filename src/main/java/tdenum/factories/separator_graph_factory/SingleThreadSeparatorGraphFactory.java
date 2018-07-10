@@ -28,6 +28,12 @@ public class SingleThreadSeparatorGraphFactory implements ISeparatorGraphFactory
                     System.out.println("producing cachable separators graph");
                     return inject(new CachableSeparatorGraph());
                 }
+                default:
+                {
+                    System.out.println("producing cachable separators graph");
+                    return inject(new CachableSeparatorGraph());
+                }
+
 
 
 

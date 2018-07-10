@@ -1,12 +1,15 @@
 package tdenum.graph.independent_set;
 
 import tdenum.common.IO.result_printer.IResultPrinter;
+import tdenum.common.cache.Cache;
 import tdenum.common.cache.ICache;
 import tdenum.graph.data_structures.weighted_queue.IWeightedQueue;
+import tdenum.graph.data_structures.weighted_queue.single_thread.WeightedQueue;
 import tdenum.graph.graphs.succinct_graphs.ISuccinctGraphRepresentation;
 import tdenum.graph.independent_set.scoring.IIndependentSetScorer;
 import tdenum.graph.independent_set.set_extender.IIndependentSetExtender;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public abstract class AbstractMaximalIndependentSetsEnumerator<T> implements IMaximalIndependentSetsEnumerator<T>{
@@ -17,12 +20,12 @@ public abstract class AbstractMaximalIndependentSetsEnumerator<T> implements IMa
 
 
 
-    protected IWeightedQueue<Set<T>> Q;
+    protected IWeightedQueue<Set<T>> Q = new WeightedQueue<>();
 
 
-    protected Set<T> V;
-    protected Set<Set<T>> P;
-    protected Set<Set<T>> setsNotExtended;
+    protected Set<T> V = new HashSet<>();
+    protected Set<Set<T>> P = new HashSet<>();
+    protected Set<Set<T>> setsNotExtended = new HashSet<>();
 
 
     protected boolean nextSetReady;
@@ -31,7 +34,7 @@ public abstract class AbstractMaximalIndependentSetsEnumerator<T> implements IMa
     protected Set<T> currentSet;
     protected T currentNode;
 
-    protected ICache jvCache;
+    protected ICache jvCache = new Cache();
 
 
 

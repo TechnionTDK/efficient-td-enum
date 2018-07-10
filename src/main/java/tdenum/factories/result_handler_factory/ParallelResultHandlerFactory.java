@@ -30,9 +30,9 @@ public class ParallelResultHandlerFactory implements IResultHandlerFactory {
     IResultHandler inject(IResultHandler resultHandler)
     {
         String algorithm = "mcs";
-        TriangulationAlgorithm heuristic = MCS_M;
-        TriangulationScoringCriterion trianguationsOrder = NONE;
-        SeparatorsScoringCriterion separatorsOrder = UNIFORM;
+        TriangulationAlgorithm heuristic = TriangulationAlgorithm.valueOf(TDEnumFactory.getProperties().getProperty("alg", MCS_M.name()));
+        TriangulationScoringCriterion trianguationsOrder = TriangulationScoringCriterion.valueOf(TDEnumFactory.getProperties().getProperty("t_order", NONE.name()));
+        SeparatorsScoringCriterion separatorsOrder = SeparatorsScoringCriterion.valueOf(TDEnumFactory.getProperties().getProperty("s_order",UNIFORM.name()));
 
         if (heuristic!= MCS_M && trianguationsOrder!=NONE && separatorsOrder!=UNIFORM)
         {
@@ -42,7 +42,7 @@ public class ParallelResultHandlerFactory implements IResultHandlerFactory {
         }
         resultHandler.setAlgorithm(algorithm);
         resultHandler.setGraph(TDEnumFactory.getGraph());
-        resultHandler.createDetailedOutput();
+        resultHandler.setFileNameAddition(TDEnumFactory.getProperties().getProperty("fileNameDesc",""));
         resultHandler.createSummaryFile();
         resultHandler.setWhenToPrint(WhenToPrint.valueOf(TDEnumFactory.getProperties().getProperty("print", NEVER.name())));
 

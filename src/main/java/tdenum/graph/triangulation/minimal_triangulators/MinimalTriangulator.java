@@ -79,7 +79,7 @@ public class MinimalTriangulator extends AbstractMinimalTriangulator {
         return substars;
     }
 
-    private void makeNodeLBSimplicial(IGraph g, IGraph gi, Node v)
+    protected void makeNodeLBSimplicial(IGraph g, IGraph gi, Node v)
     {
         Set<NodeSet> substars = getSubstars(g, gi, v);
         gi.saturateNodeSets(substars);

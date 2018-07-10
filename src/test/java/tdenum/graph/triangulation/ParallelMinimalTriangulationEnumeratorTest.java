@@ -26,7 +26,7 @@ public class ParallelMinimalTriangulationEnumeratorTest {
     @Before
     public void checkParallel()
     {
-        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\Easy\\BN\\CSP\\54.wcsp.uai");
+        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\pace2016\\100\\AhrensSzekeresGeneralizedQuadrangleGraph_3.gr");
 
         TDEnumFactory.init(g);
         RunningMode mode = RunningMode.valueOf(TDEnumFactory.getProperties().getProperty("mode"));
@@ -36,7 +36,7 @@ public class ParallelMinimalTriangulationEnumeratorTest {
     @Test
     public void compareToVanilla()
     {
-        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\Easy\\BN\\CSP\\54.wcsp.uai");
+        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\pace2016\\100\\AhrensSzekeresGeneralizedQuadrangleGraph_3.gr");
 
         TDEnumFactory.init(g);
         IMinimalTriangulationsEnumerator enumerator = TDEnumFactory.getMinimalTriangulationsEnumeratorFactory().produce();

@@ -1,23 +1,29 @@
 package tdenum.graph.independent_set.parallel;
 
+import tdenum.graph.data_structures.weighted_queue.parallel.ConcurrentQueueSet;
 import tdenum.graph.independent_set.AbstractMaximalIndependentSetsEnumerator;
-import tdenum.graph.independent_set.single_thread.MaximalIndependentSetsEnumerator;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
-
-import static tdenum.graph.independent_set.AlgorithmStep.ITERATING_NODES;
-import static tdenum.graph.independent_set.AlgorithmStep.ITERATING_SETS;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class ParallelMaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndependentSetsEnumerator<T> {
 
-    protected Thread originalThread;
+    protected Thread mainThread;
+
+    public ParallelMaximalIndependentSetsEnumerator()
+    {
+        super();
+        P = ConcurrentHashMap.newKeySet();
+        V = ConcurrentHashMap.newKeySet();
+        setsNotExtended = ConcurrentHashMap.newKeySet();
+        Q = new ConcurrentQueueSet<>();
+    }
 
     @Override
     protected boolean timeLimitReached() {
-        return Thread.currentThread().isInterrupted();
+        return mainThread.isInterrupted();
     }
 
 
@@ -68,6 +74,10 @@ public class ParallelMaximalIndependentSetsEnumerator<T> extends AbstractMaximal
 
     protected void extendSetInDirectionOfNode(final Set<T> s, final T node)
     {
+        if (s.contains(node))
+        {
+            return;
+        }
         Set<T> baseNodes = new HashSet<>();
         baseNodes.add(node);
         for (T t : s)
@@ -89,7 +99,7 @@ public class ParallelMaximalIndependentSetsEnumerator<T> extends AbstractMaximal
 
     protected void runFullEnumeration()
     {
-        originalThread = Thread.currentThread();
+        mainThread = Thread.currentThread();
         while(!Q.isEmpty() && !timeLimitReached())
         {
             getNextSetToExtend();
@@ -137,7 +147,7 @@ public class ParallelMaximalIndependentSetsEnumerator<T> extends AbstractMaximal
         V.parallelStream().anyMatch(v->
         {
             extendSetInDirectionOfNode(currentSet, v);
-            return originalThread.isInterrupted();
+            return timeLimitReached();
         });
     }
 
@@ -145,7 +155,7 @@ public class ParallelMaximalIndependentSetsEnumerator<T> extends AbstractMaximal
     protected void handleIterationSetPhase()
     {
         P.parallelStream().anyMatch(extendedMis ->{ extendSetInDirectionOfNode(extendedMis, currentNode);
-        return originalThread.isInterrupted();}
+        return timeLimitReached();}
         );
     }
 

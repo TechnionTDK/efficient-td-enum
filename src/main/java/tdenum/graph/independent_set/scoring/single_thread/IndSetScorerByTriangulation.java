@@ -6,7 +6,7 @@ import tdenum.graph.graphs.Graph;
 import tdenum.graph.graphs.chordal_graph.IChordalGraph;
 import tdenum.graph.graphs.IGraph;
 import tdenum.graph.independent_set.scoring.AbstractIndependentSetScorer;
-import tdenum.graph.independent_set.Converter;
+import tdenum.graph.graphs.Converter;
 import tdenum.graph.triangulation.TriangulationScoringCriterion;
 
 /**

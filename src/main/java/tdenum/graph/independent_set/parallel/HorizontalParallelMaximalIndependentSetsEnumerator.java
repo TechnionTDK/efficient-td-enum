@@ -1,8 +1,5 @@
 package tdenum.graph.independent_set.parallel;
 
-import tdenum.graph.independent_set.AbstractMaximalIndependentSetsEnumerator;
-
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,7 +11,7 @@ public class HorizontalParallelMaximalIndependentSetsEnumerator<T> extends Paral
 
     @Override
     protected void runFullEnumeration() {
-        originalThread = Thread.currentThread();
+        mainThread = Thread.currentThread();
         while(!setsNotExtended.isEmpty() && !timeLimitReached())
         {
             handleIterationNodePhase();
@@ -38,10 +35,14 @@ public class HorizontalParallelMaximalIndependentSetsEnumerator<T> extends Paral
 
             for(T v : V)
             {
+                if(timeLimitReached())
+                {
+                    return true;
+                }
                 extendSetInDirectionOfNode(mis,v);
             }
             P.add(mis);
-            return originalThread.isInterrupted();
+            return timeLimitReached();
         });
 
 

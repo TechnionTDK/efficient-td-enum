@@ -2,7 +2,7 @@ package tdenum.graph.triangulation.single_thread;
 
 import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.graphs.chordal_graph.IChordalGraph;
-import tdenum.graph.independent_set.Converter;
+import tdenum.graph.graphs.Converter;
 import tdenum.graph.triangulation.AbstractMinimalTriangulationsEnumerator;
 
 import java.util.Set;

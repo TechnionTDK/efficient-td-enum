@@ -74,6 +74,10 @@ public class SingleThreadMaximalIndependentSetsEnumeratorFactory implements IMax
                 System.out.println("producing improved MIS enumerator with "+k+" extend");
                 return produceImprovedKExtendEnumerator(k);
             }
+            case NOT_COMPLETE:
+            {
+                return produceNotCompleteEnumerator();
+            }
 
 
         }
@@ -82,6 +86,9 @@ public class SingleThreadMaximalIndependentSetsEnumeratorFactory implements IMax
 
     }
 
+    private IMaximalIndependentSetsEnumerator produceNotCompleteEnumerator() {
+        return inject(new NotCompleteMaximalindependentSetsEnumerator());
+    }
 
 
     private IMaximalIndependentSetsEnumerator produceImprovedKExtendEnumerator(int k) {

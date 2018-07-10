@@ -9,12 +9,11 @@ import tdenum.graph.graphs.Graph;
 import tdenum.graph.graphs.succinct_graphs.separator_graph.single_thread.SeparatorGraph;
 import tdenum.graph.graphs.chordal_graph.IChordalGraph;
 import tdenum.graph.graphs.IGraph;
-import tdenum.graph.graphs.succinct_graphs.separator_graph.ISeparatorGraph;
 import tdenum.graph.independent_set.set_extender.single_thread.IndSetExtBySeparators;
 import tdenum.graph.independent_set.set_extender.single_thread.IndSetExtByTriangulation;
 import tdenum.legacy.graph.independent_set.LegacyMaximalIndependentSetsEnumerator;
 import tdenum.graph.separators.SeparatorsScoringCriterion;
-import tdenum.graph.independent_set.Converter;
+import tdenum.graph.graphs.Converter;
 
 import static tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm.SEPARATORS;
 

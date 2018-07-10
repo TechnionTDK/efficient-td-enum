@@ -46,6 +46,10 @@ public class GraphReader {
             {
                 return readBliss(fileName);
             }
+            case "gr":
+            {
+                return readGr(fileName);
+            }
             default:
             {
                 System.out.println("Unrecognized file extension");
@@ -53,6 +57,8 @@ public class GraphReader {
         }
         return new Graph();
     }
+
+
 
     static IGraph readCliques(String fileName)
     {
@@ -275,6 +281,11 @@ public class GraphReader {
             e.printStackTrace();
         }
         return g;
+    }
+
+    private static IGraph readGr(String fileName) {
+        return readBliss(fileName);
+
     }
 
 }

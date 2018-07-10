@@ -12,6 +12,10 @@ public interface IResultHandler extends IResultPrinter<IChordalGraph>{
 
     void newResult(final IChordalGraph triangulation);
 
+    String getFileNameAddition();
+
+    void setFileNameAddition(String fileNameAddition);
+
     void setGraph(IGraph graph);
 
     void setDetailedOutput(PrintWriter detailedOutput);

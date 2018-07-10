@@ -3,6 +3,7 @@ package tdenum.factories.separator_graph_factory;
 import tdenum.factories.TDEnumFactory;
 import tdenum.graph.graphs.succinct_graphs.separator_graph.ISeparatorGraph;
 import tdenum.graph.graphs.succinct_graphs.separator_graph.parallel.ConcurrentSeparatorsGraph;
+import tdenum.graph.graphs.succinct_graphs.separator_graph.parallel.DemonSeparatorGraph;
 
 public class ParallelSeparatorGraphFactory implements ISeparatorGraphFactory {
 
@@ -12,7 +13,21 @@ public class ParallelSeparatorGraphFactory implements ISeparatorGraphFactory {
     public ISeparatorGraph produce() {
         if(separatorGraph == null)
         {
-            separatorGraph = inject(new ConcurrentSeparatorsGraph());
+            SeparatorsGraphType separatorsGraphType = SeparatorsGraphType.valueOf(TDEnumFactory.getProperties().getProperty("sepGraphType"));
+            switch (separatorsGraphType)
+            {
+                case DEMON:
+                {
+                    separatorGraph = inject(new DemonSeparatorGraph());
+                    break;
+                }
+                default:
+                {
+                    separatorGraph = inject(new ConcurrentSeparatorsGraph());
+                    break;
+                }
+            }
+
         }
         return separatorGraph;
     }

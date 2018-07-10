@@ -43,6 +43,17 @@ public abstract class AbstractResultHandler implements IResultHandler{
     long endTime = 0;
 
 
+    @Override
+    public String getFileNameAddition() {
+        return fileNameAddition;
+    }
+
+    @Override
+    public void setFileNameAddition(String fileNameAddition) {
+        this.fileNameAddition = fileNameAddition;
+    }
+
+    protected String fileNameAddition = "";
 
     boolean timeLimitExeeded = false;
     String algorithm;
@@ -99,7 +110,7 @@ public abstract class AbstractResultHandler implements IResultHandler{
         return resultsFound;
     }
 
-    static String summaryGeneralHeaders = dataToCSV("Field", "Type", "Graph", "Nodes", "Edges", "Finished Time",
+    static String summaryGeneralHeaders = dataToCSV("Field", "Type", "Graph", "Nodes", "Edges", "Finished", "Time",
             "Algorithm", "Separators generated");
 
     static String summaryHeaderSpecificFields = dataToCSV("Results","First Width","Min Width","Max Width",
@@ -125,12 +136,12 @@ public abstract class AbstractResultHandler implements IResultHandler{
     @Override
     public void createSummaryFile()
     {
-        File summaryFile = new File("summary.csv");
+        File summaryFile = new File("summary"+ (fileNameAddition.equals("") ? "" : ("_"+fileNameAddition) )+".csv");
         summaryOutput = null;
         if (!summaryFile.exists()) {
             try {
                 summaryOutput = new PrintWriter(summaryFile);
-                printSummaryHeader(summaryOutput);
+                printSummaryHeader();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -146,7 +157,7 @@ public abstract class AbstractResultHandler implements IResultHandler{
     }
 
 
-    static void printSummaryHeader(PrintWriter summaryOutput)
+    void printSummaryHeader()
     {
         summaryOutput.println(dataToCSV(summaryGeneralHeaders,summaryHeaderSpecificFields));
     }
@@ -166,7 +177,7 @@ public abstract class AbstractResultHandler implements IResultHandler{
                 TDEnumFactory.getGraphName(),
                 TDEnumFactory.getGraph().getNumberOfNodes(),
                 TDEnumFactory.getGraph().getNumberOfEdges(),
-                timeLimitExeeded? "Yes" : "No",
+                timeLimitExeeded? "NO" : "YES",
                 endTime,
                 algorithm,
                 separators,

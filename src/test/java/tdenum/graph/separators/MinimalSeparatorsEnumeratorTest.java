@@ -249,10 +249,19 @@ public class MinimalSeparatorsEnumeratorTest {
     int countSeparators(MinimalSeparatorsEnumerator e) {
         int count = 0;
         while (e.hasNext()) {
-            e.next();
+            System.out.println(e.next());
             count++;
         }
         return count;
+    }
+
+    @Test
+    public void customTest()
+    {
+        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\logicBlox\\bayes.uai");
+
+        MinimalSeparatorsEnumerator gEnumerator = new MinimalSeparatorsEnumerator(g, UNIFORM);
+        System.out.println("total number of seps = " + countSeparators(gEnumerator));
     }
 
 }

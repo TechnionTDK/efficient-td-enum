@@ -1,6 +1,7 @@
 package tdenum.factories;
 
 import org.ehcache.CacheManager;
+import org.ehcache.Status;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import tdenum.RunningMode;
 import tdenum.common.IO.GraphReader;
@@ -76,7 +77,7 @@ public class TDEnumFactory {
 
     static IGraph graph;
 
-    static Properties properties = new Properties();
+    static Properties properties;
 
     static InputFile inputFile;
 
@@ -85,8 +86,14 @@ public class TDEnumFactory {
     static CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build();
 
 
+
+    static int singleThreadResults;
+
+
+
     public static void init(IGraph graph)
     {
+        System.out.println("number of available cores " + Runtime.getRuntime().availableProcessors());
         if(TDEnumFactory.inputFile==null)
         {
             TDEnumFactory.inputFile = new InputFile("");
@@ -95,26 +102,21 @@ public class TDEnumFactory {
         TDEnumFactory.graph = graph;
 
 
-        try (InputStream input = new FileInputStream("config.properties"))
-        {
-            properties.load(input);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         //default
         minimalTriangulatorFactory = new MinimalTriangulatorFactory();
         setScorerFactory = new SetScorerFactory();
         setsExtenderFactory = new SetsExtenderFactory();
         separatorScorerFactory = new SeparatorScorerFactory();
-        separatorGraphFactory = new SingleThreadSeparatorGraphFactory();
+
         minimalSeparatorsEnumeratorFactory = new SingleThreadMinimalSeparatorsEnumeratorFactory();
-        cacheManager.init();
+        if (cacheManager.getStatus().equals(Status.UNINITIALIZED))
+        {
+            cacheManager.init();
+        }
+
         //single thread
-        if (!RunningMode.valueOf(properties.getProperty("mode")).equals(PARALLEL))
+        if (!RunningMode.valueOf(getProperties().getProperty("mode")).equals(PARALLEL))
         {
             minimalTriangulationsEnumeratorFactory = new SingleThreadMinimalTriangulationsEnumeratorFactory();
             maximalIndependentSetsEnumeratorFactory = new SingleThreadMaximalIndependentSetsEnumeratorFactory();
@@ -123,7 +125,7 @@ public class TDEnumFactory {
 
             weightedQueueFactory = new SingleThreadWeightedQueueFactory();
 
-
+            separatorGraphFactory = new SingleThreadSeparatorGraphFactory();
             resultHandlerFactory = new SingleThreadResultHandlerFactory();
 
             cacheFactory = new SingleThreadCacheFactory();
@@ -156,6 +158,34 @@ public class TDEnumFactory {
 
     }
 
+
+    public static void moveToParallel()
+    {
+        minimalTriangulatorFactory = new MinimalTriangulatorFactory();
+        setScorerFactory = new SetScorerFactory();
+        setsExtenderFactory = new SetsExtenderFactory();
+        separatorScorerFactory = new SeparatorScorerFactory();
+
+        minimalSeparatorsEnumeratorFactory = new SingleThreadMinimalSeparatorsEnumeratorFactory();
+        maximalIndependentSetsEnumeratorFactory = new ParallelMaximalIndependentSetsEnumeratorFactory();
+        minimalTriangulationsEnumeratorFactory = new ParallelMinimalTriangulationsEnumeratorFactory();
+//            minimalSeparatorsEnumeratorFactory = new ParallelMinimalSeparatorsEnumeratorFactory();
+//            separatorGraphFactory = new ParallelSeparatorGraphFactory();
+
+        weightedQueueFactory = new ParallelWeightedQueueFactory();
+
+        resultHandlerFactory = new ParallelResultHandlerFactory();
+
+        separatorGraphFactory = new ParallelSeparatorGraphFactory();
+        cacheFactory = new ParallelCacheFactory();
+
+        enumerationRunnerFactory = new ParallelEnumerationRunnerFactory();
+    }
+
+    public static void moveToSingleThread()
+    {
+
+    }
 
     public static void init(InputFile inputFile)
     {
@@ -238,11 +268,25 @@ public class TDEnumFactory {
     }
 
     public static Properties getProperties() {
+
+        if (properties == null)
+        {
+            properties = new Properties();
+            try (InputStream input = new FileInputStream("config.properties"))
+            {
+                properties.load(input);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return properties;
     }
 
-    public static void setProperties(Properties properties) {
-        TDEnumFactory.properties = properties;
+    public static void setProperties(Properties inproperties) {
+        properties = inproperties;
     }
 
 
@@ -316,5 +360,13 @@ public class TDEnumFactory {
 
     public static void setCacheManager(CacheManager cacheManager) {
         TDEnumFactory.cacheManager = cacheManager;
+    }
+
+    public static int getSingleThreadResults() {
+        return singleThreadResults;
+    }
+
+    public static void setSingleThreadResults(int singleThreadResults) {
+        TDEnumFactory.singleThreadResults = singleThreadResults;
     }
 }

@@ -5,6 +5,7 @@ import tdenum.graph.TestsUtils;
 import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.data_structures.Node;
 import tdenum.graph.data_structures.NodeSet;
+import tdenum.graph.graphs.Converter;
 import tdenum.graph.graphs.Graph;
 import tdenum.graph.graphs.IGraph;
 

@@ -1,6 +1,7 @@
 package tdenum.graph.triangulation;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import tdenum.RunningMode;
 import tdenum.TDEnum;
@@ -31,10 +32,10 @@ import static tdenum.graph.triangulation.minimal_triangulators.TriangulationAlgo
 public class MinimalTriangulationEnumeratorTest {
 
 
-    @Before
-    public void checkLinear()
+    @BeforeClass
+    public static void checkLinear()
     {
-        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\Easy\\BN\\CSP\\54.wcsp.uai");
+        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\pace2016\\100\\AhrensSzekeresGeneralizedQuadrangleGraph_3.gr");
 
         TDEnumFactory.init(g);
         RunningMode mode = RunningMode.valueOf(TDEnumFactory.getProperties().getProperty("mode"));
@@ -137,7 +138,7 @@ public class MinimalTriangulationEnumeratorTest {
     @Test
     public void testCompareVannilaToNew()
     {
-        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\Easy\\BN\\CSP\\54.wcsp.uai");
+        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\pace2016\\100\\AhrensSzekeresGeneralizedQuadrangleGraph_3.gr");
 
         TDEnumFactory.init(g);
         IMinimalTriangulationsEnumerator enumerator = TDEnumFactory.getMinimalTriangulationsEnumeratorFactory().produce();
@@ -147,7 +148,7 @@ public class MinimalTriangulationEnumeratorTest {
             newResultSet.add(enumerator.next());
         }
 
-        LegacyMinimalTriangulationsEnumerator legacyEnumerator = new LegacyMinimalTriangulationsEnumerator(g, NONE, UNIFORM, MCS_M);
+        LegacyMinimalTriangulationsEnumerator legacyEnumerator = new LegacyMinimalTriangulationsEnumerator(TDEnumFactory.getGraph(), NONE, UNIFORM, MCS_M);
         Set<IChordalGraph> legacyResults = new HashSet<>();
         while (legacyEnumerator.hasNext())
         {

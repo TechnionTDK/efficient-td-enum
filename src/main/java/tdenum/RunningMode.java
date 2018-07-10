@@ -1,5 +1,5 @@
 package tdenum;
 
 public enum RunningMode {
-    SINGLE, PARALLEL
+    SINGLE, PARALLEL, MIXED
 }

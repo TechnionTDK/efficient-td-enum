@@ -5,7 +5,7 @@ import tdenum.graph.data_structures.MinimalSeparator;
 import tdenum.graph.graphs.Graph;
 import tdenum.graph.graphs.chordal_graph.IChordalGraph;
 import tdenum.graph.graphs.IGraph;
-import tdenum.graph.independent_set.Converter;
+import tdenum.graph.graphs.Converter;
 import tdenum.graph.independent_set.set_extender.AbstractIndependentSetExtender;
 import tdenum.graph.triangulation.minimal_triangulators.MinimalTriangulator;
 

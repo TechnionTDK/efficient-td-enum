@@ -1,4 +1,4 @@
-package tdenum.graph.independent_set;
+package tdenum.graph.graphs;
 
 import tdenum.graph.data_structures.*;
 import tdenum.graph.data_structures.weighted_queue.single_thread.IncreasingWeightedNodeQueue;
