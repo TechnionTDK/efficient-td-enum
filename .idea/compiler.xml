@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="efficient-td-enum" />
+        <module name="TDK-Enumeration-Framework" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="efficient-td-enum" target="1.8" />
+      <module name="TDK-Enumeration-Framework" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -1,0 +1,8 @@
+package tdk_enum.factories.minimal_triangulations_enumerator_factory;
+
+import tdk_enum.factories.IFactory;
+import tdk_enum.graph.triangulation.IMinimalTriangulationsEnumerator;
+
+public interface IMinimalTriangulationsEnumeratorFactory extends IFactory<IMinimalTriangulationsEnumerator>{
+
+}

@@ -21,7 +21,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>tdenum.TDEnum</mainClass>
+                            <mainClass>tdk_enum.TDEnum</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
