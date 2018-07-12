@@ -166,6 +166,53 @@ public class IndSetExtBySeparators extends AbstractIndependentSetExtender
     @Override
     public Set<MinimalSeparator> extendToMaxIndependentSet(Set<MinimalSeparator> minSeps)
     {
+        return extendToMaxIndependentSet(minSeps, graph);
+//        Queue<SubGraph> queue = new ArrayDeque<>();
+//        Set<MinimalSeparator> maximalSet = new HashSet<>();
+//        maximalSet.addAll(minSeps);
+//        SubGraph sg = new SubGraph(graph);
+//        if (maximalSet.isEmpty())
+//        {
+//            queue.add(sg);
+//        }
+//        else
+//        {
+//            queue = decompose(sg, minSeps);
+//        }
+//
+//
+//
+//        while(!queue.isEmpty())
+//        {
+//            SubGraph c = queue.poll();
+//            NodeSet unconnectedNodes = getUnconnectedNodes(c);
+//            if (!unconnectedNodes.isEmpty())
+//            {
+//                NodeSet minSepInC = findMinSep(unconnectedNodes, c);
+//                c.addClique(minSepInC);
+//
+//                List<NodeSet> cComponents = c.getComponents(minSepInC);
+//
+//                for (NodeSet cComponent : cComponents)
+//                {
+//                    NodeSet cComponentNeighbors = c.getNeighbors(cComponent);
+//                    Map<Node, Node> cNodeMapInMainGraph = c.getNodeMaptoMainGraph();
+//                    includeNodesToMaximalSet(cNodeMapInMainGraph, maximalSet,
+//                            cComponentNeighbors, minSepInC);
+//                    NodeSet cComponentNeighborsMerged = mergeComponentAndNeighbors(
+//                            cComponent, cComponentNeighbors);
+//                    SubGraph cComponentSubGraph = new SubGraph(c, cComponentNeighborsMerged);
+//                    queue.add(cComponentSubGraph);
+//                }
+//
+//            }
+//            queue.poll();
+//        }
+//        return maximalSet;
+    }
+
+    @Override
+    public Set<MinimalSeparator> extendToMaxIndependentSet(Set<MinimalSeparator> minSeps, IGraph graph) {
         Queue<SubGraph> queue = new ArrayDeque<>();
         Set<MinimalSeparator> maximalSet = new HashSet<>();
         maximalSet.addAll(minSeps);
@@ -228,5 +275,10 @@ public class IndSetExtBySeparators extends AbstractIndependentSetExtender
         }
 
         return false;
+    }
+
+    @Override
+    public Set<MinimalSeparator> generateNew(Set<MinimalSeparator> B) {
+        return null;
     }
 }

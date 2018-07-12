@@ -1,15 +1,15 @@
 package tdk_enum.graph.independent_set.single_thread;
 
 import tdk_enum.graph.independent_set.AbstractMaximalIndependentSetsEnumerator;
-import tdk_enum.graph.independent_set.AlgorithmStep;
+import tdk_enum.enumerators.AlgorithmStep;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import static tdk_enum.graph.independent_set.AlgorithmStep.BEGINNING;
-import static tdk_enum.graph.independent_set.AlgorithmStep.ITERATING_NODES;
-import static tdk_enum.graph.independent_set.AlgorithmStep.ITERATING_SETS;
+import static tdk_enum.enumerators.AlgorithmStep.BEGINNING;
+import static tdk_enum.enumerators.AlgorithmStep.ITERATING_NODES;
+import static tdk_enum.enumerators.AlgorithmStep.ITERATING_RESULTS;
 
 public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndependentSetsEnumerator<T> {
 
@@ -71,7 +71,7 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
                 }
                 return  runFullEnumeration();
             }
-            else if( step == ITERATING_SETS)
+            else if( step == ITERATING_RESULTS)
             {
                 while(setsIterator.hasNext() && !timeLimitReached())
                 {
@@ -192,7 +192,7 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
 //                Set<T> generatedSet = extendSetInDirectionOfNode(s, currentNode);
                 if (extendSetInDirectionOfNode(s, currentNode))
                 {
-                    step = ITERATING_SETS;
+                    step = ITERATING_RESULTS;
 
                     return true;
                 }
@@ -222,7 +222,7 @@ public class MaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndepend
 //        Set<T> generatedSet = extendSetInDirectionOfNode(s, currentNode);
         if (extendSetInDirectionOfNode(s, currentNode))
         {
-            step = ITERATING_SETS;
+            step = ITERATING_RESULTS;
 
             return true;
         }

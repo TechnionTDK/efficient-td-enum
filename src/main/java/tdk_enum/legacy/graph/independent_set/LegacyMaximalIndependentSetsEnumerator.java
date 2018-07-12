@@ -3,15 +3,15 @@ package tdk_enum.legacy.graph.independent_set;
 
 import tdk_enum.graph.data_structures.weighted_queue.single_thread.WeightedQueue;
 import tdk_enum.graph.graphs.succinct_graphs.ISuccinctGraphRepresentation;
-import tdk_enum.graph.independent_set.AlgorithmStep;
+import tdk_enum.enumerators.AlgorithmStep;
 import tdk_enum.graph.independent_set.set_extender.IIndependentSetExtender;
 import tdk_enum.graph.independent_set.scoring.IIndependentSetScorer;
 
 import java.util.*;
 
-import static tdk_enum.graph.independent_set.AlgorithmStep.BEGINNING;
-import static tdk_enum.graph.independent_set.AlgorithmStep.ITERATING_NODES;
-import static tdk_enum.graph.independent_set.AlgorithmStep.ITERATING_SETS;
+import static tdk_enum.enumerators.AlgorithmStep.BEGINNING;
+import static tdk_enum.enumerators.AlgorithmStep.ITERATING_NODES;
+import static tdk_enum.enumerators.AlgorithmStep.ITERATING_RESULTS;
 
 /**
  * Created by dvir.dukhan on 7/11/2017.
@@ -103,7 +103,7 @@ public class LegacyMaximalIndependentSetsEnumerator<T> {
                 }
                 return  runFullEnumeration();
             }
-            else if( step == ITERATING_SETS)
+            else if( step == ITERATING_RESULTS)
             {
                 while(setsIterator.hasNext())
                 {
@@ -241,7 +241,7 @@ public class LegacyMaximalIndependentSetsEnumerator<T> {
                 Set<T> generatedSet = extendSetInDirectionOfNode(s, currentNode);
                 if (newSetFound(generatedSet))
                 {
-                    step = ITERATING_SETS;
+                    step = ITERATING_RESULTS;
 
                     return true;
                 }
@@ -273,7 +273,7 @@ public class LegacyMaximalIndependentSetsEnumerator<T> {
         Set<T> generatedSet = extendSetInDirectionOfNode(s, currentNode);
         if (newSetFound(generatedSet))
         {
-            step = ITERATING_SETS;
+            step = ITERATING_RESULTS;
 
             return true;
         }

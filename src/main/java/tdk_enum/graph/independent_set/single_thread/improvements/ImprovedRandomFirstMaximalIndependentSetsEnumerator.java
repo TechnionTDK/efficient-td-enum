@@ -11,9 +11,7 @@ import java.util.Set;
 
 import static tdk_enum.enumerators.AlgorithmStep.BEGINNING;
 
-public class ImprovedJvCachingRandomFirstMaximalIndependentSetsEnumerator<T>
-        extends ImprovedJvCachingMaximalIndependentSetsEnumerator<T> {
-
+public class ImprovedRandomFirstMaximalIndependentSetsEnumerator<T> extends ImprovedMaximalIndependentSetsEnumerator<T> {
 
     double threash = 0.51;
     Set<Set<T>> generated = new HashSet<>();
@@ -21,7 +19,7 @@ public class ImprovedJvCachingRandomFirstMaximalIndependentSetsEnumerator<T>
     IIndependentSetExtender randExtender = TDEnumFactory.getSetsExtenderFactory().produce();
     boolean finishRandPhase = false;
 
-    public ImprovedJvCachingRandomFirstMaximalIndependentSetsEnumerator()
+    public ImprovedRandomFirstMaximalIndependentSetsEnumerator()
     {
         randExtender.setTriangulator(new RandomMinimalTriangulator(TriangulationAlgorithm.MCS_M));
 
@@ -34,12 +32,14 @@ public class ImprovedJvCachingRandomFirstMaximalIndependentSetsEnumerator<T>
         {
             if (!finishRandPhase)
             {
+
                 Set<T> result = randExtender.extendToMaxIndependentSet(new HashSet());
 
                 while(!P.add(result) && !timeLimitReached())
                 {
                     reapearences.add(result);
                     result = randExtender.extendToMaxIndependentSet(new HashSet());
+
                 }
 
                 if (timeLimitReached())
@@ -49,8 +49,8 @@ public class ImprovedJvCachingRandomFirstMaximalIndependentSetsEnumerator<T>
 //                long start = System.nanoTime();
                 if (((double) reapearences.size()) / (P.size()+1) > threash)
                 {
-                   finishRandPhase = true;
-                   System.out.println("converged after producing " + P.size() + " and " + reapearences.size() + " duplications");
+                    finishRandPhase = true;
+                    System.out.println("converged after producing " + P.size() + " and " + reapearences.size() + " duplications");
                 }
 //                long finish = System.nanoTime() - start;
 //                finishRandPhase = true;

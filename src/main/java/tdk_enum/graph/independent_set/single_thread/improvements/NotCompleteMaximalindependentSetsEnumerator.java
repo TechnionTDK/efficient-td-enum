@@ -9,9 +9,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
-import static tdk_enum.graph.independent_set.AlgorithmStep.BEGINNING;
-import static tdk_enum.graph.independent_set.AlgorithmStep.ITERATING_NODES;
-import static tdk_enum.graph.independent_set.AlgorithmStep.ITERATING_SETS;
+import static tdk_enum.enumerators.AlgorithmStep.BEGINNING;
+import static tdk_enum.enumerators.AlgorithmStep.ITERATING_NODES;
+import static tdk_enum.enumerators.AlgorithmStep.ITERATING_RESULTS;
 
 public class NotCompleteMaximalindependentSetsEnumerator<T> extends ImprovedJvCachingMaximalIndependentSetsEnumerator<T> {
 
@@ -151,7 +151,7 @@ public class NotCompleteMaximalindependentSetsEnumerator<T> extends ImprovedJvCa
                 }
                 return  runFullEnumeration();
             }
-            else if( step == ITERATING_SETS)
+            else if( step == ITERATING_RESULTS)
             {
                 while(setsIterator.hasNext() && !timeLimitReached())
                 {
@@ -273,7 +273,7 @@ public class NotCompleteMaximalindependentSetsEnumerator<T> extends ImprovedJvCa
 //                Set<T> generatedSet = extendSetInDirectionOfNode(s, currentNode);
                 if (extendSetInDirectionOfNode(s, currentNode))
                 {
-                    step = ITERATING_SETS;
+                    step = ITERATING_RESULTS;
 
                     return true;
                 }

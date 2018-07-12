@@ -4,6 +4,8 @@ import tdk_enum.graph.data_structures.MinimalSeparator;
 import tdk_enum.graph.graphs.IGraph;
 import tdk_enum.graph.triangulation.minimal_triangulators.IMinimalTriangulator;
 
+import java.util.Set;
+
 
 public abstract class AbstractIndependentSetExtender implements IIndependentSetExtender<MinimalSeparator> {
 
@@ -18,5 +20,10 @@ public abstract class AbstractIndependentSetExtender implements IIndependentSetE
     @Override
     public void setTriangulator(IMinimalTriangulator triangulator) {
         this.triangulator = triangulator;
+    }
+
+    @Override
+    public Set<MinimalSeparator> generateNew(IGraph graph, Set<MinimalSeparator> s) {
+        return extendToMaxIndependentSet(s, graph);
     }
 }

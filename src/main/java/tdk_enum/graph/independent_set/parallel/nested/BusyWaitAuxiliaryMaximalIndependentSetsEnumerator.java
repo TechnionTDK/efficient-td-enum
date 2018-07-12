@@ -28,14 +28,8 @@ public class BusyWaitAuxiliaryMaximalIndependentSetsEnumerator<T> extends Auxili
         }
         if(Q.isEmpty())
         {
-            if(taskManager.waitingList.size() == taskManager.threadNumber)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return (taskManager.waitingList.size() == taskManager.threadNumber);
+
         }
         else
         {

@@ -32,11 +32,28 @@ public class IndSetExtByTriangulation extends AbstractIndependentSetExtender {
 
     @Override
     public Set<MinimalSeparator> extendToMaxIndependentSet(Set<MinimalSeparator> s) {
+        return extendToMaxIndependentSet(s,graph);
+//        IGraph saturatedGraph = new Graph(graph);
+//        saturatedGraph.saturateNodeSets(s);
+//        IChordalGraph minimalTriangulation = triangulator.triangulate(saturatedGraph);
+//        Set<MinimalSeparator> minimalSeparators = Converter.triangulationToMinimalSeparators(minimalTriangulation);
+//        return minimalSeparators;
+
+    }
+
+    @Override
+    public Set<MinimalSeparator> extendToMaxIndependentSet(Set<MinimalSeparator> s, IGraph graph) {
         IGraph saturatedGraph = new Graph(graph);
         saturatedGraph.saturateNodeSets(s);
         IChordalGraph minimalTriangulation = triangulator.triangulate(saturatedGraph);
         Set<MinimalSeparator> minimalSeparators = Converter.triangulationToMinimalSeparators(minimalTriangulation);
         return minimalSeparators;
 
+    }
+
+
+    @Override
+    public Set<MinimalSeparator> generateNew(Set<MinimalSeparator> B) {
+        return null;
     }
 }

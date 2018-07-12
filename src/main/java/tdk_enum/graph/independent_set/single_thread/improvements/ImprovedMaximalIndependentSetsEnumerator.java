@@ -5,8 +5,8 @@ import tdk_enum.graph.independent_set.single_thread.MaximalIndependentSetsEnumer
 
 import java.util.Set;
 
-import static tdk_enum.graph.independent_set.AlgorithmStep.ITERATING_NODES;
-import static tdk_enum.graph.independent_set.AlgorithmStep.ITERATING_SETS;
+import static tdk_enum.enumerators.AlgorithmStep.ITERATING_NODES;
+import static tdk_enum.enumerators.AlgorithmStep.ITERATING_RESULTS;
 
 public class ImprovedMaximalIndependentSetsEnumerator<T> extends MaximalIndependentSetsEnumerator<T> {
 
@@ -40,7 +40,7 @@ public class ImprovedMaximalIndependentSetsEnumerator<T> extends MaximalIndepend
 //        Set<T> generatedSet = extendSetInDirectionOfNode(s, currentNode);
         if (extendSetInDirectionOfNode(s, currentNode))
         {
-            step = ITERATING_SETS;
+            step = ITERATING_RESULTS;
 
             return true;
         }
