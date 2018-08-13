@@ -8,11 +8,12 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ConcurrentQueueSet<T> implements IWeightedQueue<T>{
 
-    Set<T> queueSet = ConcurrentHashMap.newKeySet();
-    ConcurrentLinkedDeque<T> queueQueue = new ConcurrentLinkedDeque<>();
+    public Set<T> queueSet = ConcurrentHashMap.newKeySet();
+    public ConcurrentLinkedQueue<T> queueQueue = new ConcurrentLinkedQueue<>();
 
 
     @Override
@@ -33,7 +34,7 @@ public class ConcurrentQueueSet<T> implements IWeightedQueue<T>{
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return queueQueue.iterator();
+        return queueSet.iterator();
     }
 
     @NotNull
@@ -50,6 +51,7 @@ public class ConcurrentQueueSet<T> implements IWeightedQueue<T>{
 
     @Override
     public boolean add(T t) {
+
 
         if(t != null &&queueSet.add(t))
         {
@@ -122,9 +124,15 @@ public class ConcurrentQueueSet<T> implements IWeightedQueue<T>{
     @Override
     public T poll() {
         T t = queueQueue.poll();
+
         if(t !=null)
         {
+
             queueSet.remove(t);
+        }
+        else
+        {
+            System.out.println("returned null result");
         }
         return  t;
 

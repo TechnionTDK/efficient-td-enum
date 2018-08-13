@@ -1,12 +1,13 @@
 package tdk_enum.factories.set_scorer_factory;
 
-import tdk_enum.factories.TDEnumFactory;
-import tdk_enum.graph.independent_set.scoring.IIndependentSetScorer;
-import tdk_enum.graph.independent_set.scoring.single_thread.IndSetScorerByTriangulation;
-import tdk_enum.graph.triangulation.TriangulationScoringCriterion;
+import tdk_enum.common.Utils;
+import tdk_enum.factories.TDKEnumFactory;
+import tdk_enum.enumerators.independent_set.scoring.IIndependentSetScorer;
+import tdk_enum.enumerators.independent_set.scoring.single_thread.IndSetScorerByTriangulation;
+import tdk_enum.common.configuration.config_types.TriangulationScoringCriterion;
 
 
-import static tdk_enum.graph.triangulation.TriangulationScoringCriterion.NONE;
+import static tdk_enum.common.configuration.config_types.TriangulationScoringCriterion.NONE;
 
 
 
@@ -20,8 +21,12 @@ public class SetScorerFactory implements ISetScorerFactory
 
     IIndependentSetScorer inject(IIndependentSetScorer scorer)
     {
-        scorer.setGraph(TDEnumFactory.getGraph());
-        scorer.setCriterion(TriangulationScoringCriterion.valueOf(TDEnumFactory.getProperties().getProperty("t_order", NONE.name())));
+        TriangulationScoringCriterion scoringCriterion = (TriangulationScoringCriterion)
+                Utils.getFieldValue(TDKEnumFactory.getConfiguration(), "triangulationScoringCriterion", NONE);
+        System.out.println("Producing Independent Sets scorer. Criterion: " + scoringCriterion);
+        scorer.setGraph(TDKEnumFactory.getGraph());
+        scorer.setCriterion(scoringCriterion);
+//        scorer.setCriterion(TriangulationScoringCriterion.valueOf(TDKEnumFactory.getProperties().getProperty("t_order", NONE.name())));
         return scorer;
     }
 }

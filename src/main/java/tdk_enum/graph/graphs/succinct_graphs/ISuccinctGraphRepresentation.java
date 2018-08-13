@@ -1,7 +1,7 @@
 package tdk_enum.graph.graphs.succinct_graphs;
 
 import tdk_enum.graph.graphs.IGraph;
-import tdk_enum.graph.separators.IMinimalSeparatorsEnumerator;
+import tdk_enum.enumerators.separators.IMinimalSeparatorsEnumerator;
 
 import java.util.Set;
 
@@ -16,6 +16,7 @@ public interface ISuccinctGraphRepresentation<T>
     boolean hasEdge(final T u, final  T v);
     int getNumberOfNodesGenerated();
     void setGraph(IGraph graph);
+    IGraph getGraph();
 
     void setNodesEnumerator(IMinimalSeparatorsEnumerator nodesEnumerator);
 

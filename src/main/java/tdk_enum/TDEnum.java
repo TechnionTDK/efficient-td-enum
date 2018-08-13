@@ -3,20 +3,16 @@ package tdk_enum;
 import tdk_enum.common.IO.InputFile;
 import tdk_enum.common.IO.logger.Logger;
 import tdk_enum.common.IO.result_handler.IResultHandler;
-import tdk_enum.common.runner.IEnumerationRunner;
-import tdk_enum.factories.TDEnumFactory;
+import tdk_enum.common.configuration.TDKEnumConfiguration;
+import tdk_enum.common.configuration.config_types.EnumerationPurpose;
+import tdk_enum.enumerators.common.IEnumerator;
+import tdk_enum.factories.TDKEnumFactory;
+import tdk_enum.factories.configuration_parser.ConfigurationParserFactory;
+import tdk_enum.factories.enumerator_factory.EnumeratorFactory;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.*;
 
-import static tdk_enum.RunningMode.MIXED;
 
 
 public class TDEnum {
@@ -26,11 +22,14 @@ public class TDEnum {
 
 
     static InputFile inputFile;
-    static int separators;
-    static long totalTimeInSeconds;
+//    static int separators;
+    static long totalTimeInMilis;
     static long timeLimit = Long.MAX_VALUE;
-    static IEnumerationRunner runner;
+    static IEnumerator enumerator;
+
     static String configFile = null;
+    static List<TDKEnumConfiguration> experimentConfigurations = new ArrayList<>();
+    static Map<Integer, Integer> benchMarkResults = new HashMap<>();
 
     public static void main(String[] args)
     {
@@ -44,21 +43,17 @@ public class TDEnum {
         }
         init(args[0]);
 
+        StringBuilder sb = new StringBuilder();
+        sb.
+                append("Starting enumeration for ").append(inputFile.getField()).append("\\").
+                append(inputFile.getType()).append("\\").
+                append(inputFile.getName());
+        System.out.println(sb.toString());
         run();
-        printResults();
-        runIfMixed();
-        TDEnumFactory.getCacheManager().close();
+
+        //TDKEnumFactory.getCacheManager().close();
     }
 
-    private static void runIfMixed() {
-        if (RunningMode.valueOf(TDEnumFactory.getProperties().getProperty("mode")).equals(MIXED))
-        {
-            TDEnumFactory.setSingleThreadResults(runner.getResultHandler().getResultsFound());
-            TDEnumFactory.moveToParallel();
-            run();
-            printResults();
-        }
-    }
 
 
     static void init(String filePath)
@@ -67,19 +62,10 @@ public class TDEnum {
 
         if (configFile != null)
         {
-            Properties properties = new Properties();
-            try (InputStream input = new FileInputStream(configFile))
-            {
-                properties.load(input);
-                TDEnumFactory.setProperties(properties);
+            experimentConfigurations = new ConfigurationParserFactory().produce(configFile).parseConfigFile();
 
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
-        TDEnumFactory.init(inputFile);
+        TDKEnumFactory.init(inputFile);
         Logger.init();
         Logger.setField(inputFile.getField());
         Logger.setType(inputFile.getType());
@@ -89,43 +75,45 @@ public class TDEnum {
 
     static void run()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.
-                append("Starting enumeration for ").append(inputFile.getField()).append("\\").
-                append(inputFile.getType()).append("\\").
-                append(inputFile.getName());
-        System.out.println(sb.toString());
-
-        runner = TDEnumFactory.getEnumerationRunnerFactory().produce();
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-
-        long startTime = System.nanoTime();
-        long finishTime = startTime;
-        if (TDEnumFactory.getProperties().containsKey("time_limit") &&
-                !Boolean.valueOf(TDEnumFactory.getProperties().getProperty("enumeratorSelfTimer")))
+        int id = 1;
+        for(TDKEnumConfiguration experimentConfiguration : experimentConfigurations)
         {
-            timeLimit = Integer.parseInt(TDEnumFactory.getProperties().getProperty("time_limit"));
-            runTimeLimited(executorService,Arrays.asList(runner), timeLimit);
-        }
-        else
-        {
-            runWithoutTimeLimit(executorService, Arrays.asList(runner));
+            TDKEnumFactory.setConfiguration(experimentConfiguration);
+
+
+            ExecutorService executorService = Executors.newFixedThreadPool(1);
+            long startTime = System.nanoTime();
+
+            if(experimentConfiguration.getTime_limit()==0 || experimentConfiguration.getEnumerationPurpose().equals(EnumerationPurpose.BENCHMARK_COMPARE))
+            {
+                TDKEnumFactory.setBenchMarkResults(benchMarkResults.get(experimentConfiguration.getBenchMarkBaseId()));
+                enumerator = new EnumeratorFactory().produce();
+                startTime = System.nanoTime();
+                runWithoutTimeLimit(executorService, Arrays.asList(enumerator));
+            }
+            else
+            {
+                enumerator = new EnumeratorFactory().produce();
+                startTime = System.nanoTime();
+                runTimeLimited(executorService,Arrays.asList(enumerator), experimentConfiguration.getTime_limit());
+            }
+            long finishTime = System.nanoTime() - startTime;
+
+
+            executorService.shutdown();
+            totalTimeInMilis = TimeUnit.NANOSECONDS.toMillis(finishTime);
+            try {
+                executorService.awaitTermination(10, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            ForkJoinPool.commonPool().shutdownNow();
+            executorService.shutdownNow();
+            benchMarkResults.put(id, ((IResultHandler)enumerator.getResultPrinter()).getResultsFound());
+            printResults();
+            id++;
 
         }
-        finishTime = System.nanoTime() - startTime;
-
-
-        executorService.shutdown();
-        totalTimeInSeconds = TimeUnit.NANOSECONDS.toSeconds(finishTime);
-        try {
-            executorService.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        ForkJoinPool.commonPool().shutdownNow();
-        executorService.shutdownNow();
-
-
 
 
 
@@ -171,19 +159,19 @@ public class TDEnum {
 
     static void printResults()
     {
-        separators = runner.getNumberOfMinimalSeparators();
-        IResultHandler resultHandler = runner.getResultHandler();
-        if (totalTimeInSeconds >=  timeLimit)
+
+        IResultHandler resultHandler = (IResultHandler) enumerator.getResultPrinter();
+        if (totalTimeInMilis >=  timeLimit)
         {
             System.out.println("Time limit reached");
             resultHandler.setTimeLimitExeeded(true);
         }
         else
         {
-            System.out.println("All minimal triangulations were generated!");
+            System.out.println("All possible results were generated!");
         }
-        resultHandler.setEndTime(totalTimeInSeconds);
-        resultHandler.setSeparators(separators);
+        resultHandler.setEndTime(totalTimeInMilis);
+
 
 
         resultHandler.printSummaryTable();
@@ -191,15 +179,15 @@ public class TDEnum {
 
         StringBuilder sb = new StringBuilder();
         sb.
-                append("The graph has ").append(TDEnumFactory.getGraph().getNumberOfNodes()).append(" nodes and ").
-                append(TDEnumFactory.getGraph().getNumberOfEdges()).append(" edges. ").
-                append(separators).append(" minimal separators were generated in the process.");
+                append("The graph has ").append(TDKEnumFactory.getGraph().getNumberOfNodes()).append(" nodes and ").
+                append(TDKEnumFactory.getGraph().getNumberOfEdges()).append(" edges. ");
+
         System.out.println(sb.toString());
 
 
         Logger.setResults(resultHandler.getResultsFound());
-        Logger.setTime(totalTimeInSeconds);
-        Logger.setSeparators(separators);
+        Logger.setTime(totalTimeInMilis);
+
 
         Logger.printLogs();
     }

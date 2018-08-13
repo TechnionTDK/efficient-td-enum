@@ -1,7 +1,7 @@
 package tdk_enum.graph.graphs.succinct_graphs.separator_graph;
 
 import tdk_enum.graph.graphs.IGraph;
-import tdk_enum.graph.separators.IMinimalSeparatorsEnumerator;
+import tdk_enum.enumerators.separators.IMinimalSeparatorsEnumerator;
 
 public abstract class AbstractSeparatorGraph implements ISeparatorGraph {
 
@@ -17,6 +17,9 @@ public abstract class AbstractSeparatorGraph implements ISeparatorGraph {
         this.graph = graph;
     }
 
+
+    @Override
+    public IGraph getGraph() {return  this.graph;}
 
     @Override
     public void setNodesEnumerator(IMinimalSeparatorsEnumerator nodesEnumerator) {

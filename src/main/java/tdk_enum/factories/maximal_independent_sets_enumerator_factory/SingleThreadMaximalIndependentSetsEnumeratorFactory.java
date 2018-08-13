@@ -1,23 +1,33 @@
 package tdk_enum.factories.maximal_independent_sets_enumerator_factory;
 
-import tdk_enum.factories.TDEnumFactory;
-import tdk_enum.graph.independent_set.IMaximalIndependentSetsEnumerator;
-import tdk_enum.graph.independent_set.single_thread.MaximalIndependentSetsEnumerator;
-import tdk_enum.graph.independent_set.single_thread.RandomMaximalIndependentSetsEnumerator;
-import tdk_enum.graph.independent_set.single_thread.improvements.*;
-import tdk_enum.graph.independent_set.single_thread.loggable.ImprovedLoggableMaximalIndependentSetsEnumerator;
-import tdk_enum.graph.independent_set.single_thread.loggable.LoggableImprovedJvCachingMaximalIndependentSetsEnumerator;
-import tdk_enum.graph.independent_set.single_thread.loggable.LoggableMaximalIndependentSetsEnumerator;
+import tdk_enum.common.Utils;
+import tdk_enum.common.configuration.config_types.SingleThreadMISEnumeratorType;
+import tdk_enum.factories.TDKEnumFactory;
+import tdk_enum.enumerators.independent_set.IMaximalIndependentSetsEnumerator;
+import tdk_enum.enumerators.independent_set.single_thread.MaximalIndependentSetsEnumerator;
+import tdk_enum.enumerators.independent_set.single_thread.RandomMaximalIndependentSetsEnumerator;
+import tdk_enum.enumerators.independent_set.single_thread.improvements.*;
+import tdk_enum.enumerators.independent_set.single_thread.loggable.ImprovedLoggableMaximalIndependentSetsEnumerator;
+import tdk_enum.enumerators.independent_set.single_thread.loggable.LoggableImprovedJvCachingMaximalIndependentSetsEnumerator;
+import tdk_enum.enumerators.independent_set.single_thread.loggable.LoggableMaximalIndependentSetsEnumerator;
+import tdk_enum.factories.cache_factory.CacheFactory;
+import tdk_enum.factories.separator_graph_factory.SeparatorGraphFactory;
+import tdk_enum.factories.sets_extender_factory.SetsExtenderFactory;
+import tdk_enum.factories.weighted_queue_factory.WeightedQueueFactory;
 
 import java.util.HashSet;
+
+import static tdk_enum.common.configuration.config_types.SingleThreadMISEnumeratorType.IMPROVED_JV_CACHE;
 
 public class SingleThreadMaximalIndependentSetsEnumeratorFactory implements IMaximalIndependentSetsEnumeratorFactory {
     @Override
     public IMaximalIndependentSetsEnumerator produce() {
 
 
-        MISEnumeratorType enumeratorType = MISEnumeratorType.valueOf(
-                TDEnumFactory.getProperties().getProperty("misEnumerator"));
+        SingleThreadMISEnumeratorType enumeratorType = (SingleThreadMISEnumeratorType)
+                Utils.getFieldValue(TDKEnumFactory.getConfiguration(), "singleThreadMISEnumeratorType", IMPROVED_JV_CACHE);
+//        SingleThreadMISEnumeratorType enumeratorType = SingleThreadMISEnumeratorType.valueOf(
+//                TDKEnumFactory.getProperties().getProperty("misEnumerator"));
         switch (enumeratorType)
         {
             case VANILLA:
@@ -70,7 +80,7 @@ public class SingleThreadMaximalIndependentSetsEnumeratorFactory implements IMax
 
             case IMPROVED_K_EXTEND:
             {
-                int k = Integer.valueOf(TDEnumFactory.getProperties().getProperty("k"));
+                int k = (int) Utils.getFieldValue(TDKEnumFactory.getConfiguration(), "k", 1);
                 System.out.println("producing improved MIS enumerator with "+k+" extend");
                 return produceImprovedKExtendEnumerator(k);
             }
@@ -138,21 +148,22 @@ public class SingleThreadMaximalIndependentSetsEnumeratorFactory implements IMax
 
     IMaximalIndependentSetsEnumerator inject(IMaximalIndependentSetsEnumerator enumerator)
     {
-        enumerator.setSetsNotExtended(new HashSet<>());
-        enumerator.setP(new HashSet<>());
+       // enumerator.setSetsNotExtended(new HashSet<>());
+        enumerator.setExtendedCollection(new HashSet<>());
         enumerator.setV(new HashSet());
 
-        enumerator.setGraph(TDEnumFactory.getSeparatorGraphFactory().produce());
-        enumerator.setExtender(TDEnumFactory.getSetsExtenderFactory().produce());
-        enumerator.setScorer(TDEnumFactory.getSetScorerFactory().produce());
+        enumerator.setGraph(new SeparatorGraphFactory().produce());
+        enumerator.setGenerator(new SetsExtenderFactory().produce());
+       // enumerator.setScorer(TDKEnumFactory.getSetScorerFactory().produce());
 
-        enumerator.setQ(TDEnumFactory.getWeightedQueueFactory().produce());
+        enumerator.setQueue(new WeightedQueueFactory().produce());
 
 
 
-        enumerator.setCache(TDEnumFactory.getCacheFactory().produce());
-        enumerator.doFirstStep();
+        enumerator.setCache(new CacheFactory().produce());
+       // enumerator.doFirstStep();
 
+        enumerator.setPurpose(TDKEnumFactory.getConfiguration().getEnumerationPurpose());
 
         return enumerator;
     }

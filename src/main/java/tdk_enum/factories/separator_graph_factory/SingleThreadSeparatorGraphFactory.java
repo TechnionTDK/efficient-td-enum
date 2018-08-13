@@ -1,54 +1,38 @@
 package tdk_enum.factories.separator_graph_factory;
 
-import tdk_enum.factories.TDEnumFactory;
+import tdk_enum.common.Utils;
+import tdk_enum.common.configuration.TDKEnumConfiguration;
+import tdk_enum.common.configuration.config_types.SeparatorsGraphType;
+import tdk_enum.factories.TDKEnumFactory;
+import tdk_enum.factories.minimal_separators_enumerator_factory.MinimalSeperatorsEnumeratorFactory;
 import tdk_enum.graph.graphs.succinct_graphs.separator_graph.ISeparatorGraph;
 import tdk_enum.graph.graphs.succinct_graphs.separator_graph.single_thread.SeparatorGraph;
 import tdk_enum.graph.graphs.succinct_graphs.separator_graph.single_thread.improvements.CachableSeparatorGraph;
 
+import static tdk_enum.common.configuration.config_types.SeparatorsGraphType.CACHED;
+
 public class SingleThreadSeparatorGraphFactory implements ISeparatorGraphFactory {
-
-    ISeparatorGraph graph = null;
-
     @Override
     public ISeparatorGraph produce() {
+        TDKEnumConfiguration configuration = TDKEnumFactory.getConfiguration();
+        SeparatorsGraphType graphType = (SeparatorsGraphType) Utils.getFieldValue(configuration, "separatorsGraphType", CACHED );
 
-        if (graph == null)
+        System.out.println("Producing Single Thread Separates Graph. Type :" + graphType);
+        switch (graphType)
         {
-
-            switch (SeparatorsGraphType.valueOf(TDEnumFactory.getProperties().getProperty("sepGraphType")))
-            {
-                case VANILLA:
-                {
-                    System.out.println("producing baseline separators graph");
-                    return inject(new SeparatorGraph());
-                }
-
-                case CACHED:
-                {
-                    System.out.println("producing cachable separators graph");
-                    return inject(new CachableSeparatorGraph());
-                }
-                default:
-                {
-                    System.out.println("producing cachable separators graph");
-                    return inject(new CachableSeparatorGraph());
-                }
-
-
-
-
-            }
+            case VANILLA:
+                return inject(new SeparatorGraph());
+            case CACHED:
+                return inject(new CachableSeparatorGraph());
+            default:
+                return inject(new CachableSeparatorGraph());
 
         }
-        return  graph;
-
     }
 
-    ISeparatorGraph inject(ISeparatorGraph separatorGraph)
-    {
-        separatorGraph.setGraph(TDEnumFactory.getGraph());
-        separatorGraph.setNodesEnumerator(TDEnumFactory.getMinimalSeparatorsEnumeratorFactory().produce());
-        graph = separatorGraph;
-        return graph;
+    ISeparatorGraph inject(ISeparatorGraph separatorGraph) {
+        separatorGraph.setGraph(TDKEnumFactory.getGraph());
+        separatorGraph.setNodesEnumerator(new MinimalSeperatorsEnumeratorFactory().produce());
+        return separatorGraph;
     }
 }

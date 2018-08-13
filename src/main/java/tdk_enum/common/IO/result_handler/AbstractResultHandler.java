@@ -1,18 +1,20 @@
 package tdk_enum.common.IO.result_handler;
 
-import tdk_enum.common.IO.WhenToPrint;
-import tdk_enum.factories.TDEnumFactory;
+import tdk_enum.common.IO.result_handler.chordal_graph.ChordalGraphResultInformation;
+import tdk_enum.common.configuration.config_types.EnumerationType;
+import tdk_enum.common.configuration.config_types.RunningMode;
+import tdk_enum.common.configuration.config_types.WhenToPrint;
+import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.graph.graphs.IGraph;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
 import static tdk_enum.common.IO.CSVOperations.dataToCSV;
+import static tdk_enum.common.configuration.config_types.EnumerationType.SEPARATORS;
+import static tdk_enum.common.configuration.config_types.RunningMode.SINGLE_THREAD;
 
-public abstract class AbstractResultHandler implements IResultHandler{
+public abstract class AbstractResultHandler<EnumType> implements IResultHandler<EnumType>{
 
     protected IGraph graph;
 
@@ -21,27 +23,91 @@ public abstract class AbstractResultHandler implements IResultHandler{
     protected WhenToPrint whenToPrint;
 
     protected ResultInformation firstResult;
-    protected ResultInformation minWidthResult;
-    protected ResultInformation minFillResult;
-    protected ResultInformation minBagExpSizeResult;
-    protected int minWidth = 0;
-    protected int maxWidth = 0;
-    protected int minFill = 0;
-    protected int maxFill = 0;
-    protected long minBagExpSize = 0;
-    protected long maxBagExpSize = 0;
-    protected int firstWidth = 0;
-    protected int firstFill = 0;
-    protected int minWidthCount = 0;
-    protected int minFillCount = 0;
-    protected int goodWidthCount = 0;
-    protected int goodFillCount = 0;
+    protected String fileNameAddition = "";
+
+    protected boolean timeLimitExeeded = false;
+
+
+
     protected int resultsFound = 0;
     protected boolean print = false;
 
-    long startTime  = 0;
-    long endTime = 0;
+    protected long startTime  = 0;
+    protected double endTime = 0;
 
+
+    protected EnumerationType enumerationType = null;
+
+
+
+    protected RunningMode runningMode = null;
+
+    public String getEnumeratorType() {
+        return enumeratorType;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    @Override
+    public void setField(String field) {
+        this.field = field;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    @Override
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getGraphName() {
+        return graphName;
+    }
+
+    @Override
+    public void setGraphName(String graphName) {
+        this.graphName = graphName;
+    }
+
+    public int getNodes() {
+        return nodes;
+    }
+
+    @Override
+    public void setNodes(int nodes) {
+        this.nodes = nodes;
+    }
+
+    public int getEdges() {
+        return edges;
+    }
+
+    @Override
+    public void setEdges(int edges) {
+        this.edges = edges;
+    }
+
+    protected String field = "";
+
+    protected String type = "";
+
+    protected String graphName = "";
+
+    protected  int nodes = 0;
+
+    protected  int edges = 0;
+
+
+    @Override
+    public void setEnumeratorType(String enumeratorType) {
+        this.enumeratorType = enumeratorType;
+    }
+
+    protected String enumeratorType = "";
 
     @Override
     public String getFileNameAddition() {
@@ -53,12 +119,7 @@ public abstract class AbstractResultHandler implements IResultHandler{
         this.fileNameAddition = fileNameAddition;
     }
 
-    protected String fileNameAddition = "";
 
-    boolean timeLimitExeeded = false;
-    String algorithm;
-
-    int separators;
 
 
     @Override
@@ -87,7 +148,7 @@ public abstract class AbstractResultHandler implements IResultHandler{
 
     @Override
     public void setEndTime(long endTime) {
-        this.endTime = endTime;
+        this.endTime = ((double)endTime)/1000;
     }
 
     @Override
@@ -95,71 +156,51 @@ public abstract class AbstractResultHandler implements IResultHandler{
         this.timeLimitExeeded = timeLimitExeeded;
     }
 
-    @Override
-    public void setAlgorithm(String algorithm) {
-        this.algorithm = algorithm;
+    public EnumerationType getEnumerationType() {
+        return enumerationType;
     }
 
     @Override
-    public void setSeparators(int separators) {
-        this.separators = separators;
+    public void setEnumerationType(EnumerationType enumerationType) {
+        this.enumerationType = enumerationType;
     }
+
+    public RunningMode getRunningMode() {
+        return runningMode;
+    }
+
+    @Override
+    public void setRunningMode(RunningMode runningMode) {
+        this.runningMode = runningMode;
+    }
+
+
 
     @Override
     public int getResultsFound() {
         return resultsFound;
     }
 
-    static String summaryGeneralHeaders = dataToCSV("Field", "Type", "Graph", "Nodes", "Edges", "Finished", "Time",
-            "Algorithm", "Separators generated");
+    protected String summaryGeneralHeaders = dataToCSV("Field", "Type", "Graph", "Nodes", "Edges", "Finished",
+            "Enumeration Type", "Running Mode", "Enumerator Type" ,"Time");
 
-    static String summaryHeaderSpecificFields = dataToCSV("Results","First Width","Min Width","Max Width",
-            "Best Width Time","Best Width Count","Good width Count","First Fill","Min Fill","Max Fill","Best Fill Time",
-            "Best Fill Count","Good Fill Count","First ExpBags","Min ExpBags","Max ExpBags","Best ExpBags Time");
+    protected String summaryHeaderSpecificFields =  "";
 
-    @Override
-    public  void createDetailedOutput()
+
+
+
+    protected void printSummaryHeader()
     {
-        detailedOutput = null;
-        StringBuilder sb = new StringBuilder().append(TDEnumFactory.getGraphField()).append(".").
-                                                append(TDEnumFactory.getGraphType()).append(".").
-                                                append(TDEnumFactory.getGraphName()).append(".").
-                                                 append(algorithm).append(".csv");
-        File file = new File(sb.toString());
         try {
-            detailedOutput = new PrintWriter(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            String headers = dataToCSV(summaryGeneralHeaders,getSummaryHeaderSpecificFields());
+            summaryOutput.println(headers);
+            summaryOutput.flush();
         }
-    }
+         catch (Exception e)
+         {
+             e.printStackTrace();
+         }
 
-    @Override
-    public void createSummaryFile()
-    {
-        File summaryFile = new File("summary"+ (fileNameAddition.equals("") ? "" : ("_"+fileNameAddition) )+".csv");
-        summaryOutput = null;
-        if (!summaryFile.exists()) {
-            try {
-                summaryOutput = new PrintWriter(summaryFile);
-                printSummaryHeader();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                summaryOutput = new PrintWriter(new FileOutputStream(summaryFile, true));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-    }
-
-
-    void printSummaryHeader()
-    {
-        summaryOutput.println(dataToCSV(summaryGeneralHeaders,summaryHeaderSpecificFields));
     }
 
     protected double getTime()
@@ -168,38 +209,20 @@ public abstract class AbstractResultHandler implements IResultHandler{
     }
 
 
-    @Override
-    public void printSummaryTable()
+
+
+    protected String getDataToCSV()
     {
         String summary = dataToCSV(
-                TDEnumFactory.getGraphField(),
-                TDEnumFactory.getGraphType(),
-                TDEnumFactory.getGraphName(),
-                TDEnumFactory.getGraph().getNumberOfNodes(),
-                TDEnumFactory.getGraph().getNumberOfEdges(),
+                field,type,graphName, nodes, edges,
                 timeLimitExeeded? "NO" : "YES",
-                endTime,
-                algorithm,
-                separators,
-                resultsFound,
-                firstWidth,
-                minWidth,
-                maxWidth,
-                minWidthResult.getTime(),
-                minWidthCount,
-                goodWidthCount,
-                firstFill,
-                minFill,
-                maxFill,
-                minFillResult.getTime(),
-                minFillCount,
-                goodFillCount,
-                firstResult.getExpBagSize(),
-                minBagExpSize,
-                maxBagExpSize,
-                minBagExpSizeResult.getTime());
-        summaryOutput.println(summary);
-        summaryOutput.close();
+                enumerationType, runningMode, enumeratorType,
+                endTime);
+        return summary;
     }
+
+    protected abstract  String getSummaryHeaderSpecificFields();
+
+
 
 }

@@ -1,7 +1,7 @@
 package tdk_enum.common.IO.logger;
 
 import tdk_enum.common.IO.logger.LogInformation.*;
-import tdk_enum.factories.TDEnumFactory;
+import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.graph.graphs.IGraph;
 
 import java.util.*;
@@ -38,15 +38,15 @@ public class Logger {
 
     private void readProperties()
     {
-        Properties prop = TDEnumFactory.getProperties();
-        logDuplicateMIS = Boolean.valueOf(prop.getProperty("logDuplicateMIS"));
-        logDuplicateSetsToExtend = Boolean.valueOf(prop.getProperty("logDuplicateSetsToExtend"));
-        logDuplicatesSaturatedGraphs = Boolean.valueOf(prop.getProperty("logDuplicatesSaturatedGraphs"));
-        logResultData = Boolean.valueOf(prop.getProperty("logResultData"));
-        logWidthPerTime = Boolean.valueOf(prop.getProperty("logWidthPerTime"));
-
-        logCache =Boolean.valueOf(prop.getProperty("logCache"));
-        AbstractLogInfo.setLogsFolder(prop.getProperty("logsFolder"));
+//        Properties prop = TDKEnumFactory.getProperties();
+//        logDuplicateMIS = Boolean.valueOf(prop.getProperty("logDuplicateMIS"));
+//        logDuplicateSetsToExtend = Boolean.valueOf(prop.getProperty("logDuplicateSetsToExtend"));
+//        logDuplicatesSaturatedGraphs = Boolean.valueOf(prop.getProperty("logDuplicatesSaturatedGraphs"));
+//        logResultData = Boolean.valueOf(prop.getProperty("logResultData"));
+//        logWidthPerTime = Boolean.valueOf(prop.getProperty("logWidthPerTime"));
+//
+//        logCache =Boolean.valueOf(prop.getProperty("logCache"));
+//        AbstractLogInfo.setLogsFolder(prop.getProperty("logsFolder"));
 
     }
 

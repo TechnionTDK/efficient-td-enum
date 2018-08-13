@@ -4,9 +4,9 @@ import tdk_enum.graph.data_structures.MinimalSeparator;
 import tdk_enum.graph.data_structures.TdMap;
 import tdk_enum.graph.graphs.IGraph;
 import tdk_enum.graph.graphs.succinct_graphs.separator_graph.AbstractSeparatorGraph;
-import tdk_enum.graph.separators.single_thread.MinimalSeparatorsEnumerator;
+import tdk_enum.enumerators.separators.single_thread.MinimalSeparatorsEnumerator;
 import tdk_enum.graph.data_structures.Node;
-import tdk_enum.graph.separators.SeparatorsScoringCriterion;
+import tdk_enum.common.configuration.config_types.SeparatorsScoringCriterion;
 
 import java.util.HashSet;
 import java.util.Set;

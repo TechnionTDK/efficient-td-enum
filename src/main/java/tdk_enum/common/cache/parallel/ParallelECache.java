@@ -3,11 +3,12 @@ package tdk_enum.common.cache.parallel;
 import org.ehcache.Cache;
 import org.ehcache.CacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.MemoryUnit;
 import org.jetbrains.annotations.NotNull;
 import tdk_enum.common.cache.ICache;
-import tdk_enum.factories.TDEnumFactory;
+import tdk_enum.factories.TDKEnumFactory;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -15,7 +16,7 @@ import java.util.Iterator;
 public class ParallelECache<T> implements ICache<T> {
 
 
-    CacheManager cacheManager = TDEnumFactory.getCacheManager();
+    CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build(true);
     Cache<Object, Boolean> cache = cacheManager.createCache("cache",
             CacheConfigurationBuilder.newCacheConfigurationBuilder(
                 Object.class, Boolean.class,
@@ -96,6 +97,12 @@ public class ParallelECache<T> implements ICache<T> {
     @Override
     public void clear() {
         cache.clear();
+    }
+
+
+    @Override
+    protected void finalize() throws Throwable {
+        cacheManager.close();
     }
 }
 

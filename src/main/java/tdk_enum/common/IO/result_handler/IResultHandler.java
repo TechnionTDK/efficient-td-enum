@@ -1,15 +1,30 @@
 package tdk_enum.common.IO.result_handler;
 
-import tdk_enum.common.IO.WhenToPrint;
+import tdk_enum.common.configuration.config_types.EnumerationType;
+import tdk_enum.common.configuration.config_types.RunningMode;
+import tdk_enum.common.configuration.config_types.WhenToPrint;
 import tdk_enum.common.IO.result_printer.IResultPrinter;
 import tdk_enum.graph.graphs.IGraph;
-import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 
 import java.io.PrintWriter;
 
-public interface IResultHandler extends IResultPrinter<IChordalGraph>{
+public interface IResultHandler<EnumType> extends IResultPrinter<EnumType>{
 
-    void newResult(final IChordalGraph triangulation);
+    void newResult(final EnumType result);
+
+    void setField(String field);
+
+    void setType(String type);
+
+
+
+    void setGraphName(String graphName);
+
+    void setNodes(int nodes);
+
+    void setEdges(int edges);
+
+    void setEnumeratorType(String enumeratorType);
 
     String getFileNameAddition();
 
@@ -30,9 +45,10 @@ public interface IResultHandler extends IResultPrinter<IChordalGraph>{
 
     void setTimeLimitExeeded(boolean timeLimitExeeded);
 
-    void setAlgorithm(String algorithm);
 
-    void setSeparators(int separators);
+    void setEnumerationType(EnumerationType enumerationType);
+
+    void setRunningMode(RunningMode runningMode);
 
     int getResultsFound();
 

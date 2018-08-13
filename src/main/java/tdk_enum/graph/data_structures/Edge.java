@@ -13,4 +13,13 @@ public class Edge extends Pair<Node, Node>
     {
         super(u,v);
     }
+
+
+    public Edge (int u, int v)
+    {
+        super(new Node(u), new Node(v));
+    }
+
+
+
 }

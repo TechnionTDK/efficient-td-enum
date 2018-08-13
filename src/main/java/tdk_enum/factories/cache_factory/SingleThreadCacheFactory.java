@@ -1,47 +1,33 @@
 package tdk_enum.factories.cache_factory;
 
+import tdk_enum.common.Utils;
 import tdk_enum.common.cache.Cache;
-import tdk_enum.common.cache.CachePolicy;
 import tdk_enum.common.cache.ICache;
 import tdk_enum.common.cache.single_thread.LoggingCache;
-import tdk_enum.factories.TDEnumFactory;
+import tdk_enum.common.configuration.config_types.CachePolicy;
+import tdk_enum.factories.TDKEnumFactory;
 
-public class SingleThreadCacheFactory implements ICacheFactory{
+import static tdk_enum.common.configuration.config_types.CachePolicy.NONE;
 
-
-    ICache cache;
-
+public class SingleThreadCacheFactory implements  ICacheFactory
+{
     @Override
     public ICache produce() {
-        CachePolicy policy = CachePolicy.valueOf(TDEnumFactory.getProperties().getProperty("cachePolicy"));
-        switch (policy)
-        {
-            case LOG:
-                return produceLoggingCache();
-            case NONE:
-                return prodcueCache();
+        CachePolicy policy = (CachePolicy) Utils.getFieldValue(TDKEnumFactory.getConfiguration(), "cachePolicy", NONE);
+        switch (policy) {
+            case NONE: {
+                System.out.println("Producing Single Thread cache");
+                return new Cache();
+            }
+            case LOG: {
+                System.out.println("Producing Single Thread Loggable cache");
+                return new LoggingCache();
+            }
+            default: {
+                return new Cache();
+            }
+
+
         }
-        return prodcueCache();
-    }
-
-    private ICache prodcueCache() {
-
-        System.out.println("producing cache");
-        if (cache == null)
-        {
-            cache = new Cache();
-        }
-        return  cache;
-    }
-
-    private ICache produceLoggingCache() {
-        System.out.println("producing logging cache");
-        if (cache == null)
-        {
-            cache = new LoggingCache();
-        }
-        return  cache;
-
-
     }
 }

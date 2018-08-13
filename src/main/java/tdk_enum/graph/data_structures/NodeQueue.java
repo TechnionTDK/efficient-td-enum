@@ -2,11 +2,11 @@ package tdk_enum.graph.data_structures;
 
 import tdk_enum.graph.data_structures.weighted_queue.single_thread.IncreasingWeightedNodeQueue;
 import tdk_enum.graph.graphs.IGraph;
-import tdk_enum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm;
+import tdk_enum.common.configuration.config_types.TriangulationAlgorithm;
 
 import java.util.Set;
 
-import static tdk_enum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm.*;
+import static tdk_enum.common.configuration.config_types.TriangulationAlgorithm.*;
 
 /**
  * Created by dvir.dukhan on 7/11/2017.

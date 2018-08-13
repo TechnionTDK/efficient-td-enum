@@ -3,15 +3,15 @@ package tdk_enum.legacy.graph.independent_set;
 
 import tdk_enum.graph.data_structures.weighted_queue.single_thread.WeightedQueue;
 import tdk_enum.graph.graphs.succinct_graphs.ISuccinctGraphRepresentation;
-import tdk_enum.enumerators.AlgorithmStep;
-import tdk_enum.graph.independent_set.set_extender.IIndependentSetExtender;
-import tdk_enum.graph.independent_set.scoring.IIndependentSetScorer;
+import tdk_enum.enumerators.common.AlgorithmStep;
+import tdk_enum.enumerators.independent_set.set_extender.IIndependentSetExtender;
+import tdk_enum.enumerators.independent_set.scoring.IIndependentSetScorer;
 
 import java.util.*;
 
-import static tdk_enum.enumerators.AlgorithmStep.BEGINNING;
-import static tdk_enum.enumerators.AlgorithmStep.ITERATING_NODES;
-import static tdk_enum.enumerators.AlgorithmStep.ITERATING_RESULTS;
+import static tdk_enum.enumerators.common.AlgorithmStep.BEGINNING;
+import static tdk_enum.enumerators.common.AlgorithmStep.ITERATING_NODES;
+import static tdk_enum.enumerators.common.AlgorithmStep.ITERATING_RESULTS;
 
 /**
  * Created by dvir.dukhan on 7/11/2017.

@@ -1,21 +1,21 @@
 package tdk_enum.legacy.graph.triangulation;
 
-import tdk_enum.graph.independent_set.scoring.single_thread.IndSetScorerByTriangulation;
-import tdk_enum.graph.triangulation.minimal_triangulators.MinimalTriangulator;
-import tdk_enum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm;
-import tdk_enum.graph.triangulation.TriangulationScoringCriterion;
+import tdk_enum.enumerators.independent_set.scoring.single_thread.IndSetScorerByTriangulation;
+import tdk_enum.enumerators.triangulation.minimal_triangulators.MinimalTriangulator;
+import tdk_enum.common.configuration.config_types.TriangulationAlgorithm;
+import tdk_enum.common.configuration.config_types.TriangulationScoringCriterion;
 import tdk_enum.graph.data_structures.MinimalSeparator;
 import tdk_enum.graph.graphs.Graph;
 import tdk_enum.graph.graphs.succinct_graphs.separator_graph.single_thread.SeparatorGraph;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 import tdk_enum.graph.graphs.IGraph;
-import tdk_enum.graph.independent_set.set_extender.single_thread.IndSetExtBySeparators;
-import tdk_enum.graph.independent_set.set_extender.single_thread.IndSetExtByTriangulation;
+import tdk_enum.enumerators.independent_set.set_extender.single_thread.IndSetExtBySeparators;
+import tdk_enum.enumerators.independent_set.set_extender.single_thread.IndSetExtByTriangulation;
 import tdk_enum.legacy.graph.independent_set.LegacyMaximalIndependentSetsEnumerator;
-import tdk_enum.graph.separators.SeparatorsScoringCriterion;
+import tdk_enum.common.configuration.config_types.SeparatorsScoringCriterion;
 import tdk_enum.graph.graphs.Converter;
 
-import static tdk_enum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm.SEPARATORS;
+import static tdk_enum.common.configuration.config_types.TriangulationAlgorithm.SEPARATORS;
 
 /**
  * Created by dvir.dukhan on 7/11/2017.

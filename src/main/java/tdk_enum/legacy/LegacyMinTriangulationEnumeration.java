@@ -2,13 +2,14 @@ package tdk_enum.legacy;
 
 import tdk_enum.common.IO.*;
 import tdk_enum.common.IO.logger.Logger;
+import tdk_enum.common.configuration.config_types.WhenToPrint;
 import tdk_enum.legacy.IO.result_handler.LegacyResultHandler;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 import tdk_enum.graph.graphs.IGraph;
-import tdk_enum.graph.separators.SeparatorsScoringCriterion;
+import tdk_enum.common.configuration.config_types.SeparatorsScoringCriterion;
 import tdk_enum.legacy.graph.triangulation.LegacyMinimalTriangulationsEnumerator;
-import tdk_enum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm;
-import tdk_enum.graph.triangulation.TriangulationScoringCriterion;
+import tdk_enum.common.configuration.config_types.TriangulationAlgorithm;
+import tdk_enum.common.configuration.config_types.TriangulationScoringCriterion;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,10 +17,10 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.Date;
 
-import static tdk_enum.common.IO.WhenToPrint.*;
-import static tdk_enum.graph.separators.SeparatorsScoringCriterion.*;
-import static tdk_enum.graph.triangulation.minimal_triangulators.TriangulationAlgorithm.*;
-import static tdk_enum.graph.triangulation.TriangulationScoringCriterion.*;
+import static tdk_enum.common.configuration.config_types.WhenToPrint.*;
+import static tdk_enum.common.configuration.config_types.SeparatorsScoringCriterion.*;
+import static tdk_enum.common.configuration.config_types.TriangulationAlgorithm.*;
+import static tdk_enum.common.configuration.config_types.TriangulationScoringCriterion.*;
 
 public class LegacyMinTriangulationEnumeration {
 

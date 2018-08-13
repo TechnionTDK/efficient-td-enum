@@ -1,15 +1,25 @@
 package tdk_enum.factories.maximal_independent_sets_enumerator_factory;
 
-import tdk_enum.RunningMode;
-import tdk_enum.factories.TDEnumFactory;
-import tdk_enum.graph.independent_set.IMaximalIndependentSetsEnumerator;
-import tdk_enum.graph.independent_set.parallel.*;
-import tdk_enum.graph.independent_set.parallel.capacity.CapacityHorizontalMaximalIndependentSetsEnumerator;
-import tdk_enum.graph.independent_set.parallel.capacity.CapacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator;
-import tdk_enum.graph.independent_set.parallel.capacity.CapacityNestedMaximalIndependentSetsEnumerator;
-import tdk_enum.graph.independent_set.parallel.capacity.CapcityParallelMaximalIndependentSetsEnumerator;
+import tdk_enum.common.Utils;
+import tdk_enum.common.configuration.config_types.EnumerationPurpose;
+import tdk_enum.common.configuration.config_types.ParallelMISEnumeratorType;
+import tdk_enum.factories.TDKEnumFactory;
+import tdk_enum.enumerators.independent_set.IMaximalIndependentSetsEnumerator;
+import tdk_enum.enumerators.independent_set.parallel.*;
+import tdk_enum.enumerators.independent_set.parallel.capacity.CapacityHorizontalMaximalIndependentSetsEnumerator;
+import tdk_enum.enumerators.independent_set.parallel.capacity.CapacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator;
+import tdk_enum.enumerators.independent_set.parallel.capacity.CapacityNestedMaximalIndependentSetsEnumerator;
+import tdk_enum.enumerators.independent_set.parallel.capacity.CapcityParallelMaximalIndependentSetsEnumerator;
+import tdk_enum.factories.cache_factory.CacheFactory;
+import tdk_enum.factories.separator_graph_factory.SeparatorGraphFactory;
+import tdk_enum.factories.sets_extender_factory.SetsExtenderFactory;
+import tdk_enum.factories.weighted_queue_factory.WeightedQueueFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
+
+import static tdk_enum.common.configuration.config_types.EnumerationPurpose.BENCHMARK_COMPARE;
+import static tdk_enum.common.configuration.config_types.EnumerationPurpose.STANDALONE;
+import static tdk_enum.common.configuration.config_types.ParallelMISEnumeratorType.HORIZONTAL;
 
 public class ParallelMaximalIndependentSetsEnumeratorFactory implements IMaximalIndependentSetsEnumeratorFactory {
 
@@ -20,109 +30,128 @@ public class ParallelMaximalIndependentSetsEnumeratorFactory implements IMaximal
     public IMaximalIndependentSetsEnumerator produce() {
 
 
-        int threadNum = Integer.valueOf(TDEnumFactory.getProperties().getProperty("threadNum",  Integer.toString(Runtime.getRuntime().availableProcessors())));
-        System.out.println("number of actual cores " + threadNum);
-        System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", String.valueOf(threadNum));
-        if(enumerator == null)
+        EnumerationPurpose enumerationPropose = (EnumerationPurpose) Utils.getFieldValue(TDKEnumFactory.getConfiguration(), "enumerationPurpose", STANDALONE);
+
+//        if(enumerationPropose.equals(BENCHMARK_COMPARE))
+//        {
+//            return produceCapcityEnumerator();
+//        }
+
+
+        ParallelMISEnumeratorType parallelMISEnumeratorType = (ParallelMISEnumeratorType)
+                Utils.getFieldValue(TDKEnumFactory.getConfiguration(), "parallelMISEnumeratorType", HORIZONTAL);
+        switch (parallelMISEnumeratorType)
         {
-
-
-            if (RunningMode.valueOf(TDEnumFactory.getProperties().getProperty("mode")).equals(RunningMode.MIXED))
+            case BASElINE:
             {
-                switch (ParallelMISEnumeratorType.valueOf(TDEnumFactory.getProperties().getProperty("parallelMisEnumerator"))) {
-                    case BASElINE: {
-                        CapcityParallelMaximalIndependentSetsEnumerator capcityParallelMaximalIndependentSetsEnumerator = new CapcityParallelMaximalIndependentSetsEnumerator();
-                        capcityParallelMaximalIndependentSetsEnumerator.setCapacity(TDEnumFactory.getSingleThreadResults());
-                        enumerator = inject(capcityParallelMaximalIndependentSetsEnumerator);
-
-                        break;
-                    }
-                    case HORIZONTAL: {
-                        CapacityHorizontalMaximalIndependentSetsEnumerator capacityHorizontalMaximalIndependentSetsEnumerator = new CapacityHorizontalMaximalIndependentSetsEnumerator();
-                        capacityHorizontalMaximalIndependentSetsEnumerator.setCapacity(TDEnumFactory.getSingleThreadResults());
-                        enumerator = inject(capacityHorizontalMaximalIndependentSetsEnumerator);
-                        break;
-                    }
-                    case HORIZONTAL_DEMON: {
-                        CapacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator capacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator = new CapacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator();
-                        capacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator.setCapacity(TDEnumFactory.getSingleThreadResults());
-                        enumerator = inject(capacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator);
-                        break;
-                    }
-                    case NESTED:
-                    {
-                        CapacityNestedMaximalIndependentSetsEnumerator capacityNestedMaximalIndependentSetsEnumerator = new CapacityNestedMaximalIndependentSetsEnumerator();
-                        capacityNestedMaximalIndependentSetsEnumerator.setCapacity(TDEnumFactory.getSingleThreadResults());
-
-                        capacityNestedMaximalIndependentSetsEnumerator.setThreadNumber(threadNum-1);
-                        int timeout = Integer.valueOf(TDEnumFactory.getProperties().getProperty("time_limit"));
-                        capacityNestedMaximalIndependentSetsEnumerator.setTimeout(timeout);
-
-                        enumerator = inject(capacityNestedMaximalIndependentSetsEnumerator);
-                    }
-
-                }
-                return enumerator;
+                return inject(new ParallelMaximalIndependentSetsEnumerator());
 
             }
-
-            switch (ParallelMISEnumeratorType.valueOf(TDEnumFactory.getProperties().getProperty("parallelMisEnumerator")))
+            case HORIZONTAL:
             {
-                case BASElINE:
-                {
-                    enumerator = inject(new ParallelMaximalIndependentSetsEnumerator());
-                    break;
-                }
-                case HORIZONTAL:
-                {
-                    enumerator = inject(new HorizontalParallelMaximalIndependentSetsEnumerator());
-                    break;
-                }
-                case HORIZONTAL_DEMON:
-                {
-                    enumerator = inject(new HorizontalWithDemonParallelMaximalIndependentSetsEnumerator());
-                    break;
-                }
-                case BASELINE_THREADPOOL:
-                {
-                    enumerator = inject(new ThreadPoolParallelMaximalIndependentSetsEnumerator());
-                    break;
-                }
-                case HORIZONTAL_THREADPOOL:
-                {
-                    enumerator = inject(new HorizontalThreadPoolMaximalIndependentSetsEnumerator());
-                }
-                case NESTED:
-                {
-                    NestedMaximalIndependentSetsEnumerator nestedMaximalIndependentSetsEnumerator = new NestedMaximalIndependentSetsEnumerator();
+                return inject(new HorizontalParallelMaximalIndependentSetsEnumerator());
 
-                    nestedMaximalIndependentSetsEnumerator.setThreadNumber(threadNum-1);
-                    int timeout = Integer.valueOf(TDEnumFactory.getProperties().getProperty("time_limit"));
-                    nestedMaximalIndependentSetsEnumerator.setTimeout(timeout);
+            }
+            case HORIZONTAL_DEMON:
+            {
+                return inject(new HorizontalWithDemonParallelMaximalIndependentSetsEnumerator());
 
-                    enumerator = inject(nestedMaximalIndependentSetsEnumerator);
+            }
+            case BASELINE_THREADPOOL:
+            {
+                return inject(new ThreadPoolParallelMaximalIndependentSetsEnumerator());
 
-                }
+            }
+            case HORIZONTAL_THREADPOOL:
+            {
+                return inject(new HorizontalThreadPoolMaximalIndependentSetsEnumerator());
+            }
+            case NESTED:
+            {
+                NestedMaximalIndependentSetsEnumerator nestedMaximalIndependentSetsEnumerator = new NestedMaximalIndependentSetsEnumerator();
+
+                nestedMaximalIndependentSetsEnumerator.setThreadNumber(Runtime.getRuntime().availableProcessors()-1);
+                int timeout = Integer.valueOf(TDKEnumFactory.getConfiguration().getTime_limit());
+                nestedMaximalIndependentSetsEnumerator.setTimeout(timeout);
+
+                return inject(nestedMaximalIndependentSetsEnumerator);
+
+            }
+            default:
+            {
+                return inject(new HorizontalParallelMaximalIndependentSetsEnumerator());
+            }
+        }
+
+    }
+
+    private IMaximalIndependentSetsEnumerator produceCapcityEnumerator() {
+
+
+
+
+        ParallelMISEnumeratorType parallelMISEnumeratorType = (ParallelMISEnumeratorType)
+                Utils.getFieldValue(TDKEnumFactory.getConfiguration(), "parallelMISEnumeratorType", HORIZONTAL);
+
+        switch (parallelMISEnumeratorType) {
+            case BASElINE: {
+                CapcityParallelMaximalIndependentSetsEnumerator capcityParallelMaximalIndependentSetsEnumerator = new CapcityParallelMaximalIndependentSetsEnumerator();
+                capcityParallelMaximalIndependentSetsEnumerator.setCapacity(TDKEnumFactory.getBenchMarkResults());
+                return inject(capcityParallelMaximalIndependentSetsEnumerator);
+
+
+            }
+            case HORIZONTAL: {
+                CapacityHorizontalMaximalIndependentSetsEnumerator capacityHorizontalMaximalIndependentSetsEnumerator = new CapacityHorizontalMaximalIndependentSetsEnumerator();
+                capacityHorizontalMaximalIndependentSetsEnumerator.setCapacity(TDKEnumFactory.getBenchMarkResults());
+                return inject(capacityHorizontalMaximalIndependentSetsEnumerator);
+
+            }
+            case HORIZONTAL_DEMON: {
+                CapacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator capacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator = new CapacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator();
+                capacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator.setCapacity(TDKEnumFactory.getBenchMarkResults());
+                return inject(capacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator);
+
+            }
+            case NESTED:
+            {
+                CapacityNestedMaximalIndependentSetsEnumerator capacityNestedMaximalIndependentSetsEnumerator = new CapacityNestedMaximalIndependentSetsEnumerator();
+                capacityNestedMaximalIndependentSetsEnumerator.setCapacity(TDKEnumFactory.getBenchMarkResults());
+
+                capacityNestedMaximalIndependentSetsEnumerator.setThreadNumber(Runtime.getRuntime().availableProcessors()-1);
+                int timeout = Integer.valueOf(TDKEnumFactory.getConfiguration().getTime_limit());
+                capacityNestedMaximalIndependentSetsEnumerator.setTimeout(timeout);
+
+                return inject(capacityNestedMaximalIndependentSetsEnumerator);
+            }
+
+            default:
+            {
+                CapacityHorizontalMaximalIndependentSetsEnumerator capacityHorizontalMaximalIndependentSetsEnumerator = new CapacityHorizontalMaximalIndependentSetsEnumerator();
+                capacityHorizontalMaximalIndependentSetsEnumerator.setCapacity(TDKEnumFactory.getBenchMarkResults());
+                return inject(capacityHorizontalMaximalIndependentSetsEnumerator);
             }
 
         }
-        return  enumerator;
+
     }
 
     IMaximalIndependentSetsEnumerator inject(IMaximalIndependentSetsEnumerator enumerator)
     {
 
 
-        enumerator.setCache(TDEnumFactory.getCacheFactory().produce());
-        enumerator.setExtender(TDEnumFactory.getSetsExtenderFactory().produce());
-        enumerator.setScorer(TDEnumFactory.getSetScorerFactory().produce());
-        enumerator.setGraph(TDEnumFactory.getSeparatorGraphFactory().produce());
-        enumerator.setP(ConcurrentHashMap.newKeySet());
-        enumerator.setQ(TDEnumFactory.getWeightedQueueFactory().produce());
+        enumerator.setCache(new CacheFactory().produce());
+        enumerator.setGenerator(new SetsExtenderFactory().produce());
+       // enumerator.setScorer(TDKEnumFactory.getSetScorerFactory().produce());
+        enumerator.setGraph(new SeparatorGraphFactory().produce());
+        enumerator.setExtendedCollection(ConcurrentHashMap.newKeySet());
+        enumerator.setQueue(new WeightedQueueFactory().produce());
         enumerator.setV(ConcurrentHashMap.newKeySet());
-        enumerator.setSetsNotExtended(ConcurrentHashMap.newKeySet());
+//        enumerator.setSetsNotExtended(ConcurrentHashMap.newKeySet());
 
-        enumerator.doFirstStep();
+
+
+//        enumerator.doFirstStep();
         return enumerator;
     }
 }

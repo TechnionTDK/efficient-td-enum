@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.Assert.*;
-import static tdk_enum.graph.separators.SeparatorsScoringCriterion.UNIFORM;
+import static tdk_enum.common.configuration.config_types.SeparatorsScoringCriterion.UNIFORM;
 
 /**
  * Created by dvir.dukhan on 7/12/2017.

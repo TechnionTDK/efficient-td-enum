@@ -1,0 +1,11 @@
+package tdk_enum.common.configuration.config_types;
+
+public enum SingleThreadMISEnumeratorType {
+    VANILLA, VANILLA_LOGGABLE,
+    IMPROVED, IMPROVED_LOGGABLE,
+    IMPROVED_JV_CACHE, LOGGABLE_IMPROVED_JV_CACHE,
+    IMPROVED_RANDOM_FIRST,
+    IMPROVED_K_EXTEND,
+    IMPROVED_JV_CACHE_RANDOM_FIRST, RANDOM,
+    NOT_COMPLETE
+}

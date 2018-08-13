@@ -3,7 +3,7 @@ package tdk_enum.graph.graphs.succinct_graphs.separator_graph.single_thread.impr
 import tdk_enum.graph.data_structures.MinimalSeparator;
 import tdk_enum.graph.graphs.succinct_graphs.separator_graph.single_thread.SeparatorGraph;
 import tdk_enum.graph.graphs.IGraph;
-import tdk_enum.graph.separators.SeparatorsScoringCriterion;
+import tdk_enum.common.configuration.config_types.SeparatorsScoringCriterion;
 
 import java.util.HashMap;
 import java.util.HashSet;

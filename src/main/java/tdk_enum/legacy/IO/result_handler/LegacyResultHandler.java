@@ -1,6 +1,7 @@
 package tdk_enum.legacy.IO.result_handler;
 
-import tdk_enum.common.IO.WhenToPrint;
+import tdk_enum.common.IO.result_handler.chordal_graph.ChordalGraphResultInformation;
+import tdk_enum.common.configuration.config_types.WhenToPrint;
 import tdk_enum.common.IO.result_handler.ResultInformation;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 import tdk_enum.graph.graphs.IGraph;
@@ -8,8 +9,8 @@ import tdk_enum.graph.graphs.IGraph;
 import java.io.PrintWriter;
 import java.util.Date;
 
-import static tdk_enum.common.IO.WhenToPrint.ALWAYS;
-import static tdk_enum.common.IO.WhenToPrint.NEVER;
+import static tdk_enum.common.configuration.config_types.WhenToPrint.ALWAYS;
+import static tdk_enum.common.configuration.config_types.WhenToPrint.NEVER;
 
 public class LegacyResultHandler {
 
@@ -17,10 +18,10 @@ public class LegacyResultHandler {
     PrintWriter output;
     WhenToPrint whenToPrint;
     Date startTime = new Date();
-    ResultInformation firstResult;
-    ResultInformation minWidthResult;
-    ResultInformation minFillResult;
-    ResultInformation minBagExpSizeResult;
+    ChordalGraphResultInformation firstResult;
+    ChordalGraphResultInformation minWidthResult;
+    ChordalGraphResultInformation minFillResult;
+    ChordalGraphResultInformation minBagExpSizeResult;
     int minWidth = 0;
     int maxWidth = 0;
     int minFill = 0;
@@ -55,7 +56,7 @@ public class LegacyResultHandler {
     public void newResult(final IChordalGraph triangulation)
     {
         ++resultsFound;
-        ResultInformation currentResult = new ResultInformation(resultsFound, getTime(), graph, triangulation);
+        ChordalGraphResultInformation currentResult = new ChordalGraphResultInformation(resultsFound, getTime(), graph, triangulation);
         print = false;
 
 
@@ -70,7 +71,7 @@ public class LegacyResultHandler {
             goodFillCount = minFillCount = 1;
             if(whenToPrint != NEVER)
             {
-                ResultInformation.printCsvHeaderByTime(output);
+                currentResult.printCsvHeaderByTime(output);
                 print = true;
             }
 
@@ -94,7 +95,7 @@ public class LegacyResultHandler {
     }
 
 
-    void handleWidth(ResultInformation currentResult)
+    void handleWidth(ChordalGraphResultInformation currentResult)
     {
         int width = currentResult.getWidth();
         if (width <= firstWidth)
@@ -118,7 +119,7 @@ public class LegacyResultHandler {
         }
     }
 
-    void handleFill(ResultInformation currentResult)
+    void handleFill(ChordalGraphResultInformation currentResult)
     {
         int fill = currentResult.getFill();
         if (fill <= firstFill) {
@@ -136,7 +137,7 @@ public class LegacyResultHandler {
         }
     }
 
-    void handleBagExpSize(ResultInformation currentResult)
+    void handleBagExpSize(ChordalGraphResultInformation currentResult)
     {
         long bagExpSize = currentResult.getExpBagSize();
         if (bagExpSize < minBagExpSize) {
