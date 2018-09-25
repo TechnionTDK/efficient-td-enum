@@ -50,6 +50,11 @@ public class GraphReader {
             {
                 return readGr(fileName);
             }
+            case "lp":
+            {
+                return readLp(fileName);
+            }
+
             default:
             {
                 System.out.println("Unrecognized file extension");
@@ -57,6 +62,7 @@ public class GraphReader {
         }
         return new Graph();
     }
+
 
 
 
@@ -286,6 +292,48 @@ public class GraphReader {
     private static IGraph readGr(String fileName) {
         return readBliss(fileName);
 
+    }
+
+    private static IGraph readLp(String fileName) {
+        IGraph g = new Graph();
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName)))
+        {
+            String line = br.readLine();
+            while(!line.startsWith("% Size"))
+            {
+                line = br.readLine();
+            }
+            Scanner scanner = new Scanner(line);
+            while(!scanner.hasNextInt())
+            {
+                scanner.next();
+            }
+            int numberOfNodes = scanner.nextInt();
+            g = new Graph(numberOfNodes);
+            line = br.readLine();
+            while (line != null)
+            {
+                if (line.startsWith("edge"))
+                {
+                    scanner = new Scanner(line).useDelimiter("[^0-9]+");
+                    g.addEdge(new Node(scanner.nextInt()), new Node(scanner.nextInt()));
+//                    NodeSet clique = new NodeSet();
+//                    while (scanner.hasNextInt())
+//                    {
+//                        clique.add(new Node(scanner.nextInt()));
+//                    }
+//                    g.addClique(clique);
+                }
+                line = br.readLine();
+            }
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return  g;
     }
 
 }

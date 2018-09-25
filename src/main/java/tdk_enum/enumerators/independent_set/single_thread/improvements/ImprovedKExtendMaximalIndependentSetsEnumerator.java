@@ -3,7 +3,7 @@ package tdk_enum.enumerators.independent_set.single_thread.improvements;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ImprovedKExtendMaximalIndependentSetsEnumerator<T> extends ImprovedMaximalIndependentSetsEnumerator<T> {
+public class ImprovedKExtendMaximalIndependentSetsEnumerator<T> extends ImprovedJvCachingMaximalIndependentSetsEnumerator<T> {
 
 
     int k =1;
@@ -20,7 +20,12 @@ public class ImprovedKExtendMaximalIndependentSetsEnumerator<T> extends Improved
     @Override
     protected void tryGenerateNewResult (T node, Set<T> currentResult)
     {
+
         Set<T> baseNodes = manipulateNodeAndResult(node, currentResult);
+        if(jvCache.contains(baseNodes))
+        {
+            return;
+        }
         for(int i =0; i < k; i++)
         {
             newResultFound(generator.generateNew(baseNodes));
@@ -31,7 +36,10 @@ public class ImprovedKExtendMaximalIndependentSetsEnumerator<T> extends Improved
     @Override
     protected boolean stepByStepTryGenerateNewResult(T node, Set<T> currentResult) {
         Set<T> baseNodes = manipulateNodeAndResult(node, currentResult);
-
+        if(jvCache.contains(baseNodes))
+        {
+            return false;
+        }
         Set<Boolean> newSetsIndicator = new HashSet<>();
 
         for(int i =0; i < k; i++)

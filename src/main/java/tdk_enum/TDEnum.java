@@ -3,6 +3,7 @@ package tdk_enum;
 import tdk_enum.common.IO.InputFile;
 import tdk_enum.common.IO.logger.Logger;
 import tdk_enum.common.IO.result_handler.IResultHandler;
+import tdk_enum.common.Utils;
 import tdk_enum.common.configuration.TDKEnumConfiguration;
 import tdk_enum.common.configuration.config_types.EnumerationPurpose;
 import tdk_enum.enumerators.common.IEnumerator;
@@ -10,6 +11,7 @@ import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.factories.configuration_parser.ConfigurationParserFactory;
 import tdk_enum.factories.enumerator_factory.EnumeratorFactory;
 
+import javax.rmi.CORBA.Util;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -96,6 +98,7 @@ public class TDEnum {
                 enumerator = new EnumeratorFactory().produce();
                 startTime = System.nanoTime();
                 runTimeLimited(executorService,Arrays.asList(enumerator), experimentConfiguration.getTime_limit());
+                timeLimit = experimentConfiguration.getTime_limit() *1000;
             }
             long finishTime = System.nanoTime() - startTime;
 
@@ -172,6 +175,10 @@ public class TDEnum {
         }
         resultHandler.setEndTime(totalTimeInMilis);
 
+        if (Utils.doesObjectContainMethod(resultHandler,"setSeparators") && Utils.doesObjectContainMethod(enumerator, "getNumberOfMinimalSeperatorsGenerated"))
+        {
+            Utils.runSetter(resultHandler, "setSeparators", Utils.runGetter(enumerator, "getNumberOfMinimalSeperatorsGenerated",0));
+        }
 
 
         resultHandler.printSummaryTable();

@@ -29,6 +29,8 @@ public abstract class TDKEnumConfiguration {
 
     protected String fileName = "";
 
+    protected Integer threadNumber = Runtime.getRuntime().availableProcessors();
+
 
     public int getId() {
         return id;
@@ -92,5 +94,13 @@ public abstract class TDKEnumConfiguration {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public Integer getThreadNumder() {
+        return threadNumber;
+    }
+
+    public void setThreadNumder(Integer threadNumder) {
+        this.threadNumber = threadNumder;
     }
 }

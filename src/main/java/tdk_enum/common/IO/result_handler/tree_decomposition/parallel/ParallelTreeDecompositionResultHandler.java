@@ -18,13 +18,14 @@ public class ParallelTreeDecompositionResultHandler extends AbstractTreeDecompos
     AtomicInteger atomiceResultsFound = new AtomicInteger();
     public ParallelTreeDecompositionResultHandler()
     {
-
+        results = ConcurrentHashMap.newKeySet();
     }
 
     @Override
     public void newResult(ITreeDecomposition treeDecomposition) {
 
         int index = atomiceResultsFound.incrementAndGet();
+        results.add(treeDecomposition);
         TreeDecompositionResultInformation newResult = new TreeDecompositionResultInformation(index, getTime(), graph, treeDecomposition);
         if (index==1)
         {

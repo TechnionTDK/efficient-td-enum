@@ -1,0 +1,86 @@
+[
+  {
+  enumerationType : "SEPARATORS",
+  runningMode : "PARALLEL",
+  enumerationPurpose : "STANDALONE",
+  parallelSeperatorsEnumeratorType: "VANILLA",
+  fileName: "multicore_benchmark",
+  threadNumber:2,
+  time_limit : 100
+},
+  {
+    enumerationType : "SEPARATORS",
+    runningMode : "PARALLEL",
+    enumerationPurpose : "STANDALONE",
+    parallelSeperatorsEnumeratorType: "VANILLA",
+    fileName: "multicore_benchmark",
+    threadNumber:4,
+    time_limit : 100
+  },
+  {
+    enumerationType : "SEPARATORS",
+    runningMode : "PARALLEL",
+    enumerationPurpose : "STANDALONE",
+    parallelSeperatorsEnumeratorType: "VANILLA",
+    fileName: "multicore_benchmark",
+    threadNumber:8,
+    time_limit : 100
+  },
+  {
+  enumerationType : "SEPARATORS",
+  runningMode : "PARALLEL",
+  enumerationPurpose : "STANDALONE",
+  parallelSeperatorsEnumeratorType: "HORIZONTAL",
+  fileName: "multicore_benchmark",
+  threadNumber:2,
+  time_limit : 100
+},
+  {
+    enumerationType : "SEPARATORS",
+    runningMode : "PARALLEL",
+    enumerationPurpose : "STANDALONE",
+    parallelSeperatorsEnumeratorType: "HORIZONTAL",
+    fileName: "multicore_benchmark",
+    threadNumber:4,
+    time_limit : 100
+  },
+  {
+    enumerationType : "SEPARATORS",
+    runningMode : "PARALLEL",
+    enumerationPurpose : "STANDALONE",
+    parallelSeperatorsEnumeratorType: "HORIZONTAL",
+    fileName: "multicore_benchmark",
+    threadNumber:8,
+    time_limit : 100
+  },
+  {
+    enumerationType : "SEPARATORS",
+    runningMode : "PARALLEL",
+    enumerationPurpose : "STANDALONE",
+    parallelSeperatorsEnumeratorType: "NESTED",
+    fileName: "multicore_benchmark",
+    threadNumber:2,
+    time_limit : 100
+  },
+  {
+    enumerationType : "SEPARATORS",
+    runningMode : "PARALLEL",
+    enumerationPurpose : "STANDALONE",
+    parallelSeperatorsEnumeratorType: "NESTED",
+    fileName: "multicore_benchmark",
+    threadNumber:4,
+    time_limit : 100
+  },
+  {
+    enumerationType : "SEPARATORS",
+    runningMode : "PARALLEL",
+    enumerationPurpose : "STANDALONE",
+    parallelSeperatorsEnumeratorType: "NESTED",
+    fileName: "multicore_benchmark",
+    threadNumber:8,
+    time_limit : 100
+  }
+
+
+
+]

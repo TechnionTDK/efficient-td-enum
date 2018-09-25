@@ -124,7 +124,11 @@ public class NotCompleteMaximalindependentSetsEnumerator<T> extends ImprovedJvCa
     protected void getAndSetNextNode()
     {
         currentNode = graph.nextNode();
-        findNextNewNode();
+        if(!switched)
+        {
+            findNextNewNode();
+        }
+
         V.add(currentNode);
     }
 

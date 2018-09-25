@@ -1,5 +1,6 @@
 package tdk_enum.enumerators.independent_set.single_thread.improvements;
 
+import tdk_enum.common.configuration.TDKChordalGraphEnumConfiguration;
 import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.enumerators.independent_set.set_extender.IIndependentSetExtender;
 import tdk_enum.enumerators.triangulation.minimal_triangulators.RandomMinimalTriangulator;
@@ -21,7 +22,32 @@ public class ImprovedJvCachingRandomFirstMaximalIndependentSetsEnumerator<T>
 
     public ImprovedJvCachingRandomFirstMaximalIndependentSetsEnumerator()
     {
-        randExtender.setTriangulator(new RandomMinimalTriangulator(TriangulationAlgorithm.MCS_M));
+        randExtender.setTriangulator(new RandomMinimalTriangulator(((TDKChordalGraphEnumConfiguration) TDKEnumFactory.getConfiguration()).getTriangulationAlgorithm()));
+
+    }
+
+
+    @Override
+    protected void doFirstStep()
+    {
+        Set<T> result = randExtender.extendToMaxIndependentSet(new HashSet());
+
+
+        while((((double) reapearences.size()) / (P.size()+1)) < threash)
+        {
+            while(!P.add(result) && !finishCondition())
+            {
+                reapearences.add(result);
+                result = randExtender.extendToMaxIndependentSet(new HashSet());
+            }
+            resultPrinter.print(result);
+            if (finishCondition())
+            {
+                return;
+            }
+        }
+        super.doFirstStep();
+        System.out.println("converged after producing " + P.size() + " and " + reapearences.size() + " duplications");
 
     }
 

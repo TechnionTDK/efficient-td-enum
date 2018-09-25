@@ -21,6 +21,12 @@ public abstract class AbstractTreeDecompositionEnumerator extends AbstractConver
         this.minimalTriangulationsEnumerator = minimalTriangulationsEnumerator;
     }
 
+    @Override
+    public int getNumberOfMinimalSeperatorsGenerated()
+    {
+        return minimalTriangulationsEnumerator.getNumberOfMinimalSeperatorsGenerated();
+    }
+
 
 
 

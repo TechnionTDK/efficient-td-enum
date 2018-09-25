@@ -1,7 +1,7 @@
 package tdk_enum.enumerators.tree_decomposition.parallel;
 
 import tdk_enum.enumerators.tree_decomposition.AbstractTreeDecompositionEnumerator;
-import tdk_enum.graph.graphs.Converter;
+import tdk_enum.graph.converters.Converter;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
 

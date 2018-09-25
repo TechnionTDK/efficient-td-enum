@@ -17,7 +17,7 @@ public class ResultHandlerFactory implements  IResultHandlerFactory {
             case PROPER_TD:
                 return inject( new TreeDecompositionResultHandlerFactory().produce());
             case NICE_TD:
-                return null;
+                return inject(new NiceTreeDecompositionResultHandlerFactory().produce());
             default:
                 return null;
         }
@@ -32,6 +32,7 @@ public class ResultHandlerFactory implements  IResultHandlerFactory {
         resultHandler.setEdges(TDKEnumFactory.getGraph().getNumberOfEdges());
         resultHandler.setEnumerationType(TDKEnumFactory.getConfiguration().getEnumerationType());
         resultHandler.setRunningMode(TDKEnumFactory.getConfiguration().getRunningMode());
+        resultHandler.setThreadNumber(TDKEnumFactory.getConfiguration().getThreadNumder());
 
         return resultHandler;
     }

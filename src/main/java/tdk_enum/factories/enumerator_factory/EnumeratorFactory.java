@@ -8,6 +8,7 @@ import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.factories.minimal_separators_enumerator_factory.MinimalSeperatorsEnumeratorFactory;
 import tdk_enum.factories.minimal_triangulations_enumerator_factory.MinimalTriangulationsEnumeratorFactory;
 import tdk_enum.factories.result_handler_factory.ResultHandlerFactory;
+import tdk_enum.factories.tree_decomposition_enumerator_factory.NiceTreeDecompositionEnumeratorFactory;
 import tdk_enum.factories.tree_decomposition_enumerator_factory.TreeDecompositionEnumeratorFactory;
 
 import static tdk_enum.common.configuration.config_types.EnumerationPurpose.BENCHMARK_COMPARE;
@@ -22,7 +23,7 @@ public class EnumeratorFactory implements  IEnumeratorFactory {
         switch (configuration.getEnumerationType())
         {
             case NICE_TD:
-                break;
+                return produceNiceTreeDecompositionEnumerator();
             case PROPER_TD:
                 return produceTreeDecompositionEnumerator();
             case SEPARATORS:
@@ -32,8 +33,13 @@ public class EnumeratorFactory implements  IEnumeratorFactory {
             default:
                 return null;
         }
-        return null;
 
+
+    }
+
+    private IEnumerator produceNiceTreeDecompositionEnumerator() {
+        IEnumerator enumerator = new NiceTreeDecompositionEnumeratorFactory().produce();
+        return inject(enumerator);
     }
 
     private IEnumerator produceTreeDecompositionEnumerator() {

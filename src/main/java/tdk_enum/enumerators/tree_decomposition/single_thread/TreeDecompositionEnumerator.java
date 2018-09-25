@@ -1,16 +1,9 @@
 package tdk_enum.enumerators.tree_decomposition.single_thread;
 
-import tdk_enum.common.IO.result_printer.IResultPrinter;
-import tdk_enum.enumerators.generators.IGenerator;
 import tdk_enum.enumerators.tree_decomposition.AbstractTreeDecompositionEnumerator;
-import tdk_enum.graph.data_structures.Node;
-import tdk_enum.graph.graphs.Converter;
-import tdk_enum.graph.graphs.IGraph;
+import tdk_enum.graph.converters.Converter;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
-
-import java.util.Queue;
-import java.util.Set;
 
 public class TreeDecompositionEnumerator extends AbstractTreeDecompositionEnumerator {
 

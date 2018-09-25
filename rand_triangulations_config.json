@@ -1,0 +1,113 @@
+[
+  {
+  enumerationType : "MINIMAL_TRIANGULATIONS",
+  runningMode : "SINGLE_THREAD",
+  enumerationPurpose : "STANDALONE",
+  singleThreadMISEnumeratorType:"IMPROVED_JV_CACHE",
+  time_limit : 100,
+  separatorsGraphType: "CACHED",
+  minimalTriangulatorType: "RANDOM",
+  fileName:"random"
+},
+
+  {
+    enumerationType : "MINIMAL_TRIANGULATIONS",
+    runningMode : "SINGLE_THREAD",
+    enumerationPurpose : "STANDALONE",
+    singleThreadMISEnumeratorType:"NOT_COMPLETE",
+    time_limit : 100,
+    separatorsGraphType: "CACHED",
+    minimalTriangulatorType: "RANDOM",
+    fileName:"random"
+  },
+  {
+    enumerationType : "MINIMAL_TRIANGULATIONS",
+    runningMode : "SINGLE_THREAD",
+    enumerationPurpose : "STANDALONE",
+    singleThreadMISEnumeratorType:"IMPROVED_JV_CACHE_RANDOM_FIRST",
+    time_limit : 100,
+    separatorsGraphType: "CACHED",
+    fileName:"random"
+  },
+
+  {
+    enumerationType : "MINIMAL_TRIANGULATIONS",
+    runningMode : "SINGLE_THREAD",
+    enumerationPurpose : "STANDALONE",
+    singleThreadMISEnumeratorType:"IMPROVED_K_EXTEND",
+    k: 3,
+    time_limit : 100,
+    separatorsGraphType: "CACHED",
+    fileName:"random",
+    minimalTriangulatorType: "RANDOM"
+  },
+
+  {
+    enumerationType : "MINIMAL_TRIANGULATIONS",
+    runningMode : "SINGLE_THREAD",
+    enumerationPurpose : "STANDALONE",
+    singleThreadMISEnumeratorType:"RANDOM",
+    time_limit : 100,
+    separatorsGraphType: "CACHED",
+    fileName:"random",
+    minimalTriangulatorType: "RANDOM"
+  },
+  {
+    enumerationType : "MINIMAL_TRIANGULATIONS",
+    runningMode : "SINGLE_THREAD",
+    enumerationPurpose : "STANDALONE",
+    singleThreadMISEnumeratorType:"IMPROVED_JV_CACHE",
+    time_limit : 100,
+    separatorsGraphType: "CACHED",
+    minimalTriangulatorType: "RANDOM",
+    fileName:"random",
+    triangulationAlgorithm: "LB_TRIANG"
+  },
+
+  {
+    enumerationType : "MINIMAL_TRIANGULATIONS",
+    runningMode : "SINGLE_THREAD",
+    enumerationPurpose : "STANDALONE",
+    singleThreadMISEnumeratorType:"NOT_COMPLETE",
+    time_limit : 100,
+    separatorsGraphType: "CACHED",
+    minimalTriangulatorType: "RANDOM",
+    fileName:"random",
+    triangulationAlgorithm: "LB_TRIANG"
+  },
+  {
+    enumerationType : "MINIMAL_TRIANGULATIONS",
+    runningMode : "SINGLE_THREAD",
+    enumerationPurpose : "STANDALONE",
+    singleThreadMISEnumeratorType:"IMPROVED_JV_CACHE_RANDOM_FIRST",
+    time_limit : 100,
+    separatorsGraphType: "CACHED",
+    fileName:"random",
+    triangulationAlgorithm: "LB_TRIANG"
+  },
+
+  {
+    enumerationType : "MINIMAL_TRIANGULATIONS",
+    runningMode : "SINGLE_THREAD",
+    enumerationPurpose : "STANDALONE",
+    singleThreadMISEnumeratorType:"IMPROVED_K_EXTEND",
+    k: 3,
+    time_limit : 100,
+    separatorsGraphType: "CACHED",
+    fileName:"random",
+    minimalTriangulatorType: "RANDOM",
+    triangulationAlgorithm: "LB_TRIANG"
+  },
+
+  {
+    enumerationType : "MINIMAL_TRIANGULATIONS",
+    runningMode : "SINGLE_THREAD",
+    enumerationPurpose : "STANDALONE",
+    singleThreadMISEnumeratorType:"RANDOM",
+    time_limit : 100,
+    separatorsGraphType: "CACHED",
+    fileName:"random",
+    minimalTriangulatorType: "RANDOM",
+    triangulationAlgorithm: "LB_TRIANG"
+  }
+]

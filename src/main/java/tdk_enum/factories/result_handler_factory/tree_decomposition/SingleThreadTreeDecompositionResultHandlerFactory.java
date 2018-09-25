@@ -27,7 +27,7 @@ public class SingleThreadTreeDecompositionResultHandlerFactory implements IResul
         TriangulationScoringCriterion trianguationsOrder = (TriangulationScoringCriterion) Utils.getFieldValue(TDKEnumFactory.getConfiguration(),"triangulationScoringCriterion", NONE );
         SeparatorsScoringCriterion separatorsOrder = (SeparatorsScoringCriterion) Utils.getFieldValue(TDKEnumFactory.getConfiguration(), "separatorsScoringCriterion", UNIFORM);
 
-        if (heuristic!= MCS_M && trianguationsOrder!=NONE && separatorsOrder!=UNIFORM)
+        if (heuristic!= MCS_M || trianguationsOrder!=NONE || separatorsOrder!=UNIFORM)
         {
             algorithm = new StringBuilder().append(heuristic.name()).append(".").append(trianguationsOrder.name()).
                     append(".").append(separatorsOrder.name()).toString();
@@ -44,6 +44,7 @@ public class SingleThreadTreeDecompositionResultHandlerFactory implements IResul
 
         resultHandler.setEnumeratorType(getEnumeratorString());
 
+        resultHandler.setThreadNumber((((TDKTreeDecompositionEnumConfiguration) TDKEnumFactory.getConfiguration()).getThreadNumder()));
 
 
 

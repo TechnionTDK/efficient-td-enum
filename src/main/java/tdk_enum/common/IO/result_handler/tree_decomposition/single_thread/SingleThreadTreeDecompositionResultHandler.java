@@ -14,13 +14,13 @@ public class SingleThreadTreeDecompositionResultHandler extends AbstractTreeDeco
 
     @Override
     public void newResult(ITreeDecomposition decomposition) {
-        ++resultsFound;
+        results.add(decomposition);
         TreeDecompositionResultInformation currentResult = new TreeDecompositionResultInformation(resultsFound, getTime(), graph, decomposition);
         print = false;
 
 
 
-        if(resultsFound == 1)
+        if(results.size() == 1)
         {
             firstResult = minBagExpSizeResult = minFillResult = minWidthResult  = currentResult;
             firstWidth = minWidth = maxWidth = currentResult.getWidth();

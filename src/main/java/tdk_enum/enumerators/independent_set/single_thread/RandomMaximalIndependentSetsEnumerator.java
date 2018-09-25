@@ -8,9 +8,9 @@ import java.util.Set;
 public class RandomMaximalIndependentSetsEnumerator<T> extends AbstractMaximalIndependentSetsEnumerator<T>{
 
 
-    @Override
-    protected boolean finishCondition() {
-        return Thread.currentThread().isInterrupted();    }
+//    @Override
+//    protected boolean finishCondition() {
+//        return Thread.currentThread().isInterrupted();    }
 
     @Override
     protected Set<T> manipulateNodeAndResult(T node, Set<T> result) {

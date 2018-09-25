@@ -24,7 +24,7 @@ public class ParallelMinimalSeparatorsResultHandlerFactory implements IResultHan
 
 
         resultHandler.setEnumeratorType(getEnumeratorString());
-
+        resultHandler.setThreadNumber((((TDKSeperatorsEnumConfiguration) TDKEnumFactory.getConfiguration()).getThreadNumder()));
 
         return  resultHandler;
     }

@@ -2,6 +2,7 @@ package tdk_enum.factories.result_handler_factory.minimal_triangulations;
 
 import tdk_enum.common.Utils;
 import tdk_enum.common.configuration.TDKChordalGraphEnumConfiguration;
+import tdk_enum.common.configuration.TDKSeperatorsEnumConfiguration;
 import tdk_enum.common.configuration.config_types.WhenToPrint;
 import tdk_enum.common.IO.result_handler.IResultHandler;
 import tdk_enum.common.IO.result_handler.chordal_graph.parallel.ParallelChordalGraphResultHandler;
@@ -35,7 +36,7 @@ public class ParallelMinimalTriangulationsResultHandlerFactory implements IResul
         TriangulationScoringCriterion trianguationsOrder = (TriangulationScoringCriterion) Utils.getFieldValue(TDKEnumFactory.getConfiguration(),"triangulationScoringCriterion", NONE );
         SeparatorsScoringCriterion separatorsOrder = (SeparatorsScoringCriterion) Utils.getFieldValue(TDKEnumFactory.getConfiguration(), "separatorsScoringCriterion", UNIFORM);
 
-        if (heuristic!= MCS_M && trianguationsOrder!=NONE && separatorsOrder!=UNIFORM)
+        if (heuristic!= MCS_M || trianguationsOrder!=NONE || separatorsOrder!=UNIFORM)
         {
             algorithm = new StringBuilder().append(heuristic.name()).append(".").append(trianguationsOrder.name()).
                     append(".").append(separatorsOrder.name()).toString();
@@ -50,7 +51,7 @@ public class ParallelMinimalTriangulationsResultHandlerFactory implements IResul
         resultHandler.createSummaryFile();
         resultHandler.setWhenToPrint(TDKEnumFactory.getConfiguration().getWhenToPrint());
 
-
+        resultHandler.setThreadNumber((((TDKChordalGraphEnumConfiguration) TDKEnumFactory.getConfiguration()).getThreadNumder()));
         resultHandler.setEnumeratorType(getEnumeratorString());
 
 

@@ -1,16 +1,10 @@
 package tdk_enum.enumerators.triangulation.parallel;
 
-import tdk_enum.common.configuration.config_types.EnumerationPurpose;
-import tdk_enum.enumerators.generators.IGenerator;
 import tdk_enum.graph.data_structures.MinimalSeparator;
-import tdk_enum.graph.data_structures.Node;
-import tdk_enum.graph.graphs.IGraph;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
-import tdk_enum.graph.graphs.Converter;
+import tdk_enum.graph.converters.Converter;
 import tdk_enum.enumerators.triangulation.AbstractMinimalTriangulationsEnumerator;
-import tdk_enum.graph.graphs.succinct_graphs.ISuccinctGraphRepresentation;
 
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 

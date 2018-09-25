@@ -1,15 +1,17 @@
 [
 
   {
-    enumerationType : "PROPER_TD",
+    enumerationType : "NICE_TD",
     runningMode : "SINGLE_THREAD",
     enumerationPurpose : "STANDALONE",
     time_limit : 100
-  },
-  {
-    enumerationType : "PROPER_TD",
-    runningMode : "PARALLEL",
-    enumerationPurpose : "STANDALONE",
-    time_limit : 100
   }
+//  {
+//    enumerationType : "NICE_TD",
+//    runningMode : "PARALLEL",
+//    enumerationPurpose : "STANDALONE",
+//    time_limit : 100
+//  }
+
+
 ]

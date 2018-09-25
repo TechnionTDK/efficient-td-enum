@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
 
 import static tdk_enum.common.IO.CSVOperations.dataToCSV;
 
@@ -36,6 +38,7 @@ public abstract class AbstractTreeDecompositionResultHandler extends AbstractRes
     protected int goodWidthCount = 0;
     protected int goodFillCount = 0;
 
+    protected Set<ITreeDecomposition> results = new HashSet<>();
     protected String summaryHeaderSpecificFields =  dataToCSV("Algorithm", "Separators generated","Results","First Width","Min Width","Max Width",
             "Best Width Time","Best Width Count","Good width Count","First Fill","Min Fill","Max Fill","Best Fill Time",
             "Best Fill Count","Good Fill Count","First ExpBags","Min ExpBags","Max ExpBags","Best ExpBags Time");
@@ -101,7 +104,7 @@ public abstract class AbstractTreeDecompositionResultHandler extends AbstractRes
                 super.getDataToCSV(),
                 algorithm,
                 separators,
-                resultsFound,
+                results.size(),
                 firstWidth,
                 minWidth,
                 maxWidth,
@@ -136,6 +139,12 @@ public abstract class AbstractTreeDecompositionResultHandler extends AbstractRes
                 "Best Width Time","Best Width Count","Good width Count","First Fill","Min Fill","Max Fill","Best Fill Time",
                 "Best Fill Count","Good Fill Count","First ExpBags","Min ExpBags","Max ExpBags","Best ExpBags Time");
 
+    }
+
+    @Override
+    public Set<ITreeDecomposition> getResults()
+    {
+        return results;
     }
 
 }

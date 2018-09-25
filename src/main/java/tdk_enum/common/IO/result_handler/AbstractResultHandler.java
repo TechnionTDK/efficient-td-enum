@@ -42,6 +42,18 @@ public abstract class AbstractResultHandler<EnumType> implements IResultHandler<
 
     protected RunningMode runningMode = null;
 
+    protected  Integer threadNumber;
+
+    @Override
+    public Integer getThreadNumber() {
+        return threadNumber;
+    }
+
+    @Override
+    public void setThreadNumber(Integer threadNumber) {
+        this.threadNumber = threadNumber;
+    }
+
     public String getEnumeratorType() {
         return enumeratorType;
     }
@@ -182,7 +194,7 @@ public abstract class AbstractResultHandler<EnumType> implements IResultHandler<
     }
 
     protected String summaryGeneralHeaders = dataToCSV("Field", "Type", "Graph", "Nodes", "Edges", "Finished",
-            "Enumeration Type", "Running Mode", "Enumerator Type" ,"Time");
+            "Enumeration Type", "Running Mode", "Enumerator Type" ,"Thread Number","Time");
 
     protected String summaryHeaderSpecificFields =  "";
 
@@ -216,7 +228,7 @@ public abstract class AbstractResultHandler<EnumType> implements IResultHandler<
         String summary = dataToCSV(
                 field,type,graphName, nodes, edges,
                 timeLimitExeeded? "NO" : "YES",
-                enumerationType, runningMode, enumeratorType,
+                enumerationType, runningMode, enumeratorType, threadNumber,
                 endTime);
         return summary;
     }

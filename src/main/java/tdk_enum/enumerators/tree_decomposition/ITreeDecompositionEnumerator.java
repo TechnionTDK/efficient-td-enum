@@ -14,4 +14,6 @@ import java.util.Set;
 public interface ITreeDecompositionEnumerator extends IResultPrinter<IChordalGraph>, IEnumerator<Node,ITreeDecomposition,IGraph> {
 
     void setMinimalTriangulationsEnumerator(IMinimalTriangulationsEnumerator triangulationsEnumerator);
+
+    int getNumberOfMinimalSeperatorsGenerated();
 }

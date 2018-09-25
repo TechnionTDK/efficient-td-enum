@@ -1,0 +1,4 @@
+package tdk_enum.common.IO.result_handler.tree_decomposition.single_thread;
+
+public class SingleThreadNiceTreeDecompositionResultHandler extends SingleThreadTreeDecompositionResultHandler {
+}

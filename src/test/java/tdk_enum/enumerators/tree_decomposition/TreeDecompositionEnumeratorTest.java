@@ -3,16 +3,14 @@ package tdk_enum.enumerators.tree_decomposition;
 import org.junit.Test;
 import tdk_enum.common.IO.GraphReader;
 import tdk_enum.common.configuration.TDKEnumConfiguration;
-import tdk_enum.enumerators.triangulation.IMinimalTriangulationsEnumerator;
 import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.factories.configuration_parser.ConfigurationParserFactory;
-import tdk_enum.factories.enumerator_factory.EnumeratorFactory;
-import tdk_enum.factories.minimal_triangulations_enumerator_factory.ParallelMinimalTriangulationsEnumeratorFactory;
+import tdk_enum.factories.tree_decomposition_enumerator_factory.NiceTreeDecompositionEnumeratorFactory;
 import tdk_enum.factories.tree_decomposition_enumerator_factory.TreeDecompositionEnumeratorFactory;
-import tdk_enum.graph.graphs.Converter;
+import tdk_enum.graph.converters.Converter;
 import tdk_enum.graph.graphs.IGraph;
-import tdk_enum.graph.graphs.TreeDecompositionValidator;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
+import tdk_enum.graph.graphs.tree_decomposition.TreeDecompositionValidator;
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
 import tdk_enum.legacy.graph.triangulation.LegacyMinimalTriangulationsEnumerator;
 
@@ -38,28 +36,39 @@ public class TreeDecompositionEnumeratorTest {
         for (TDKEnumConfiguration configuration : experimentConfigurations)
         {
             TDKEnumFactory.setConfiguration(configuration);
-            ITreeDecompositionEnumerator enumerator = new TreeDecompositionEnumeratorFactory().produce();
+            ITreeDecompositionEnumerator enumerator = new NiceTreeDecompositionEnumeratorFactory().produce();
             Set<ITreeDecomposition> newResultSet = new HashSet<>();
             while (enumerator.hasNext())
             {
-                newResultSet.add(enumerator.next());
+                ITreeDecomposition result = enumerator.next();
+               
+                if (!newResultSet.add(result))
+                {
+                    System.out.println("TD already in");
+                }
             }
 
             LegacyMinimalTriangulationsEnumerator legacyEnumerator = new LegacyMinimalTriangulationsEnumerator(TDKEnumFactory.getGraph(), NONE, UNIFORM, MCS_M);
             Set<ITreeDecomposition> legacyResults = new HashSet<>();
             while (legacyEnumerator.hasNext())
             {
-                legacyResults.add(Converter.chordalGraphToProperTreeDecomposition( legacyEnumerator.next()));
+                IChordalGraph result = legacyEnumerator.next();
+                if(!legacyResults.add(Converter.chordalGraphToNiceTreeDecomposition( result)))
+                {
+                    System.out.println("TD already in legacy results");
+                    System.out.println(result);
+                }
             }
+
             assertEquals(legacyResults.size(), newResultSet.size());
+            System.out.println("Size is" + legacyResults.size());
             assertEquals(legacyResults,newResultSet);
             for (ITreeDecomposition treeDecomposition : newResultSet)
             {
-                assertTrue( TreeDecompositionValidator.isValidDecomposition(treeDecomposition,g));
+                assertTrue( TreeDecompositionValidator.isNiceTreeDecomposition(treeDecomposition,g));
 
             }
         }
-
 
     }
 }

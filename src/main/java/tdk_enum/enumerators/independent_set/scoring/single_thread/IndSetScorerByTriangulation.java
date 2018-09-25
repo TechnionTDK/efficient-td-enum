@@ -6,7 +6,7 @@ import tdk_enum.graph.graphs.Graph;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 import tdk_enum.graph.graphs.IGraph;
 import tdk_enum.enumerators.independent_set.scoring.AbstractIndependentSetScorer;
-import tdk_enum.graph.graphs.Converter;
+import tdk_enum.graph.converters.Converter;
 import tdk_enum.common.configuration.config_types.TriangulationScoringCriterion;
 
 /**

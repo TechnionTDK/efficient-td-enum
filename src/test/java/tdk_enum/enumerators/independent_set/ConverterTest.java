@@ -5,7 +5,7 @@ import tdk_enum.graph.TestsUtils;
 import tdk_enum.graph.data_structures.MinimalSeparator;
 import tdk_enum.graph.data_structures.Node;
 import tdk_enum.graph.data_structures.NodeSet;
-import tdk_enum.graph.graphs.Converter;
+import tdk_enum.graph.converters.Converter;
 import tdk_enum.graph.graphs.Graph;
 import tdk_enum.graph.graphs.IGraph;
 

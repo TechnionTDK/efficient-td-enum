@@ -12,6 +12,10 @@ public interface IResultHandler<EnumType> extends IResultPrinter<EnumType>{
 
     void newResult(final EnumType result);
 
+    Integer getThreadNumber();
+
+    void setThreadNumber(Integer threadNumber);
+
     void setField(String field);
 
     void setType(String type);

@@ -1,7 +1,9 @@
-package tdk_enum.graph.graphs;
+package tdk_enum.graph.graphs.tree_decomposition;
 
 import tdk_enum.graph.data_structures.Node;
+import tdk_enum.graph.data_structures.NodeSet;
 import tdk_enum.graph.data_structures.TdListMap;
+import tdk_enum.graph.graphs.IGraph;
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
 import tdk_enum.graph.graphs.tree_decomposition.single_thread.DecompositionNode;
 
@@ -11,7 +13,7 @@ public class TreeDecompositionValidator {
 
     public static boolean isValidDecomposition(ITreeDecomposition t, IGraph g)
     {
-        if (!t.isTree())
+        if (!isTree(t))
         {
             System.out.println("Error: Not A Tree");
             return  false;
@@ -31,6 +33,74 @@ public class TreeDecompositionValidator {
 
 
     }
+
+    public static boolean isNiceTreeDecomposition(ITreeDecomposition t, IGraph g)
+    {
+        if (!isValidDecomposition(t, g))
+        {
+            return false;
+        }
+
+        NodeSet bagsId = new NodeSet(t.getNodes());
+
+        for (DecompositionNode bag : t.getBags())
+        {
+            if(!isLeaf(bag) && !isIntroduceNode(bag, t) && !isForgetNode(bag, t) && !isJoinNode(bag, t))
+            {
+                System.out.println("bag is wrong " + bag );
+                System.out.println("for tree " + t);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isJoinNode(DecompositionNode bag, ITreeDecomposition t) {
+        if (bag.getChildren().size() ==2)
+        {
+            DecompositionNode left = t.getBag(bag.getChildren().get(0));
+            DecompositionNode right = t.getBag(bag.getChildren().get(1));
+            if (bag.contentEquals(left) && bag.contentEquals(right))
+            {
+                return true;
+            }
+
+        }
+        return  false;
+    }
+
+    private static boolean isForgetNode(DecompositionNode bag, ITreeDecomposition t) {
+        if (bag.getChildren().size() ==1)
+        {
+            DecompositionNode child = t.getBag(bag.getChildren().get(0));
+            if (child.size() == bag.size()-1)
+            {
+                return true;
+            }
+
+
+        }
+        return false;
+    }
+
+    private static boolean isIntroduceNode(DecompositionNode bag, ITreeDecomposition t) {
+        if (bag.getChildren().size() ==1)
+        {
+            DecompositionNode child = t.getBag(bag.getChildren().get(0));
+            if (child.size() == bag.size()+1)
+            {
+                return true;
+            }
+
+
+        }
+        return false;
+    }
+
+    private static boolean isLeaf(DecompositionNode bag) {
+        return bag.getChildren().size() == 0;
+    }
+
 
     private static boolean check_connectedness(ITreeDecomposition t, IGraph g) {
 
@@ -146,5 +216,45 @@ public class TreeDecompositionValidator {
         }
 
         return seen.values().stream().filter(aBoolean -> aBoolean.equals(false)).count() == 0;
+    }
+
+    static boolean isTree(ITreeDecomposition t)
+    {
+        if (t.getNumberOfNodes() >0 && t.getNumberOfNodes()-1 != t.getNumberOfEdges())
+        {
+            return false;
+        }
+        else if (t.getNumberOfNodes() ==0)
+        {
+            return (t.getNumberOfEdges()==0);
+        }
+        TdListMap<Boolean> seen = new TdListMap(t.getNumberOfNodes(), false);
+        boolean cycle = !treeDFS(seen, new Node(0) ,new Node(-1), t);
+        int seenSize = (int) seen.values().stream().filter(aBoolean -> aBoolean.equals(true)).count();
+        if (cycle || seenSize != t.getNumberOfNodes())
+        {
+            return false;
+        }
+        return true;
+    }
+
+    static boolean treeDFS(TdListMap<Boolean> seen, Node root, Node parent, ITreeDecomposition t)
+    {
+        if (seen.get(root) != false)
+        {
+            return false;
+        }
+        seen.put(root, true);
+        for(Node child : t.getNeighbors(root))
+        {
+            if(!child.equals(parent))
+            {
+                if (!treeDFS(seen, child, root, t))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

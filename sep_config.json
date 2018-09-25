@@ -1,0 +1,42 @@
+
+[
+  {
+    enumerationType : "SEPARATORS",
+    runningMode : "SINGLE_THREAD",
+    enumerationPurpose : "STANDALONE",
+    time_limit : 100
+  },
+
+
+
+  {
+    enumerationType : "SEPARATORS",
+    runningMode : "PARALLEL",
+    enumerationPurpose : "STANDALONE",
+    parallelSeperatorsEnumeratorType: "VANILLA",
+    time_limit : 100
+
+  },
+
+  {
+    enumerationType : "SEPARATORS",
+    runningMode : "PARALLEL",
+    enumerationPurpose : "STANDALONE",
+    parallelSeperatorsEnumeratorType: "HORIZONTAL",
+    time_limit : 100
+
+  },
+
+  {
+    enumerationType : "SEPARATORS",
+    runningMode : "PARALLEL",
+    enumerationPurpose : "STANDALONE",
+    parallelSeperatorsEnumeratorType: "NESTED",
+    time_limit : 100
+
+  }
+
+
+
+
+]

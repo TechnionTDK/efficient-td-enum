@@ -37,7 +37,7 @@ public class SingleThreadMinimalTriangulationsResultHandlerFactory implements IR
         TriangulationScoringCriterion trianguationsOrder = (TriangulationScoringCriterion) Utils.getFieldValue(TDKEnumFactory.getConfiguration(),"triangulationScoringCriterion", NONE );
         SeparatorsScoringCriterion separatorsOrder = (SeparatorsScoringCriterion) Utils.getFieldValue(TDKEnumFactory.getConfiguration(), "separatorsScoringCriterion", UNIFORM);
 
-        if (heuristic!= MCS_M && trianguationsOrder!=NONE && separatorsOrder!=UNIFORM)
+        if (!heuristic.equals( MCS_M ) || !trianguationsOrder.equals(NONE) || !separatorsOrder.equals(UNIFORM))
         {
             algorithm = new StringBuilder().append(heuristic.name()).append(".").append(trianguationsOrder.name()).
                     append(".").append(separatorsOrder.name()).toString();
@@ -53,6 +53,7 @@ public class SingleThreadMinimalTriangulationsResultHandlerFactory implements IR
         resultHandler.setWhenToPrint(TDKEnumFactory.getConfiguration().getWhenToPrint());
 
         resultHandler.setEnumeratorType(getEnumeratorString());
+        resultHandler.setThreadNumber((((TDKChordalGraphEnumConfiguration) TDKEnumFactory.getConfiguration()).getThreadNumder()));
 
 
 

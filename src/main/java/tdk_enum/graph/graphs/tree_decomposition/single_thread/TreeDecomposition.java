@@ -47,10 +47,13 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
     public void setBags(List<DecompositionNode> bags) {
         this.bags = bags;
         nodes.clear();
+        neighborSets.clear();
         for (int i =0; i< bags.size(); i++)
         {
             nodes.add(new Node(i));
+            neighborSets.put(new Node(i), new HashSet<>());
         }
+        numberOfNodes = nodes.size();
 
     }
 
@@ -80,46 +83,46 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
         return bags.get(bagId.intValue());
     }
 
-    @Override
-    public boolean isTree() {
-
-        if (numberOfNodes >0 && numberOfNodes-1 != numberOfEdges)
-        {
-            return false;
-        }
-        else if (numberOfNodes ==0)
-        {
-            return (numberOfEdges==0);
-        }
-        TdListMap<Boolean> seen = new TdListMap(numberOfNodes, false);
-        boolean cycle = !treeDFS(seen, new Node(0) ,new Node(-1));
-        int seenSize = (int) seen.values().stream().filter(aBoolean -> aBoolean.equals(true)).count();
-        if (cycle || seenSize != numberOfNodes)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    boolean treeDFS(TdListMap<Boolean> seen, Node root, Node parent)
-    {
-        if (seen.get(root) != false)
-        {
-            return false;
-        }
-        seen.put(root, true);
-        for(Node child : getNeighbors(root))
-        {
-            if(!child.equals(parent))
-            {
-                if (!treeDFS(seen, child, root))
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+//    @Override
+//    public boolean isTree() {
+//
+//        if (numberOfNodes >0 && numberOfNodes-1 != numberOfEdges)
+//        {
+//            return false;
+//        }
+//        else if (numberOfNodes ==0)
+//        {
+//            return (numberOfEdges==0);
+//        }
+//        TdListMap<Boolean> seen = new TdListMap(numberOfNodes, false);
+//        boolean cycle = !treeDFS(seen, new Node(0) ,new Node(-1));
+//        int seenSize = (int) seen.values().stream().filter(aBoolean -> aBoolean.equals(true)).count();
+//        if (cycle || seenSize != numberOfNodes)
+//        {
+//            return false;
+//        }
+//        return true;
+//    }
+//
+//    boolean treeDFS(TdListMap<Boolean> seen, Node root, Node parent)
+//    {
+//        if (seen.get(root) != false)
+//        {
+//            return false;
+//        }
+//        seen.put(root, true);
+//        for(Node child : getNeighbors(root))
+//        {
+//            if(!child.equals(parent))
+//            {
+//                if (!treeDFS(seen, child, root))
+//                {
+//                    return false;
+//                }
+//            }
+//        }
+//        return true;
+//    }
 
     @Override
     public Set<NodeSet> getMaximalCliques()
@@ -137,7 +140,8 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
         TreeDecomposition that = (TreeDecomposition) o;
 
         if (getBags() != null ? !getBags().equals(that.getBags()) : that.getBags() != null) return false;
-        return getRoot() != null ? getRoot().equals(that.getRoot()) : that.getRoot() == null;
+
+        return (getRoot() != null ? getRoot().equals(that.getRoot()) : that.getRoot() == null);
     }
 
     @Override
@@ -146,5 +150,28 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
         result = 31 * result + (getBags() != null ? getBags().hashCode() : 0);
         result = 31 * result + (getRoot() != null ? getRoot().hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("td ");
+        sb.append(numberOfNodes).append(" ").append(bags.stream().mapToInt(value -> value.size()).max().getAsInt()).append(System.lineSeparator());
+        for(DecompositionNode bag: bags)
+        {
+            sb.append(bag).append(System.lineSeparator());
+        }
+        for(DecompositionNode bag :bags)
+        {
+            if(bag.getChildren().size() != 0)
+            {
+                sb.append(bag.getBagId());
+                for (Node child : bag.getChildren())
+                {
+                    sb.append(" ").append(child);
+                }
+                sb.append(System.lineSeparator());
+            }
+        }
+        return sb.toString();
     }
 }

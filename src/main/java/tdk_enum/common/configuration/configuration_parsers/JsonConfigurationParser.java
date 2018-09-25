@@ -2,10 +2,7 @@ package tdk_enum.common.configuration.configuration_parsers;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
-import tdk_enum.common.configuration.TDKChordalGraphEnumConfiguration;
-import tdk_enum.common.configuration.TDKEnumConfiguration;
-import tdk_enum.common.configuration.TDKSeperatorsEnumConfiguration;
-import tdk_enum.common.configuration.TDKTreeDecompositionEnumConfiguration;
+import tdk_enum.common.configuration.*;
 import tdk_enum.common.configuration.config_types.EnumerationType;
 
 import java.io.FileNotFoundException;
@@ -34,6 +31,7 @@ public class JsonConfigurationParser extends AbstractConfigurationParser {
                 switch (EnumerationType.valueOf( jsonObject.get("enumerationType").getAsString()))
                 {
                     case NICE_TD:
+                        configurations.add(gson.fromJson(jsonElement, TDKNiceTreeDecompositionEnumConfiguration.class));
                         break;
                     case PROPER_TD:
                         configurations.add(gson.fromJson(jsonElement, TDKTreeDecompositionEnumConfiguration.class));

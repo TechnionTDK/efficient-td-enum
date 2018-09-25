@@ -18,6 +18,8 @@ public class TDKSeperatorsEnumConfiguration extends TDKEnumConfiguration {
 
     protected SeparatorsScoringCriterion separatorsScoringCriterion = UNIFORM;
 
+
+
     public SeparatorsScoringCriterion getSeparatorsScoringCriterion() {
         return separatorsScoringCriterion;
     }
@@ -49,4 +51,6 @@ public class TDKSeperatorsEnumConfiguration extends TDKEnumConfiguration {
     public void setTaskManagerType(TaskManagerType taskManagerType) {
         this.taskManagerType = taskManagerType;
     }
+
+
 }

@@ -1,0 +1,30 @@
+//  {
+//    enumerationType : "SEPARATORS",
+//    runningMode : "SINGLE_THREAD",
+//    enumerationPurpose : "STANDALONE",
+//    parallelSeperatorsEnumeratorType: "NESTED",
+//    time_limit : 100
+//  },
+//  {
+//    enumerationType : "SEPARATORS",
+//    runningMode : "PARALLEL",
+//    enumerationPurpose : "BENCHMARK_COMPARE",
+//    parallelSeperatorsEnumeratorType: "NESTED",
+//    benchMarkBaseId: 1
+//  },
+//
+//  {
+//    enumerationType : "MINIMAL_TRIANGULATIONS",
+//    runningMode : "SINGLE_THREAD",
+//    enumerationPurpose : "STANDALONE",
+//    time_limit : 100
+//  },
+//  {
+//    enumerationType : "MINIMAL_TRIANGULATIONS",
+//    runningMode : "PARALLEL",
+//    parallelMISEnumeratorType : "NESTED",
+//    separatorsGraphType : "DEMON",
+//    enumerationPurpose : "BENCHMARK_COMPARE",
+//    time_limit : 100,
+//    benchMarkBaseId: 1
+//  }

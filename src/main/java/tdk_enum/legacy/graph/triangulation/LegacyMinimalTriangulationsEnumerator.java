@@ -13,7 +13,7 @@ import tdk_enum.enumerators.independent_set.set_extender.single_thread.IndSetExt
 import tdk_enum.enumerators.independent_set.set_extender.single_thread.IndSetExtByTriangulation;
 import tdk_enum.legacy.graph.independent_set.LegacyMaximalIndependentSetsEnumerator;
 import tdk_enum.common.configuration.config_types.SeparatorsScoringCriterion;
-import tdk_enum.graph.graphs.Converter;
+import tdk_enum.graph.converters.Converter;
 
 import static tdk_enum.common.configuration.config_types.TriangulationAlgorithm.SEPARATORS;
 

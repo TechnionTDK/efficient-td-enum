@@ -12,6 +12,7 @@ import tdk_enum.factories.separator_scorer_factory.SeparatorScorerFactory;
 import tdk_enum.graph.data_structures.weighted_queue.parallel.ConcurrentQueueSet;
 import tdk_enum.graph.data_structures.weighted_queue.single_thread.QueueSet;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -45,13 +46,21 @@ public class MinimalSeperatorsEnumeratorFactory implements IMinimalSeparatorsEnu
     }
 
     private IMinimalSeparatorsEnumerator produceParallelEnumerator() {
+
+
         TDKSeperatorsEnumConfiguration configuration = (TDKSeperatorsEnumConfiguration) TDKEnumFactory.getConfiguration();
+
         IMinimalSeparatorsEnumerator enumerator = null;
         switch (configuration.getParallelSeperatorsEnumeratorType())
         {
             case VANILLA:
             {
+
+                System.out.println("number of threads for streams is " + System.getProperty("java.util.concurrent.ForkJoinPool.common.parallelism"));
+                System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", Integer.toString(configuration.getThreadNumder()-1) );
+                System.out.println("number of threads for streams is " + System.getProperty("java.util.concurrent.ForkJoinPool.common.parallelism"));
                 enumerator = new ParallelMinimalSeparatorsEnumerator();
+
                 break;
 
             }
@@ -59,6 +68,9 @@ public class MinimalSeperatorsEnumeratorFactory implements IMinimalSeparatorsEnu
 
             case HORIZONTAL:
             {
+                System.out.println("number of threads for streams is " + System.getProperty("java.util.concurrent.ForkJoinPool.common.parallelism"));
+                System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", Integer.toString(configuration.getThreadNumder()-1) );
+                System.out.println("number of threads for streams is " + System.getProperty("java.util.concurrent.ForkJoinPool.common.parallelism"));
                 enumerator = new HorizontalMinimalSepratorsEnumerator();
                 break;
             }
@@ -68,6 +80,8 @@ public class MinimalSeperatorsEnumeratorFactory implements IMinimalSeparatorsEnu
 
             {
                 enumerator = new NestedMinimalSeperatorsEnumerator();
+                System.out.println("setting number of threads to " + configuration.getThreadNumder());
+                ((NestedMinimalSeperatorsEnumerator)enumerator).setThreadNumber(configuration.getThreadNumder());
                 ((NestedMinimalSeperatorsEnumerator)enumerator).setTimeout(TDKEnumFactory.getConfiguration().getTime_limit());
                 break;
             }

@@ -34,7 +34,8 @@ public class TDKChordalGraphEnumConfiguration extends TDKEnumConfiguration {
 
     protected CachePolicy cachePolicy = CachePolicy.NONE;
 
-    protected int k;
+    protected int k=1;
+
 
     public CachePolicy getCachePolicy() {
         return cachePolicy;
@@ -123,4 +124,6 @@ public class TDKChordalGraphEnumConfiguration extends TDKEnumConfiguration {
     public void setTriangulationAlgorithm(TriangulationAlgorithm triangulationAlgorithm) {
         this.triangulationAlgorithm = triangulationAlgorithm;
     }
+
+
 }

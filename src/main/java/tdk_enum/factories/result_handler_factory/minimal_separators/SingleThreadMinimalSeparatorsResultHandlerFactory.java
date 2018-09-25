@@ -25,6 +25,8 @@ public class SingleThreadMinimalSeparatorsResultHandlerFactory implements IResul
 
         resultHandler.setEnumeratorType(getEnumeratorString());
 
+        resultHandler.setThreadNumber((((TDKSeperatorsEnumConfiguration) TDKEnumFactory.getConfiguration()).getThreadNumder()));
+
 
         return  resultHandler;
     }

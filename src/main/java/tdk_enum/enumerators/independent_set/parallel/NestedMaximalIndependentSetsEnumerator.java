@@ -155,6 +155,19 @@ public class NestedMaximalIndependentSetsEnumerator<T> extends AbstractNestetEnu
             futures = enumerators.invokeAll(callables);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            demon.shutdownNow();
+            enumerators.shutdownNow();
+            for (Future future: futures)
+            {
+                if(!future.isCancelled())
+                {
+                    future.cancel(true);
+                }
+            }
+            if(!f.isCancelled())
+            {
+                f.cancel(true);
+            }
         }
 
 //        for (IEnumerator enumerator: enumeratorList)
@@ -193,19 +206,7 @@ public class NestedMaximalIndependentSetsEnumerator<T> extends AbstractNestetEnu
 //
 //            }
 //        }
-        demon.shutdownNow();
-        enumerators.shutdownNow();
-        for (Future future: futures)
-        {
-            if(!future.isCancelled())
-            {
-                future.cancel(true);
-            }
-        }
-        if(!f.isCancelled())
-        {
-            f.cancel(true);
-        }
+
 
 
 

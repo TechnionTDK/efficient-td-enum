@@ -20,5 +20,5 @@ public interface ITreeDecomposition  extends IChordalGraph{
 
     DecompositionNode getBag(Node bagId);
 
-    boolean isTree();
+//    boolean isTree();
 }

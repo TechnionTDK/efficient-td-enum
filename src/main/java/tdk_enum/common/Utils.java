@@ -39,6 +39,11 @@ public class Utils
                 .anyMatch(f -> f.getName().equals(fieldName));
     }
 
+    public static boolean doesObjectContainMethod(Object object, String methodName) {
+        return Arrays.stream(object.getClass().getMethods())
+                .anyMatch(method -> method.getName().equals(methodName));
+    }
+
     public static Object getFieldValue(Object object, String fieldName, Object defaultValue)
     {
 //        try {
@@ -59,6 +64,17 @@ public class Utils
             e.printStackTrace();
         }
         return defaultValue;
+    }
+
+    public static void setFieldValue(Object object, String fieldName, Object value)
+    {
+        try {
+            Class oclass = object.getClass();
+            Field field = getField(oclass, fieldName);
+            runSetter(field, object, value);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     static Field getField(Class oclass, String fieldName) throws NoSuchFieldException {
@@ -105,6 +121,85 @@ public class Utils
 
 
         return defualtValue;
+    }
+
+
+    public static Object runGetter( Object o, String getterName, Object defualtValue)
+    {
+        // MZ: Find the correct method
+        for (Method method : o.getClass().getMethods())
+        {
+            if ((method.getName().equals(getterName)))
+            {
+                try
+                {
+                    return method.invoke(o);
+                }
+                catch (IllegalAccessException e)
+                {
+                    e.printStackTrace();
+                }
+                catch (InvocationTargetException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+        return defualtValue;
+    }
+
+
+    public static void runSetter(Object o, String setterName,  Object value)
+    {
+        // MZ: Find the correct method
+        for (Method method : o.getClass().getMethods())
+        {
+            if ((method.getName().equals(setterName)))
+            {
+                // MZ: Method found, run it
+                try
+                {
+                    method.invoke(o,value);
+                }
+                catch (IllegalAccessException e)
+                {
+                    e.printStackTrace();
+                }
+                catch (InvocationTargetException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+
+    public static void runSetter(Field field, Object o,  Object value)
+    {
+        // MZ: Find the correct method
+        for (Method method : o.getClass().getMethods())
+        {
+            if ((method.getName().startsWith("set")) && (method.getName().length() == (field.getName().length() + 3)))
+            {
+                // MZ: Method found, run it
+                try
+                {
+                    method.invoke(o,value);
+                }
+                catch (IllegalAccessException e)
+                {
+                    e.printStackTrace();
+                }
+                catch (InvocationTargetException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
 
 }

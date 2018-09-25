@@ -138,6 +138,7 @@ public class Graph implements IGraph
 
     }
 
+
     @Override
     public void addClique(NodeSet clique)
     {

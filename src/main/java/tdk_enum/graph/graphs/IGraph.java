@@ -17,6 +17,7 @@ public interface IGraph
 
     void addEdge(Node u, Node v);
 
+
     void addClique(final NodeSet clique);
 
     void addClique(final List<Node> clique);
