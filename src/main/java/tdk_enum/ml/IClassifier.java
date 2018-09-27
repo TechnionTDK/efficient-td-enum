@@ -8,5 +8,5 @@ public interface IClassifier {
 
     void addTrainingSet(List<ITreeDecomposition> trainingSet);
 
-    void ItreeDecomposition (List<ITreeDecomposition> )
+//    void ItreeDecomposition (List<ITreeDecomposition> )
 }
