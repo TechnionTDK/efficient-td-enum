@@ -56,7 +56,7 @@ public class ParallelTreeDecompositionResultHandlerFactory implements IResultHan
 
     private String getEnumeratorString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(((TDKTreeDecompositionEnumConfiguration) TDKEnumFactory.getConfiguration()).getSingleThreadMISEnumeratorType());
+        sb.append(((TDKTreeDecompositionEnumConfiguration) TDKEnumFactory.getConfiguration()).getParallelMISEnumeratorType());
         return sb.toString();
     }
 }

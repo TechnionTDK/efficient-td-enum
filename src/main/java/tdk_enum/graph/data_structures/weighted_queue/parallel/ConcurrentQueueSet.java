@@ -130,10 +130,7 @@ public class ConcurrentQueueSet<T> implements IWeightedQueue<T>{
 
             queueSet.remove(t);
         }
-        else
-        {
-            System.out.println("returned null result");
-        }
+
         return  t;
 
     }

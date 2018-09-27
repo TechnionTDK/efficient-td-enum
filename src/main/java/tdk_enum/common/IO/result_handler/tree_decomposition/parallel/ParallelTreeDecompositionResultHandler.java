@@ -69,15 +69,15 @@ public class ParallelTreeDecompositionResultHandler extends AbstractTreeDecompos
         minWidth = widthMap.keySet().stream().min(Comparator.naturalOrder()).orElse(0);
         maxWidth = widthMap.keySet().stream().max(Comparator.naturalOrder()).orElse(0);
         minWidthCount = widthMap.get(minWidth);
-        firstWidth = ((TreeDecompositionResultInformation) firstResult).getWidth();
-        goodWidthCount = widthMap.get(((TreeDecompositionResultInformation) firstResult).getWidth());
+        firstWidth = firstResult != null ? ((TreeDecompositionResultInformation) firstResult).getWidth() : 0;
+        goodWidthCount = widthMap.get(firstWidth);
 
 
         minFill = fillMap.keySet().stream().min(Comparator.naturalOrder()).orElse(0);
         maxFill = fillMap.keySet().stream().max(Comparator.naturalOrder()).orElse(0);
         minFillCount = fillMap.get(maxFill);
-        firstFill = ((ChordalGraphResultInformation) firstResult).getFill();
-        goodFillCount = fillMap.get(((TreeDecompositionResultInformation) firstResult).getFill());
+        firstFill = firstResult != null ? ((ChordalGraphResultInformation) firstResult).getFill() : 0;
+        goodFillCount = fillMap.get(firstFill);
 
         minBagExpSize = expBagMap.keySet().stream().min(Comparator.naturalOrder()).orElse((long) 0);
         maxBagExpSize = expBagMap.keySet().stream().max(Comparator.naturalOrder()).orElse((long) 0);
