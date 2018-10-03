@@ -1,6 +1,7 @@
 package tdk_enum.graph.data_structures.comparators;
 
-import javafx.util.Pair;
+
+import tdk_enum.graph.data_structures.Pair;
 
 import java.util.Comparator;
 import java.util.Map;

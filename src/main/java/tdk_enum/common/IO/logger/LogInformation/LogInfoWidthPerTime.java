@@ -1,6 +1,8 @@
 package tdk_enum.common.IO.logger.LogInformation;
 
-import javafx.util.Pair;
+
+
+import tdk_enum.graph.data_structures.Pair;
 
 import java.io.File;
 import java.io.FileNotFoundException;
