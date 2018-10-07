@@ -33,6 +33,8 @@ public class ResultHandlerFactory implements  IResultHandlerFactory {
         resultHandler.setEnumerationType(TDKEnumFactory.getConfiguration().getEnumerationType());
         resultHandler.setRunningMode(TDKEnumFactory.getConfiguration().getRunningMode());
         resultHandler.setThreadNumber(TDKEnumFactory.getConfiguration().getThreadNumder());
+        resultHandler.setInputFile(TDKEnumFactory.getInputFile());
+        resultHandler.setWhenToPrint(TDKEnumFactory.getConfiguration().getWhenToPrint());
 
         return resultHandler;
     }

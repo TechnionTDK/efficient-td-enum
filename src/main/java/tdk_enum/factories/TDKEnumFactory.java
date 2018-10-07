@@ -116,6 +116,11 @@ public class TDKEnumFactory {
         TDKEnumFactory.graph = graph;
     }
 
+    public static InputFile getInputFile()
+    {
+        return inputFile;
+    }
+
     public static void init(InputFile inputFile)
     {
         TDKEnumFactory.inputFile = inputFile;

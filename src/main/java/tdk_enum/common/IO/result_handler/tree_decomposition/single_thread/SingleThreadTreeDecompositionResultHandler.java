@@ -1,11 +1,14 @@
 package tdk_enum.common.IO.result_handler.tree_decomposition.single_thread;
 
+import tdk_enum.common.IO.GraphMLPrinter;
 import tdk_enum.common.IO.result_handler.chordal_graph.ChordalGraphResultInformation;
 import tdk_enum.common.IO.result_handler.tree_decomposition.AbstractTreeDecompositionResultHandler;
 import tdk_enum.common.IO.result_handler.tree_decomposition.TreeDecompositionResultInformation;
 import tdk_enum.enumerators.tree_decomposition.AbstractTreeDecompositionEnumerator;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
+
+import java.io.File;
 
 import static tdk_enum.common.configuration.config_types.WhenToPrint.ALWAYS;
 import static tdk_enum.common.configuration.config_types.WhenToPrint.NEVER;
@@ -14,13 +17,13 @@ public class SingleThreadTreeDecompositionResultHandler extends AbstractTreeDeco
 
     @Override
     public void newResult(ITreeDecomposition decomposition) {
-        results.add(decomposition);
+        results++;
         TreeDecompositionResultInformation currentResult = new TreeDecompositionResultInformation(resultsFound, getTime(), graph, decomposition);
         print = false;
 
 
 
-        if(results.size() == 1)
+        if(results == 1)
         {
             firstResult = minBagExpSizeResult = minFillResult = minWidthResult  = currentResult;
             firstWidth = minWidth = maxWidth = currentResult.getWidth();
@@ -48,7 +51,9 @@ public class SingleThreadTreeDecompositionResultHandler extends AbstractTreeDeco
             print = false;
         }
         if (print) {
-            currentResult.printCSVByTime(detailedOutput);
+            //currentResult.printCSVByTime(detailedOutput);
+            printTd(decomposition, results);
+
         }
 
     }

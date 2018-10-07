@@ -11,5 +11,5 @@ public interface ITreeDecompositionResultHandler extends IResultHandler<ITreeDec
 
     void setSeparators(int separators);
 
-    Set<ITreeDecomposition> getResults();
+
 }

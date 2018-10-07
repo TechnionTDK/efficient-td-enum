@@ -29,14 +29,14 @@ public class GraphMLPrinterTest {
     @Test
     public void testString()
     {
-        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\instances\\3col\\instances_width2\\instance_n20_p0.10_001.lp");
+        IGraph g = GraphReader.read("/home/dvirdu/instances/3col/instances_width2/instance_n20_p0.10_001.lp");
 
         TDKEnumFactory.init(g);
         ArrayList<TDKEnumConfiguration> experimentConfigurations = new ConfigurationParserFactory().produce("config.json").parseConfigFile();
         for (TDKEnumConfiguration configuration : experimentConfigurations)
         {
             TDKEnumFactory.setConfiguration(configuration);
-            ITreeDecompositionEnumerator enumerator = new TreeDecompositionEnumeratorFactory().produce();
+            ITreeDecompositionEnumerator enumerator = new NiceTreeDecompositionEnumeratorFactory().produce();
             Set<ITreeDecomposition> newResultSet = new HashSet<>();
             int i=1;
             while (enumerator.hasNext())
@@ -46,7 +46,7 @@ public class GraphMLPrinterTest {
                 System.out.println(TreeDecompositionValidator.isValidDecomposition(result, g));
                 System.out.println(result);
                 //System.out.println(GraphMLPrinter.treeDecompositionToGraphMLFormat(result));
-                GraphMLPrinter.treeDecompositionToGraphMLFile(result, "C:\\tddatasets\\tree decompositions\\3col\\instances_width2\\instance_n20_p0.10_001.lp\\"+i+".gml");
+                GraphMLPrinter.treeDecompositionToGraphMLFile(result, "/home/dvirdu/tree decomposition/instances/3col/instances_width2/instance_n20_p0.10_001.lp/"+i+".gml");
                 i++;
             }
         }

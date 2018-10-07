@@ -8,11 +8,18 @@ import tdk_enum.graph.graphs.IGraph;
 
 import java.io.*;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class GraphReader {
+
+    static List<String> legalExtentions = Arrays.asList("hg", "sp", "wcnf", "uai", "csv", "bliss", "gr", "lp");
+
+    public static boolean isLegalExtention(String fileName)
+    {
+        File input = Paths.get(fileName).toFile();
+        String extension = FilenameUtils.getExtension(fileName);
+        return legalExtentions.contains(extension);
+    }
 
     public static IGraph read(final String fileName)
     {

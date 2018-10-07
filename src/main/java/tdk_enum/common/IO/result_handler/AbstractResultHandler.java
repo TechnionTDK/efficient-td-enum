@@ -1,5 +1,6 @@
 package tdk_enum.common.IO.result_handler;
 
+import tdk_enum.common.IO.InputFile;
 import tdk_enum.common.IO.result_handler.chordal_graph.ChordalGraphResultInformation;
 import tdk_enum.common.configuration.config_types.EnumerationType;
 import tdk_enum.common.configuration.config_types.RunningMode;
@@ -43,6 +44,8 @@ public abstract class AbstractResultHandler<EnumType> implements IResultHandler<
     protected RunningMode runningMode = null;
 
     protected  Integer threadNumber;
+
+    protected InputFile inputFile;
 
     @Override
     public Integer getThreadNumber() {
@@ -195,6 +198,12 @@ public abstract class AbstractResultHandler<EnumType> implements IResultHandler<
 
     protected String summaryGeneralHeaders = dataToCSV("Field", "Type", "Graph", "Nodes", "Edges", "Finished",
             "Enumeration Type", "Running Mode", "Enumerator Type" ,"Thread Number","Time");
+
+    @Override
+    public void setInputFile(InputFile inputFile)
+    {
+        this.inputFile = inputFile;
+    }
 
     protected String summaryHeaderSpecificFields =  "";
 

@@ -18,6 +18,7 @@ import tdk_enum.graph.graphs.tree_decomposition.single_thread.DecompositionNode;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.StringWriter;
 
 public class GraphMLPrinter {
@@ -49,11 +50,15 @@ public class GraphMLPrinter {
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             File file = new File(fileName);
+
             file.getParentFile().mkdirs();
+            file.createNewFile();
             transformer.transform(treeDecompositionToGraphML(treeDecomposition), new StreamResult(file));
         } catch (TransformerConfigurationException e) {
             e.printStackTrace();
         } catch (TransformerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

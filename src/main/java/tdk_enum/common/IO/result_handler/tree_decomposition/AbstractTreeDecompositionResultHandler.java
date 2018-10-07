@@ -1,5 +1,6 @@
 package tdk_enum.common.IO.result_handler.tree_decomposition;
 
+import tdk_enum.common.IO.GraphMLPrinter;
 import tdk_enum.common.IO.result_handler.AbstractResultHandler;
 import tdk_enum.common.IO.result_handler.chordal_graph.AbstractChordalGraphResultHandler;
 import tdk_enum.common.IO.result_handler.chordal_graph.ChordalGraphResultInformation;
@@ -38,7 +39,7 @@ public abstract class AbstractTreeDecompositionResultHandler extends AbstractRes
     protected int goodWidthCount = 0;
     protected int goodFillCount = 0;
 
-    protected Set<ITreeDecomposition> results = new HashSet<>();
+    protected Long results = (long)0;
     protected String summaryHeaderSpecificFields =  dataToCSV("Algorithm", "Separators generated","Results","First Width","Min Width","Max Width",
             "Best Width Time","Best Width Count","Good width Count","First Fill","Min Fill","Max Fill","Best Fill Time",
             "Best Fill Count","Good Fill Count","First ExpBags","Min ExpBags","Max ExpBags","Best ExpBags Time");
@@ -104,7 +105,7 @@ public abstract class AbstractTreeDecompositionResultHandler extends AbstractRes
                 super.getDataToCSV(),
                 algorithm,
                 separators,
-                results.size(),
+                results,
                 firstWidth,
                 minWidth,
                 maxWidth,
@@ -141,10 +142,17 @@ public abstract class AbstractTreeDecompositionResultHandler extends AbstractRes
 
     }
 
-    @Override
-    public Set<ITreeDecomposition> getResults()
+    protected void printTd(ITreeDecomposition decomposition,  Long index)
     {
-        return results;
+        StringBuilder sb = new StringBuilder();
+        sb.append("Tree Decomposition").append(File.separator);
+        sb.append(inputFile.getField()).append(File.separator);
+        sb.append(inputFile.getType()).append(File.separator);
+        sb.append(inputFile.getName()).append(File.separator);
+        sb.append(index).append(".gml");
+        GraphMLPrinter.treeDecompositionToGraphMLFile(decomposition, sb.toString() );
     }
+
+
 
 }
