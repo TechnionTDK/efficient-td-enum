@@ -36,7 +36,7 @@ public class ChordalGraph extends Graph implements IChordalGraph
     {
         Set<NodeSet> cliques = new HashSet<>();
         TdMap<Boolean> isVisited = new TdListMap<>(getNumberOfNodes(), false);
-        IncreasingWeightedNodeQueue queue = new IncreasingWeightedNodeQueue(nodes);
+        IncreasingWeightedNodeQueue queue = new IncreasingWeightedNodeQueue(vertices);
         int previousNumberOfNeighbors = -1;
         Node previousNode = new Node(-1);
 
@@ -49,8 +49,8 @@ public class ChordalGraph extends Graph implements IChordalGraph
             {
                 NodeSetProducer cliqueProducer = new NodeSetProducer(getNumberOfNodes());
                 cliqueProducer.insert(previousNode);
-//                for (Node v : getNeighborsCopy(previousNode))
-                for (Node v : getNeighbors(previousNode))
+//                for (Node v : getNeighbors(previousNode))
+                for (Node v : accessNeighbors(previousNode))
                 {
                     if (isVisited.get(v))
                     {
@@ -60,8 +60,8 @@ public class ChordalGraph extends Graph implements IChordalGraph
                 cliques.add(cliqueProducer.produce());
             }
 
-//            for (Node v : getNeighborsCopy(currentNode))
-            for (Node v : getNeighbors(currentNode))
+//            for (Node v : getNeighbors(currentNode))
+            for (Node v : accessNeighbors(currentNode))
             {
                 if (!isVisited.get(v))
                 {
@@ -74,8 +74,8 @@ public class ChordalGraph extends Graph implements IChordalGraph
         }
         NodeSetProducer cliqueProducer = new NodeSetProducer(getNumberOfNodes());
         cliqueProducer.insert(previousNode);
-//        for (Node v : getNeighborsCopy(previousNode))
-        for (Node v : getNeighbors(previousNode))
+//        for (Node v : getNeighbors(previousNode))
+        for (Node v : accessNeighbors(previousNode))
         {
             cliqueProducer.insert(v);
         }
@@ -88,10 +88,10 @@ public class ChordalGraph extends Graph implements IChordalGraph
     public List<Edge> getFillEdges(IGraph origin)
     {
         List<Edge> edges = new ArrayList<>();
-        for (Node v : nodes)
+        for (Node v : vertices)
         {
-//            for (Node u : getNeighborsCopy(v))
-            for (Node u : getNeighbors(v))
+//            for (Node u : getNeighbors(v))
+            for (Node u : accessNeighbors(v))
             {
                 if (v.intValue() < u.intValue() && !origin.areNeighbors(v, u))
                 {
@@ -179,8 +179,8 @@ public class ChordalGraph extends Graph implements IChordalGraph
         final StringBuilder sb = new StringBuilder("ChordalGraph{");
         sb.append("numberOfNodes=").append(numberOfNodes);
         sb.append(", numberOfEdges=").append(numberOfEdges);
-        sb.append(", nodes=").append(nodes);
-        sb.append(", neighborSets=").append(neighborSets);
+        sb.append(", vertices=").append(vertices);
+        sb.append(", adjacentVertices=").append(adjacentVertices);
         sb.append('}');
         return sb.toString();
     }

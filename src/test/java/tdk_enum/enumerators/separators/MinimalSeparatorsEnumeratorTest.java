@@ -29,7 +29,7 @@ public class MinimalSeparatorsEnumeratorTest {
     public void testCliqueGraph()
     {
         IGraph cliqueGraph = new Graph(4);
-        cliqueGraph.addClique(cliqueGraph.getNodes());
+        cliqueGraph.addClique(cliqueGraph.accessVertices());
         MinimalSeparatorsEnumerator cliqueGraphEnumerator = new MinimalSeparatorsEnumerator(cliqueGraph, UNIFORM);
         assertFalse(cliqueGraphEnumerator.hasNext());
     }

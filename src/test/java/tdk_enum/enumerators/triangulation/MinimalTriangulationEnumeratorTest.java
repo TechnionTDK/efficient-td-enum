@@ -2,7 +2,6 @@ package tdk_enum.enumerators.triangulation;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import tdk_enum.common.configuration.config_types.RunningMode;
 import tdk_enum.common.IO.GraphReader;
 import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.factories.minimal_triangulations_enumerator_factory.ParallelMinimalTriangulationsEnumeratorFactory;
@@ -21,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
-import static tdk_enum.common.configuration.config_types.RunningMode.SINGLE_THREAD;
 import static tdk_enum.common.configuration.config_types.SeparatorsScoringCriterion.UNIFORM;
 import static tdk_enum.common.configuration.config_types.TriangulationScoringCriterion.NONE;
 import static tdk_enum.common.configuration.config_types.TriangulationAlgorithm.MCS_M;
@@ -97,8 +95,8 @@ public class MinimalTriangulationEnumeratorTest {
         Node n2 = new Node(2);
         Node n3 = new Node(3);
 
-        assertEquals(1, findFrequency(n3, triangulation1.getNeighbors(n1)) + findFrequency(n3, triangulation2.getNeighbors(n1)));
-        assertEquals(1, findFrequency(n2, triangulation1.getNeighbors(n0)) + findFrequency(n2, triangulation2.getNeighbors(n0)));
+        assertEquals(1, findFrequency(n3, triangulation1.accessNeighbors(n1)) + findFrequency(n3, triangulation2.accessNeighbors(n1)));
+        assertEquals(1, findFrequency(n2, triangulation1.accessNeighbors(n0)) + findFrequency(n2, triangulation2.accessNeighbors(n0)));
     }
 
     @Test

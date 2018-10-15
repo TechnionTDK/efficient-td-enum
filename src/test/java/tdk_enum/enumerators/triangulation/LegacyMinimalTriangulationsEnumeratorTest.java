@@ -64,8 +64,8 @@ public class LegacyMinimalTriangulationsEnumeratorTest {
         Node n2 = new Node(2);
         Node n3 = new Node(3);
 
-        assertEquals(1, findFrequency(n3, triangulation1.getNeighbors(n1)) + findFrequency(n3, triangulation2.getNeighbors(n1)));
-        assertEquals(1, findFrequency(n2, triangulation1.getNeighbors(n0)) + findFrequency(n2, triangulation2.getNeighbors(n0)));
+        assertEquals(1, findFrequency(n3, triangulation1.accessNeighbors(n1)) + findFrequency(n3, triangulation2.accessNeighbors(n1)));
+        assertEquals(1, findFrequency(n2, triangulation1.accessNeighbors(n0)) + findFrequency(n2, triangulation2.accessNeighbors(n0)));
     }
 
     @Test

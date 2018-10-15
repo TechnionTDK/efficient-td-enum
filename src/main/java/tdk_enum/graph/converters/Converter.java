@@ -81,7 +81,7 @@ public class Converter
     {
         Set<MinimalSeparator> minimalSeparators = new HashSet<>();
         TdMap<Boolean> isVisited = new TdListMap<>(g.getNumberOfNodes(), false);
-        IncreasingWeightedNodeQueue queue = new IncreasingWeightedNodeQueue(g.getNodes());
+        IncreasingWeightedNodeQueue queue = new IncreasingWeightedNodeQueue(g.accessVertices());
         int previousNumberOfNeighbors = -1;
         while (!queue.isEmpty())
         {
@@ -91,8 +91,8 @@ public class Converter
             if (currentNumberOfNeighbors <= previousNumberOfNeighbors)
             {
                 NodeSetProducer separatorProducer = new NodeSetProducer(g.getNumberOfNodes());
-//                for (Node v : g.getNeighbors(currentNode))
-                for (Node v : g.getNeighbors(currentNode))
+//                for (Node v : g.accessNeighbors(currentNode))
+                for (Node v : g.accessNeighbors(currentNode))
                 {
                     Boolean iv = isVisited.get(v);
                     if (iv != null && iv)
@@ -107,8 +107,8 @@ public class Converter
                     minimalSeparators.add(currentSeparator);
                 }
             }
-//            for (Node v : g.getNeighbors(currentNode))
-            for (Node v : g.getNeighbors(currentNode))
+//            for (Node v : g.accessNeighbors(currentNode))
+            for (Node v : g.accessNeighbors(currentNode))
             {
                 Boolean iv = isVisited.get(v);
                 if (iv != null && !iv)
@@ -195,9 +195,9 @@ public class Converter
         Map<Node, Integer> ranks = new HashMap<>();
 
         Node root= new Node(-1);
-        for (Node bagId : treeDecomposition.getNodes())
+        for (Node bagId : treeDecomposition.accessVertices())
         {
-            ranks.put(bagId, treeDecomposition.getNeighbors(bagId).size());
+            ranks.put(bagId, treeDecomposition.accessNeighbors(bagId).size());
 
         }
         Map<Node, Integer> ranksCopy = new HashMap<>(ranks);
@@ -235,14 +235,14 @@ public class Converter
                     {
                         DecompositionNode bag = treeDecomposition.getBag(bagId);
                         Node parentId  = new Node(-1);
-                        if(treeDecomposition.getNeighbors(bagId).size() ==1)
+                        if(treeDecomposition.accessNeighbors(bagId).size() ==1)
                         {
-                            parentId = treeDecomposition.getNeighbors(bagId).iterator().next();
+                            parentId = treeDecomposition.accessNeighbors(bagId).iterator().next();
 
                         }
                         else
                         {
-                            for (Node neighbor : treeDecomposition.getNeighbors(bagId))
+                            for (Node neighbor : treeDecomposition.accessNeighbors(bagId))
                             {
                                 if (!bag.getChildren().contains(neighbor))
                                 {
@@ -441,7 +441,7 @@ public class Converter
         intersectionBag.retainAll(niceDestinationBag);
         if(intersectionBag.contentEquals(niceSourceBag))
         {
-            //make forget nodes
+            //make forget vertices
             if(niceSourceBag.size() == (niceDestinationBag.size()-1))
             {
                 makeNewNiceBagAndSetParent(niceSourceBag, niceDestinationBag, niceBags, niceEdges);

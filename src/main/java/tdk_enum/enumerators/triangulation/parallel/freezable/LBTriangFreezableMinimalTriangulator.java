@@ -79,7 +79,7 @@ public class LBTriangFreezableMinimalTriangulator extends AbstractFreezableMinim
     {
         g = graph;
         result = new ChordalGraph(g);
-        nodesIterator = g.getNodes().iterator();
+        nodesIterator = g.accessVertices().iterator();
         queue = new NodeQueue(result, heuristic);
     }
 
@@ -92,7 +92,7 @@ public class LBTriangFreezableMinimalTriangulator extends AbstractFreezableMinim
 
     private Set<NodeSet> getSubstars(IGraph g, IGraph gi, Node v)
     {
-        Set<Node> removedNodes = gi.getNeighborsCopy(v);
+        Set<Node> removedNodes = gi.getNeighbors(v);
         removedNodes.add(v);
         components = g.getComponents(removedNodes);
         substars = new HashSet<>();

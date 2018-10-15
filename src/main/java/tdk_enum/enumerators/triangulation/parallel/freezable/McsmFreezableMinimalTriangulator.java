@@ -116,7 +116,7 @@ public class McsmFreezableMinimalTriangulator extends AbstractFreezableMinimalTr
         {
             reachedByMaxWeight.add(new NodeSet());
         }
-        for (Node u : g.getNeighbors(v))
+        for (Node u : g.accessNeighbors(v))
         {
             if (!handled.get(u))
             {
@@ -150,8 +150,8 @@ public class McsmFreezableMinimalTriangulator extends AbstractFreezableMinimalTr
         {
             NodeSet ns = reachedByMaxWeight.get(maxWeight);
             Node w = ns.remove(ns.size()-1);
-//                    for (Node u : g.getNeighbors(w))
-            for(Node u: g.getNeighbors(w))
+//                    for (Node u : g.accessNeighbors(w))
+            for(Node u: g.accessNeighbors(w))
             {
                 if (!handled.get(u) && !reached.get(u))
                 {

@@ -61,7 +61,7 @@ public class GenerateGraph {
 		 * Generates a graph that is an induced subgraph of a complete grid (4-neighbourhood)
 		 * (guarantees an upper bound for the tree-width)
 		 *
-		 * @param n #nodes in the graph
+		 * @param n #vertices in the graph
 		 * @param treeWidth maximal tree-width of the graph
 		 * @param p probability that a possible (directed) edge is in the graph
 		 * @return
@@ -93,7 +93,7 @@ public class GenerateGraph {
 		 * Generates a graph that is an induced subgraph of a complete grid (8-neighbourhood)
 		 * (guarantees an upper bound for the tree-width)
 		 *
-		 * @param n #nodes in the graph
+		 * @param n #vertices in the graph
 		 * @param treeWidth maximal tree-width of the graph
 		 * @param p probability that a possible (directed) edge is in the graph
 		 * @return
@@ -137,7 +137,7 @@ public class GenerateGraph {
 
 		/**
 		 * Generates a grid with random orientation (8-neighbourhood)
-		 * @param n #nodes in the graph
+		 * @param n #vertices in the graph
 		 * @param treeWidth tree-width of the graph
 		 * @param p probability that an arbitrary edge is symmetric
 		 * @return
@@ -212,7 +212,7 @@ public class GenerateGraph {
 
 		/**
 		 * Generates a grid with random orientation (4-neighbourhood)
-		 * @param n #nodes in the graph
+		 * @param n #vertices in the graph
 		 * @param treeWidth tree-width of the graph
 		 * @param p probability that an arbitrary edge is symmetric
 		 * @return
@@ -567,9 +567,9 @@ public class GenerateGraph {
 			usage += "                      G8grid  ... 8-connected full grid, prob. influences symmetry of edges\n";
 			usage += "                      G4graph ... 4-connected grid-like graph, prob. influences existence of edges\n";
 			usage += "                      G8graph ... 8-connected grid-like graph, prob. influences existence of edges\n";
-			usage += "                      cliques ... Creates <size> cliques with <treewidth>+1 nodes each, prob. ignored\n";
+			usage += "                      cliques ... Creates <size> cliques with <treewidth>+1 vertices each, prob. ignored\n";
 			usage += "                      random  ... Random graph, edges exist based on prob., treewidth ignored\n";
-			usage += "[-n <size>]          Number of nodes (Grid, Graph, Random) or number of Cliques (clique)\n";
+			usage += "[-n <size>]          Number of vertices (Grid, Graph, Random) or number of Cliques (clique)\n";
 			usage += "[-t <treewidth>]     Treewidth (Grid, Cliques), Max. Treewidth (Graph) or ignored (Random)\n";
 			usage += "[-p <probability>]   Symmetry (Grid), Edge (Graph, Random) probability or ignored (clique)\n";
 			usage += "[-o <outputFormat>]  One of asp (Default), aspartix, comparg\n";

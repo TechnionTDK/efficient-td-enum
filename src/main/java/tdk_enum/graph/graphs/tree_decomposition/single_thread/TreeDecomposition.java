@@ -2,7 +2,6 @@ package tdk_enum.graph.graphs.tree_decomposition.single_thread;
 
 import tdk_enum.graph.data_structures.Node;
 import tdk_enum.graph.data_structures.NodeSet;
-import tdk_enum.graph.data_structures.TdListMap;
 import tdk_enum.graph.graphs.IGraph;
 import tdk_enum.graph.graphs.chordal_graph.single_thread.ChordalGraph;
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
@@ -46,14 +45,14 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
     @Override
     public void setBags(List<DecompositionNode> bags) {
         this.bags = bags;
-        nodes.clear();
-        neighborSets.clear();
+        vertices.clear();
+        adjacentVertices.clear();
         for (int i =0; i< bags.size(); i++)
         {
-            nodes.add(new Node(i));
-            neighborSets.put(new Node(i), new HashSet<>());
+            vertices.add(new Node(i));
+            adjacentVertices.put(new Node(i), new HashSet<>());
         }
-        numberOfNodes = nodes.size();
+        numberOfNodes = vertices.size();
 
     }
 
@@ -111,7 +110,7 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
 //            return false;
 //        }
 //        seen.put(root, true);
-//        for(Node child : getNeighbors(root))
+//        for(Node child : accessNeighbors(root))
 //        {
 //            if(!child.equals(parent))
 //            {

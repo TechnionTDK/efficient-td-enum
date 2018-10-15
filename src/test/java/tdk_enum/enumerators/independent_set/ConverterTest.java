@@ -58,7 +58,7 @@ public class ConverterTest {
         Set<MinimalSeparator> minSeps = new HashSet<>();
         minSeps.add(minSep);
         IGraph triangulation = Converter.minimalSeparatorsToTriangulation(g, minSeps);
-        assertEquals(3, triangulation.getNeighbors(new Node(1)).size());
+        assertEquals(3, triangulation.accessNeighbors(new Node(1)).size());
 
 
     }

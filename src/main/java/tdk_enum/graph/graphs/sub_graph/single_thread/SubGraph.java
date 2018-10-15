@@ -42,7 +42,7 @@ public class SubGraph extends Graph implements ISubGraph
         this.mainGraph = mainGraph;
 
 
-        for (Node n : mainGraph.getNodes())
+        for (Node n : mainGraph.accessVertices())
         {
             nodeMapToMainGraph.put(n, n);
         }
@@ -68,7 +68,7 @@ public class SubGraph extends Graph implements ISubGraph
     {
         super(mainGraph);
         this.mainGraph = mainGraph;
-        for (Node n: nodes)
+        for (Node n: vertices)
         {
             nodeMapToMainGraph.put(n,n);
         }
@@ -95,9 +95,9 @@ public class SubGraph extends Graph implements ISubGraph
         for (Node nodeInFather : nodeSetInFatherGraph)
         {
             fatherNodesInSub.remove(nodeInFather);
-//            NodeSet neighbors = fatherGraph.getNeighbors(nodeInFather);
-//            NodeSet neighbors = fatherGraph.getNeighbors(nodeInFather);
-            Set<Node> neighbors = fatherGraph.getNeighbors(nodeInFather);
+//            NodeSet neighbors = fatherGraph.accessNeighbors(nodeInFather);
+//            NodeSet neighbors = fatherGraph.accessNeighbors(nodeInFather);
+            Set<Node> neighbors = fatherGraph.accessNeighbors(nodeInFather);
             for (Node neighborInFather : neighbors)
             {
                 if (fatherNodesInSub.contains(neighborInFather))

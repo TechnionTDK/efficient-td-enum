@@ -36,8 +36,8 @@ public class IndSetExtBySeparators extends AbstractIndependentSetExtender
         {
             for (int j =i+1; j < graph.getNumberOfNodes(); j++)
             {
-                Node u = graph.getNodes().get(i);
-                Node v = graph.getNodes().get(j);
+                Node u = graph.accessVertices().get(i);
+                Node v = graph.accessVertices().get(j);
                 if (!graph.areNeighbors(u, v))
                 {
 
@@ -55,9 +55,9 @@ public class IndSetExtBySeparators extends AbstractIndependentSetExtender
                 }
             }
         }
-//        for (Node u : graph.getNodes())
+//        for (Node u : graph.accessVertices())
 //        {
-//            for (Node v : graph.getNodes())
+//            for (Node v : graph.accessVertices())
 //            {
 //                if (!graph.areNeighbors(u, v))
 //                {
@@ -106,8 +106,8 @@ public class IndSetExtBySeparators extends AbstractIndependentSetExtender
         Node v = unconnectedNodes.get(0);
         Node u = unconnectedNodes.get(1);
 
-//        NodeSet uNeighbors = graph.getNeighbors(u);
-        Set<Node> uNeighbors = graph.getNeighbors(u);
+//        NodeSet uNeighbors = graph.accessNeighbors(u);
+        Set<Node> uNeighbors = graph.accessNeighbors(u);
         NodeSet vComponent = graph.getComponent(v, uNeighbors);
 
         return graph.getNeighbors(vComponent);
@@ -195,7 +195,7 @@ public class IndSetExtBySeparators extends AbstractIndependentSetExtender
 //
 //                for (NodeSet cComponent : cComponents)
 //                {
-//                    NodeSet cComponentNeighbors = c.getNeighbors(cComponent);
+//                    NodeSet cComponentNeighbors = c.accessNeighbors(cComponent);
 //                    Map<Node, Node> cNodeMapInMainGraph = c.getNodeMaptoMainGraph();
 //                    includeNodesToMaximalSet(cNodeMapInMainGraph, maximalSet,
 //                            cComponentNeighbors, minSepInC);

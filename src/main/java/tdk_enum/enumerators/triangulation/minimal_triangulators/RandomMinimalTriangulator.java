@@ -29,7 +29,7 @@ public class RandomMinimalTriangulator extends MinimalTriangulator {
     protected IChordalGraph getMinimalTriangulationUsingMSCM(IGraph g)
     {
         IChordalGraph triangulation = new ChordalGraph(g);
-        IncreasingWeightRandomizedNodeQueue queue =new IncreasingWeightRandomizedNodeQueue(g.getNodes());
+        IncreasingWeightRandomizedNodeQueue queue =new IncreasingWeightRandomizedNodeQueue(g.accessVertices());
         TdMap<Boolean> handled = new TdListMap<>(g.getNumberOfNodes(), false);
         while(!queue.isEmpty())
         {
@@ -42,8 +42,8 @@ public class RandomMinimalTriangulator extends MinimalTriangulator {
             {
                 reachedByMaxWeight.add(new NodeSet());
             }
-//            for (Node u : g.getNeighbors(v))
-            for (Node u : g.getNeighbors(v))
+//            for (Node u : g.accessNeighbors(v))
+            for (Node u : g.accessNeighbors(v))
             {
                 if (!handled.get(u))
                 {
@@ -58,8 +58,8 @@ public class RandomMinimalTriangulator extends MinimalTriangulator {
                 {
                     NodeSet ns = reachedByMaxWeight.get(maxWeight);
                     Node w = ns.remove(ns.size()-1);
-//                    for (Node u : g.getNeighbors(w))
-                    for(Node u: g.getNeighbors(w))
+//                    for (Node u : g.accessNeighbors(w))
+                    for(Node u: g.accessNeighbors(w))
                     {
                         if (!handled.get(u) && !reached.get(u))
                         {
@@ -88,7 +88,7 @@ public class RandomMinimalTriangulator extends MinimalTriangulator {
         IChordalGraph result = new ChordalGraph(g);
         if (heuristic == LB_TRIANG)
         {
-            NodeSet nodes = new NodeSet(g.getNodes());
+            NodeSet nodes = new NodeSet(g.accessVertices());
             while(nodes.size() > 0)
             {
                 Node v = nodes.get( new Random().nextInt(nodes.size()));

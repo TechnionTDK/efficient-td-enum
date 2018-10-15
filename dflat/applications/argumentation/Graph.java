@@ -11,7 +11,7 @@ import java.util.Set;
  *
  * @author Wolfgang Dvorak
  *
- * @param <NTyp> type of the content saved in graph nodes
+ * @param <NTyp> type of the content saved in graph vertices
  */
 public class Graph<NTyp> implements Iterable<NTyp>{
 	/**
@@ -19,7 +19,7 @@ public class Graph<NTyp> implements Iterable<NTyp>{
 	 *
 	 * @author Wolfgang Dvorak
 	 *
-	 * @param <NTyp> type of the content saved in graph nodes
+	 * @param <NTyp> type of the content saved in graph vertices
 	 */
 	public static class Node<NTyp>{
 		private NTyp object;
@@ -142,7 +142,7 @@ public class Graph<NTyp> implements Iterable<NTyp>{
 
 	/**
 	 *
-	 * @return number of nodes
+	 * @return number of vertices
 	 */
 	public int size() {
 		return nodes.size();

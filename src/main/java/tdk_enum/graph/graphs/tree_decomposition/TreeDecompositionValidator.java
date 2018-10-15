@@ -4,7 +4,6 @@ import tdk_enum.graph.data_structures.Node;
 import tdk_enum.graph.data_structures.NodeSet;
 import tdk_enum.graph.data_structures.TdListMap;
 import tdk_enum.graph.graphs.IGraph;
-import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
 import tdk_enum.graph.graphs.tree_decomposition.single_thread.DecompositionNode;
 
 import java.util.*;
@@ -41,7 +40,7 @@ public class TreeDecompositionValidator {
             return false;
         }
 
-        NodeSet bagsId = new NodeSet(t.getNodes());
+        NodeSet bagsId = new NodeSet(t.accessVertices());
 
         for (DecompositionNode bag : t.getBags())
         {
@@ -147,7 +146,7 @@ public class TreeDecompositionValidator {
             else
             {
                 parent_stack.push(next);
-                for (Node neighbor : t.getNeighbors(new Node(next)))
+                for (Node neighbor : t.accessNeighbors(new Node(next)))
                 {
                     if (neighbor.intValue() != head && nodes.contains(neighbor))
                     {
@@ -162,9 +161,9 @@ public class TreeDecompositionValidator {
 
     private static boolean check_edge_coverage(ITreeDecomposition t, IGraph g) {
         Set<Set<Node>> edges = new HashSet<>();
-        for (Node node : g.getNodes())
+        for (Node node : g.accessVertices())
         {
-            for (Node neighbor : g.getNeighbors(node))
+            for (Node neighbor : g.accessNeighbors(node))
             {
                 Set<Node> edge = new HashSet<>();
                 edge.add(node);
@@ -178,7 +177,7 @@ public class TreeDecompositionValidator {
         {
             for (Node node : bag)
             {
-                for (Node neighbor : g.getNeighbors(node))
+                for (Node neighbor : g.accessNeighbors(node))
                 {
                     Set<Node> edge = new HashSet<>();
                     edge.add(node);
@@ -245,7 +244,7 @@ public class TreeDecompositionValidator {
             return false;
         }
         seen.put(root, true);
-        for(Node child : t.getNeighbors(root))
+        for(Node child : t.accessNeighbors(root))
         {
             if(!child.equals(parent))
             {

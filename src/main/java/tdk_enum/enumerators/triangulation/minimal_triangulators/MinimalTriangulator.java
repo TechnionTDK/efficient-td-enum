@@ -50,7 +50,7 @@ public class MinimalTriangulator extends AbstractMinimalTriangulator {
         IChordalGraph result = new ChordalGraph(g);
         if (heuristic == LB_TRIANG)
         {
-            for (Node v: g.getNodes())
+            for (Node v: g.accessVertices())
             {
                 makeNodeLBSimplicial(g, result, v);
             }
@@ -69,7 +69,7 @@ public class MinimalTriangulator extends AbstractMinimalTriangulator {
 
     private Set<NodeSet> getSubstars(IGraph g, IGraph gi, Node v)
     {
-        Set<Node> removedNodes = gi.getNeighborsCopy(v);
+        Set<Node> removedNodes = gi.getNeighbors(v);
         removedNodes.add(v);
         List<NodeSet>components = g.getComponents(removedNodes);
         Set<NodeSet> substars = new HashSet<>();
@@ -89,7 +89,7 @@ public class MinimalTriangulator extends AbstractMinimalTriangulator {
     protected IChordalGraph getMinimalTriangulationUsingMSCM(IGraph g)
     {
         IChordalGraph triangulation = new ChordalGraph(g);
-        IncreasingWeightedNodeQueue queue =new IncreasingWeightedNodeQueue(g.getNodes());
+        IncreasingWeightedNodeQueue queue =new IncreasingWeightedNodeQueue(g.accessVertices());
         TdMap<Boolean> handled = new TdListMap<>(g.getNumberOfNodes(), false);
         while(!queue.isEmpty())
         {
@@ -102,8 +102,8 @@ public class MinimalTriangulator extends AbstractMinimalTriangulator {
             {
                 reachedByMaxWeight.add(new NodeSet());
             }
-//            for (Node u : g.getNeighbors(v))
-            for (Node u : g.getNeighbors(v))
+//            for (Node u : g.accessNeighbors(v))
+            for (Node u : g.accessNeighbors(v))
             {
                 if (!handled.get(u))
                 {
@@ -118,8 +118,8 @@ public class MinimalTriangulator extends AbstractMinimalTriangulator {
                 {
                     NodeSet ns = reachedByMaxWeight.get(maxWeight);
                     Node w = ns.remove(ns.size()-1);
-//                    for (Node u : g.getNeighbors(w))
-                    for(Node u: g.getNeighbors(w))
+//                    for (Node u : g.accessNeighbors(w))
+                    for(Node u: g.accessNeighbors(w))
                     {
                         if (!handled.get(u) && !reached.get(u))
                         {

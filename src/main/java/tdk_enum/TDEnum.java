@@ -292,7 +292,7 @@ public class TDEnum {
 
         StringBuilder sb = new StringBuilder();
         sb.
-                append("The graph has ").append(TDKEnumFactory.getGraph().getNumberOfNodes()).append(" nodes and ").
+                append("The graph has ").append(TDKEnumFactory.getGraph().getNumberOfNodes()).append(" vertices and ").
                 append(TDKEnumFactory.getGraph().getNumberOfEdges()).append(" edges. ");
 
         System.out.println(sb.toString());

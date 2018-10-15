@@ -19,14 +19,14 @@ public class NodeQueue {
     public NodeQueue(IGraph g, TriangulationAlgorithm h) {
         graph = g;
         heuristic = h;
-        queue = new IncreasingWeightedNodeQueue(g.getNodes());
+        queue = new IncreasingWeightedNodeQueue(g.accessVertices());
     }
 
 
     int score(Node v)
     {
         if (heuristic == MIN_DEGREE_LB_TRIANG || heuristic == INITIAL_DEGREE_LB_TRIANG) {
-            return graph.getNeighbors(v).size();
+            return graph.accessNeighbors(v).size();
         } else if (heuristic == MIN_FILL_LB_TRIANG || heuristic == INITIAL_FILL_LB_TRIANG || heuristic == COMBINED) {
 
             return getFill(graph, v);
@@ -37,9 +37,9 @@ public class NodeQueue {
 
     int getFill(final IGraph g, Node v)
     {
-//        final NodeSet neighborsSet = g.getNeighborsCopy(v);
 //        final NodeSet neighborsSet = g.getNeighbors(v);
-        final Set<Node> neighborsSet = g.getNeighbors(v);
+//        final NodeSet neighborsSet = g.accessNeighbors(v);
+        final Set<Node> neighborsSet = g.accessNeighbors(v);
         int twiceFillEdges = 0;
         TdMap<Boolean> notNeighborsOfCurrentNode = g.getNeighborsMap(v);
         for (Node u : neighborsSet)
@@ -47,7 +47,7 @@ public class NodeQueue {
 
             notNeighborsOfCurrentNode.put(u, false);
         }
-        for(Node u : g.getNodes())
+        for(Node u : g.accessVertices())
         {
             if (notNeighborsOfCurrentNode.get(u))
             {

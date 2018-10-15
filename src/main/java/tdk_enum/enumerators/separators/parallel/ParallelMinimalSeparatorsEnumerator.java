@@ -32,13 +32,13 @@ public class ParallelMinimalSeparatorsEnumerator extends MinimalSeparatorsEnumer
         Q = new ConcurrentQueueSet<>();
         P = ConcurrentHashMap.newKeySet();
 
-//        for (Node v : this.graph.getNodes())
+//        for (Node v : this.graph.accessVertices())
 //        {
-//            Set<Node> vAndNeighbors = graph.getNeighborsCopy(v);
+//            Set<Node> vAndNeighbors = graph.getNeighbors(v);
 //            vAndNeighbors.add(v);
 //            for (NodeSet nodeSet : graph.getComponents(vAndNeighbors))
 //            {
-//                NodeSet potentialSeparator = graph.getNeighbors(nodeSet);
+//                NodeSet potentialSeparator = graph.accessNeighbors(nodeSet);
 //                if (potentialSeparator.size() >0)
 //                {
 //                    separatorsToExtend.add(potentialSeparator);
@@ -57,8 +57,8 @@ public class ParallelMinimalSeparatorsEnumerator extends MinimalSeparatorsEnumer
     @Override
     protected void doFirstStep()
     {
-        graph.getNodes().parallelStream().forEach(v -> {
-            Set<Node> vAndNeighbors = graph.getNeighborsCopy(v);
+        graph.accessVertices().parallelStream().forEach(v -> {
+            Set<Node> vAndNeighbors = graph.getNeighbors(v);
             vAndNeighbors.add(v);
             for (NodeSet nodeSet : graph.getComponents(vAndNeighbors))
             {
@@ -85,11 +85,11 @@ public class ParallelMinimalSeparatorsEnumerator extends MinimalSeparatorsEnumer
 //        separatorsExtended.add(s);
 //        for (Node x : s)
 //        {
-//            Set<Node> xNeighborsAndS = graph.getNeighborsCopy(x);
+//            Set<Node> xNeighborsAndS = graph.getNeighbors(x);
 //            xNeighborsAndS.addAll(s);
 //            for (NodeSet nodeSet : graph.getComponents(xNeighborsAndS))
 //            {
-//                minimalSeparatorFound(graph.getNeighbors(nodeSet));
+//                minimalSeparatorFound(graph.accessNeighbors(nodeSet));
 //            }
 //        }
 //
@@ -112,13 +112,13 @@ public class ParallelMinimalSeparatorsEnumerator extends MinimalSeparatorsEnumer
 ////
 ////    @Override
 ////    public void init() {
-////        for (Node v : this.graph.getNodes())
+////        for (Node v : this.graph.accessVertices())
 ////        {
-////            Set<Node> vAndNeighbors = graph.getNeighborsCopy(v);
+////            Set<Node> vAndNeighbors = graph.getNeighbors(v);
 ////            vAndNeighbors.add(v);
 ////            for (NodeSet nodeSet : graph.getComponents(vAndNeighbors))
 ////            {
-////                NodeSet potentialSeparator = graph.getNeighbors(nodeSet);
+////                NodeSet potentialSeparator = graph.accessNeighbors(nodeSet);
 ////                if (potentialSeparator.size() >0)
 ////                {
 ////                    separatorsToExtend.add(potentialSeparator);

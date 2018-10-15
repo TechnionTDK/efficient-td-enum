@@ -27,13 +27,13 @@ public class HorizontalMinimalSepratorsEnumerator extends ParallelMinimalSeparat
         this.graph = graph;
 
 
-//        for (Node v : this.graph.getNodes())
+//        for (Node v : this.graph.accessVertices())
 //        {
-//            Set<Node> vAndNeighbors = graph.getNeighborsCopy(v);
+//            Set<Node> vAndNeighbors = graph.getNeighbors(v);
 //            vAndNeighbors.add(v);
 //            for (NodeSet nodeSet : graph.getComponents(vAndNeighbors))
 //            {
-//                NodeSet potentialSeparator = graph.getNeighbors(nodeSet);
+//                NodeSet potentialSeparator = graph.accessNeighbors(nodeSet);
 //                if (potentialSeparator.size() >0)
 //                {
 //                    separatorsToExtend.add(potentialSeparator);

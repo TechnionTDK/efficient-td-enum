@@ -31,6 +31,15 @@ public class NodeSet extends ArrayList<Node>
         return super.toString();
     }
 
+    public void add(int node)
+    {
+        add(new Node(node));
+    }
+
+    public void add (Integer node)
+    {
+        add(new Node(node));
+    }
 
 
 }

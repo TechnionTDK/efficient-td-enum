@@ -1,8 +1,6 @@
 package tdk_enum.enumerators.separators.parallel;
 
-import tdk_enum.common.configuration.config_types.EnumerationPurpose;
 import tdk_enum.enumerators.common.AbstractEnumerator;
-import tdk_enum.enumerators.common.IEnumerator;
 import tdk_enum.enumerators.common.nested.AbstractNestetEnumerator;
 import tdk_enum.common.configuration.config_types.TaskManagerType;
 import tdk_enum.graph.data_structures.MinimalSeparator;
@@ -14,13 +12,8 @@ import tdk_enum.enumerators.separators.parallel.nested.AuxiliaryMinimalSeparator
 import tdk_enum.enumerators.separators.parallel.nested.BusyWaitMinimalSeperatorEnumerator;
 import tdk_enum.enumerators.separators.scorer.ISeparatorScorer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 public class NestedMinimalSeperatorsEnumerator extends AbstractNestetEnumerator <Node, MinimalSeparator,IGraph>  implements IMinimalSeparatorsEnumerator {
 
@@ -144,8 +137,8 @@ public class NestedMinimalSeperatorsEnumerator extends AbstractNestetEnumerator 
     @Override
     protected void doFirstStep()
     {
-        graph.getNodes().parallelStream().forEach(v -> {
-            Set<Node> vAndNeighbors = graph.getNeighborsCopy(v);
+        graph.accessVertices().parallelStream().forEach(v -> {
+            Set<Node> vAndNeighbors = graph.getNeighbors(v);
             vAndNeighbors.add(v);
             for (NodeSet nodeSet : graph.getComponents(vAndNeighbors))
             {

@@ -24,8 +24,8 @@ public class GraphTest
         Node node3 = new Node(3);
 
         Graph emptyGraph = new Graph();
-        assertEquals(0, emptyGraph.getNodes().size());
-        assertEquals(emptyGraph.getNodes().size(), emptyGraph.getNumberOfNodes());
+        assertEquals(0, emptyGraph.accessVertices().size());
+        assertEquals(emptyGraph.accessVertices().size(), emptyGraph.getNumberOfNodes());
 
 
         Graph g = new Graph(4);
@@ -34,11 +34,11 @@ public class GraphTest
         expectedNodeSet.add(node1);
         expectedNodeSet.add(node2);
         expectedNodeSet.add(node3);
-        assertEquals(expectedNodeSet, g.getNodes());
+        assertEquals(expectedNodeSet, g.accessVertices());
 
-        assertEquals(0, g.getNeighbors(node0).size());
+        assertEquals(0, g.accessNeighbors(node0).size());
         g.saturateNodeSets(new HashSet<>());
-        assertEquals(0, g.getNeighbors(node0).size());
+        assertEquals(0, g.accessNeighbors(node0).size());
 
         NodeSet clique1 = new NodeSet();
         NodeSet clique2 = new NodeSet();
@@ -53,10 +53,10 @@ public class GraphTest
         cliques.add(clique1);
         cliques.add(clique2);
         g.saturateNodeSets(cliques);
-        assertEquals(expectedNodeSet, g.getNodes());
-        assertEquals(2, g.getNeighbors(node0).size());
-        assertEquals(1, g.getNeighbors(node1).size());
-        assertEquals(0, g.getNeighbors(node3).size());
+        assertEquals(expectedNodeSet, g.accessVertices());
+        assertEquals(2, g.accessNeighbors(node0).size());
+        assertEquals(1, g.accessNeighbors(node1).size());
+        assertEquals(0, g.accessNeighbors(node3).size());
         assertEquals(2, g.getComponents(new NodeSet()).size());
 
         NodeSet s1 = new NodeSet();
@@ -74,7 +74,7 @@ public class GraphTest
         clique3.add(node3);
 
         g.addClique(clique3);
-        assertEquals(3, g.getNeighbors(node0).size());
+        assertEquals(3, g.accessNeighbors(node0).size());
         assertEquals(0, g.getNeighbors(clique3).size());
         assertEquals(1, g.getComponents(new NodeSet()).size());
         assertEquals(0, g.getComponents(clique3).size());

@@ -258,7 +258,7 @@ public class LegacyMinTriangulationEnumeration {
         results.printReadableSummary();
         sb = new StringBuilder();
         sb.
-                append("The graph has ").append(g.getNumberOfNodes()).append(" nodes and ").
+                append("The graph has ").append(g.getNumberOfNodes()).append(" vertices and ").
                 append(g.getNumberOfEdges()).append(" edges. ").
                 append(separators).append(" minimal separators were generated in the process.");
         System.out.println(sb.toString());

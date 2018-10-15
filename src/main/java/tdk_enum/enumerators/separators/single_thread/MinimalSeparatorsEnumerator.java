@@ -1,6 +1,5 @@
 package tdk_enum.enumerators.separators.single_thread;
 
-import tdk_enum.common.configuration.config_types.EnumerationPurpose;
 import tdk_enum.enumerators.common.DefaultBuilder;
 import tdk_enum.graph.data_structures.*;
 import tdk_enum.graph.graphs.IGraph;
@@ -39,13 +38,13 @@ public class MinimalSeparatorsEnumerator extends AbstractMinimalSeparatorsEnumer
 //        separatorsToExtend = new WeightedNodeSetQueue();
 //        separatorsExtended = new NodeSetSet();
 ////        init();
-//        for (Node v : g.getNodes())
+//        for (Node v : g.accessVertices())
 //        {
-//            Set<Node> vAndNeighbors = graph.getNeighborsCopy(v);
+//            Set<Node> vAndNeighbors = graph.getNeighbors(v);
 //            vAndNeighbors.add(v);
 //            for (NodeSet nodeSet : graph.getComponents(vAndNeighbors))
 //            {
-//                NodeSet potentialSeparator = graph.getNeighbors(nodeSet);
+//                NodeSet potentialSeparator = graph.accessNeighbors(nodeSet);
 //                if (potentialSeparator.size() >0)
 //                {
 //                    int score = scorer.scoreSeparator(potentialSeparator);
@@ -72,13 +71,13 @@ public class MinimalSeparatorsEnumerator extends AbstractMinimalSeparatorsEnumer
 ////        System.out.println("separatorsToExtend size " + separatorsToExtend.size());
 //        for (Node x : s)
 //        {
-//            Set<Node> xNeighborsAndS = graph.getNeighborsCopy(x);
+//            Set<Node> xNeighborsAndS = graph.getNeighbors(x);
 //            xNeighborsAndS.addAll(s);
 ////            System.out.println("for " + xNeighborsAndS + "componenets are " + graph.getComponents(xNeighborsAndS));
 //            for (NodeSet nodeSet : graph.getComponents(xNeighborsAndS))
 //            {
 ////                NodeSet ns = new NodeSet(nodeSet.stream().sorted().collect(Collectors.toList()));
-//                minimalSeparatorFound(graph.getNeighbors(nodeSet));
+//                minimalSeparatorFound(graph.accessNeighbors(nodeSet));
 //            }
 //        }
 //
@@ -112,13 +111,13 @@ public class MinimalSeparatorsEnumerator extends AbstractMinimalSeparatorsEnumer
 //    @Override
 //    public void init()
 //    {
-//        for (Node v : graph.getNodes())
+//        for (Node v : graph.accessVertices())
 //        {
-//            Set<Node> vAndNeighbors = graph.getNeighborsCopy(v);
+//            Set<Node> vAndNeighbors = graph.getNeighbors(v);
 //            vAndNeighbors.add(v);
 //            for (NodeSet nodeSet : graph.getComponents(vAndNeighbors))
 //            {
-//                NodeSet potentialSeparator = graph.getNeighbors(nodeSet);
+//                NodeSet potentialSeparator = graph.accessNeighbors(nodeSet);
 //                minimalSeparatorFound(potentialSeparator);
 //            }
 //        }
@@ -134,9 +133,9 @@ public class MinimalSeparatorsEnumerator extends AbstractMinimalSeparatorsEnumer
     protected void doFirstStep()
     {
 
-        for (Node v : graph.getNodes())
+        for (Node v : graph.accessVertices())
         {
-            Set<Node> vAndNeighbors = graph.getNeighborsCopy(v);
+            Set<Node> vAndNeighbors = graph.getNeighbors(v);
             vAndNeighbors.add(v);
             for (NodeSet nodeSet : graph.getComponents(vAndNeighbors))
             {
@@ -150,7 +149,7 @@ public class MinimalSeparatorsEnumerator extends AbstractMinimalSeparatorsEnumer
     public void stepByStepDoFirstStep()
     {
         started=true;
-        V = new HashSet<>(graph.getNodes());
+        V = new HashSet<>(graph.accessVertices());
         nodesIterator = V.iterator();
         currentEnumResult = new MinimalSeparator();
         step = ITERATING_NODES;
@@ -167,7 +166,7 @@ public class MinimalSeparatorsEnumerator extends AbstractMinimalSeparatorsEnumer
     @Override
     protected void tryGenerateNewResult(Node node, MinimalSeparator result)
     {
-        Set<Node> xNeighborsAndS = graph.getNeighborsCopy(node);
+        Set<Node> xNeighborsAndS = graph.getNeighbors(node);
         xNeighborsAndS.addAll(result);
         for (NodeSet nodeSet : graph.getComponents(xNeighborsAndS))
         {
@@ -179,7 +178,7 @@ public class MinimalSeparatorsEnumerator extends AbstractMinimalSeparatorsEnumer
     @Override
     protected boolean stepByStepTryGenerateNewResultFromNode(Node node)
     {
-        Set<Node> xNeighborsAndS = graph.getNeighborsCopy(node);
+        Set<Node> xNeighborsAndS = graph.getNeighbors(node);
        // xNeighborsAndS.add(node);
         xNeighborsAndS.addAll(currentEnumResult);
         componenets = graph.getComponents(xNeighborsAndS);
@@ -276,7 +275,7 @@ public class MinimalSeparatorsEnumerator extends AbstractMinimalSeparatorsEnumer
     }
 
     private boolean stepByStepFirstStepTryGenerateNewResultFromNode(Node currentNode) {
-        Set<Node> vAndNeighbors = graph.getNeighborsCopy(currentNode);
+        Set<Node> vAndNeighbors = graph.getNeighbors(currentNode);
         vAndNeighbors.add(currentNode);
         componenets = graph.getComponents(vAndNeighbors);
         componenetsIterator = componenets.iterator();

@@ -33,7 +33,7 @@ public class MinimalTriangulatorTest {
         Node n1 = new Node(1);
         Node n2 = new Node(2);
         Node n3 = new Node(3);
-        assertEquals(1, findFrequency(n3, h.getNeighbors(n1))+findFrequency(n2, h.getNeighbors(n0)));
+        assertEquals(1, findFrequency(n3, h.accessNeighbors(n1))+findFrequency(n2, h.accessNeighbors(n0)));
         assertEquals(5, h.getNumberOfEdges());
     }
 
@@ -80,8 +80,8 @@ public class MinimalTriangulatorTest {
         Node n6 = new Node(6);
         Node n7 = new Node(7);
 
-        assertEquals(1, findFrequency(n3, h.getNeighbors(n1)) + findFrequency(n2, h.getNeighbors(n0)));
-        assertEquals(1, findFrequency(n7, h.getNeighbors(n5)) + findFrequency(n6, h.getNeighbors(n4)));
+        assertEquals(1, findFrequency(n3, h.accessNeighbors(n1)) + findFrequency(n2, h.accessNeighbors(n0)));
+        assertEquals(1, findFrequency(n7, h.accessNeighbors(n5)) + findFrequency(n6, h.accessNeighbors(n4)));
         assertEquals(11, h.getNumberOfEdges());
     }
 
@@ -105,7 +105,7 @@ public class MinimalTriangulatorTest {
         Node n1 = new Node(1);
         Node n2 = new Node(2);
         Node n3 = new Node(3);
-        assertEquals(1, findFrequency(n3, h.getNeighbors(n1))+findFrequency(n2, h.getNeighbors(n0)));
+        assertEquals(1, findFrequency(n3, h.accessNeighbors(n1))+findFrequency(n2, h.accessNeighbors(n0)));
         assertEquals(5, h.getNumberOfEdges());
     }
 
@@ -152,8 +152,8 @@ public class MinimalTriangulatorTest {
         Node n6 = new Node(6);
         Node n7 = new Node(7);
 
-        assertEquals(1, findFrequency(n3, h.getNeighbors(n1)) + findFrequency(n2, h.getNeighbors(n0)));
-        assertEquals(1, findFrequency(n7, h.getNeighbors(n5)) + findFrequency(n6, h.getNeighbors(n4)));
+        assertEquals(1, findFrequency(n3, h.accessNeighbors(n1)) + findFrequency(n2, h.accessNeighbors(n0)));
+        assertEquals(1, findFrequency(n7, h.accessNeighbors(n5)) + findFrequency(n6, h.accessNeighbors(n4)));
         assertEquals(11, h.getNumberOfEdges());
     }
 
@@ -176,7 +176,7 @@ public class MinimalTriangulatorTest {
         Node n1 = new Node(1);
         Node n2 = new Node(2);
         Node n3 = new Node(3);
-        assertEquals(1, findFrequency(n3, h.getNeighbors(n1))+findFrequency(n2, h.getNeighbors(n0)));
+        assertEquals(1, findFrequency(n3, h.accessNeighbors(n1))+findFrequency(n2, h.accessNeighbors(n0)));
         assertEquals(5, h.getNumberOfEdges());
     }
 
@@ -223,8 +223,8 @@ public class MinimalTriangulatorTest {
         Node n6 = new Node(6);
         Node n7 = new Node(7);
 
-        assertEquals(1, findFrequency(n3, h.getNeighbors(n1)) + findFrequency(n2, h.getNeighbors(n0)));
-        assertEquals(1, findFrequency(n7, h.getNeighbors(n5)) + findFrequency(n6, h.getNeighbors(n4)));
+        assertEquals(1, findFrequency(n3, h.accessNeighbors(n1)) + findFrequency(n2, h.accessNeighbors(n0)));
+        assertEquals(1, findFrequency(n7, h.accessNeighbors(n5)) + findFrequency(n6, h.accessNeighbors(n4)));
         assertEquals(11, h.getNumberOfEdges());
     }
 
