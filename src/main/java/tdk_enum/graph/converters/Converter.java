@@ -131,7 +131,7 @@ public class Converter
         for (NodeSet clique : chordalGraph.getMaximalCliques())
         {
             DecompositionNode decompositionNode = new DecompositionNode(clique);
-            decompositionNode.setBagId(new Node(id));
+            decompositionNode.setId(id);
             bags.add(decompositionNode);
             id++;
         }
@@ -142,7 +142,7 @@ public class Converter
             {
                 DecompositionNode u = bags.get(i);
                 DecompositionNode v = bags.get(j);
-                int weight = (int) u.stream().filter(v::contains).count();
+                int weight = (int) u.accessItemList().stream().filter(v.accessItemList()::contains).count();
                 if(weight!=0)
                 {
                     WeightedEdge edge = new WeightedEdge(i,j,weight);
@@ -208,7 +208,7 @@ public class Converter
                 for(Node bagId : ranks.keySet())
                 {
                     DecompositionNode node = treeDecomposition.getBag(bagId);
-                    node.setParent(new Node(-1));
+                    //node.setParent(new Node(-1));
                     ranksCopy.remove(bagId);
                 }
             }
@@ -219,11 +219,11 @@ public class Converter
                 DecompositionNode ubag = treeDecomposition.getBag(iterator.next());
                 DecompositionNode vBag = treeDecomposition.getBag(iterator.next());
 
-                ubag.addChild(vBag.getBagId());
-                vBag.setParent(ubag.getBagId());
-                ranksCopy.remove(ubag.getBagId());
-                ranksCopy.remove(vBag.getBagId());
-                root = ubag.getBagId();
+                ubag.addChild(vBag);
+                vBag.setParent(ubag);
+                ranksCopy.remove(new Node(ubag.getID()));
+                ranksCopy.remove(vBag.getID());
+                root = ubag.getID();
 
             }
 
@@ -244,7 +244,7 @@ public class Converter
                         {
                             for (Node neighbor : treeDecomposition.accessNeighbors(bagId))
                             {
-                                if (!bag.getChildren().contains(neighbor))
+                                if (!bag.getChildrenList().contains(neighbor))
                                 {
                                     parentId = neighbor;
                                 }
@@ -252,8 +252,8 @@ public class Converter
                         }
 
                         DecompositionNode parent = treeDecomposition.getBag(parentId);
-                        parent.addChild(bagId);
-                        bag.setParent(parentId);
+                        parent.addChild(treeDecomposition.getBag(bagId));
+                        bag.setParent(parent);
                         ranksCopy.remove(bagId);
                         ranksCopy.put(parentId, ranks.get(parentId)-1);
                         root = parentId;
@@ -286,7 +286,7 @@ public class Converter
 
         INiceTreeDecomposition niceTreeDecomposition = new NiceTreeDecomposition();
         DecompositionNode niceRoot = makeNiceDecompositionRoot(root, bags, edges, treeDecomposition.getBags());
-        niceTreeDecomposition.setRoot(niceRoot.getBagId());
+        niceTreeDecomposition.setRoot(niceRoot.getID());
         niceTreeDecomposition.setBags(bags);
         for(Edge edge :edges)
         {
@@ -303,10 +303,10 @@ public class Converter
                                                        List<DecompositionNode> originalBags)
     {
         DecompositionNode originalBag = originalBags.get(originalNodeId.intValue());
-        DecompositionNode niceRoot = new DecompositionNode(originalBag);
-        niceRoot.setBagId(new Node(niceBags.size()));
+        DecompositionNode niceRoot = new DecompositionNode(originalBag.getItemList());
+        niceRoot.setId(niceBags.size());
         niceBags.add(niceRoot);
-        niceRoot.setChildren(originalBag.getChildren());
+        niceRoot.setChildren(originalBag.accessChildrenList());
         makeNiceDecompositionNode(niceRoot, niceBags, niceEdges, originalBags);
 
 
@@ -321,28 +321,28 @@ public class Converter
 //        niceBags.add(niceBag);
         if (!isLeaf(niceBag))
         {
-            List<Node> originalChildren = new ArrayList<>(niceBag.getChildren());
+            List<DecompositionNode> originalChildren = niceBag.getChildrenList();
             if (originalChildren.size()==1)
             {
-                Node childId = originalChildren.iterator().next();
-                DecompositionNode originalChildBag = originalBags.get(childId.intValue());
-                DecompositionNode niceChildBag = new DecompositionNode(originalChildBag);
-                niceChildBag.setChildren(originalChildBag.getChildren());
+                int childId = originalChildren.iterator().next().getID();
+                DecompositionNode originalChildBag = originalBags.get(childId);
+                DecompositionNode niceChildBag = new DecompositionNode(originalChildBag.getItemList());
+                niceChildBag.setChildren(originalChildBag.accessChildrenList());
                 makeForgetIntroducePath(niceBag, niceChildBag, niceBags, niceEdges);
                 makeNiceDecompositionNode(niceChildBag, niceBags, niceEdges, originalBags);
             }
             else if (originalChildren.size()==2)
             {
-                Iterator<Node> iterator = originalChildren.iterator();
-                Node leftOriginalChild =  iterator.next();
-                Node rightOriginalChild = iterator.next();
-                DecompositionNode leftOriginalChildBag = originalBags.get(leftOriginalChild.intValue());
-                DecompositionNode rightOriginalChildBag = originalBags.get(rightOriginalChild.intValue());
+                Iterator<DecompositionNode> iterator = originalChildren.iterator();
+                int leftOriginalChild =  iterator.next().getID();
+                int rightOriginalChild = iterator.next().getID();
+                DecompositionNode leftOriginalChildBag = originalBags.get(leftOriginalChild);
+                DecompositionNode rightOriginalChildBag = originalBags.get(rightOriginalChild);
 
-                DecompositionNode niceLeftChild = new DecompositionNode(leftOriginalChildBag);
-                niceLeftChild.setChildren(leftOriginalChildBag.getChildren());
-                DecompositionNode niceRightChild = new DecompositionNode(rightOriginalChildBag);
-                niceRightChild.setChildren(rightOriginalChildBag.getChildren());
+                DecompositionNode niceLeftChild = new DecompositionNode(leftOriginalChildBag.getItemList());
+                niceLeftChild.setChildren(leftOriginalChildBag.accessChildrenList());
+                DecompositionNode niceRightChild = new DecompositionNode(rightOriginalChildBag.getItemList());
+                niceRightChild.setChildren(rightOriginalChildBag.accessChildrenList());
 
                 if (! (niceBag.contentEquals(niceLeftChild) && niceBag.contentEquals(niceRightChild)))
                 {
@@ -353,13 +353,13 @@ public class Converter
             }
             else if (originalChildren.size() >2)
             {
-                Node leftOriginalChild = originalChildren.get(0);
+                DecompositionNode leftOriginalChild = originalChildren.get(0);
                 originalChildren.remove(0);
-                DecompositionNode leftCopy = new DecompositionNode(niceBag);
+                DecompositionNode leftCopy = new DecompositionNode(niceBag.getItemList());
                 leftCopy.addChild(leftOriginalChild);
-                DecompositionNode rightCopy = new DecompositionNode(niceBag);
+                DecompositionNode rightCopy = new DecompositionNode(niceBag.getItemList());
                 rightCopy.setChildren(originalChildren);
-                niceBag.getChildren().clear();
+                niceBag.accessChildrenList().clear();
                 makeNewNiceBagAndSetParent(niceBag, leftCopy, niceBags, niceEdges);
                 makeNewNiceBagAndSetParent(niceBag, rightCopy, niceBags, niceEdges);
                 makeNiceDecompositionNode(leftCopy, niceBags, niceEdges, originalBags);
@@ -376,38 +376,38 @@ public class Converter
                                     List<Edge> niceEdges) {
 
 
-        List<Node> newChildren = new ArrayList<>();
+        List<DecompositionNode> newChildren = new ArrayList<>();
         if(! niceBag.contentEquals(niceLeftChild))
         {
-            DecompositionNode leftCopy = new DecompositionNode(niceBag);
+            DecompositionNode leftCopy = new DecompositionNode(niceBag.getItemList());
             makeNewNiceBagAndSetParent(niceBag, leftCopy, niceBags, niceEdges);
-            newChildren.add(leftCopy.getBagId());
+            newChildren.add(leftCopy);
             makeForgetIntroducePath(leftCopy, niceLeftChild, niceBags, niceEdges);
         }
         else
         {
             makeNewNiceBagAndSetParent(niceBag, niceLeftChild, niceBags, niceEdges);
 
-            newChildren.add(niceLeftChild.getBagId());
+            newChildren.add(niceLeftChild);
         }
 
         if (! niceBag.contentEquals(niceRightChild))
         {
-            DecompositionNode rightCopy = new DecompositionNode(niceBag);
+            DecompositionNode rightCopy = new DecompositionNode(niceBag.getItemList());
             makeNewNiceBagAndSetParent(niceBag, rightCopy, niceBags, niceEdges);
-            newChildren.add(rightCopy.getBagId());
+            newChildren.add(rightCopy);
             makeForgetIntroducePath(rightCopy, niceRightChild, niceBags, niceEdges);
         }
         else
         {
             makeNewNiceBagAndSetParent(niceBag, niceRightChild, niceBags, niceEdges);
 
-            newChildren.add(niceRightChild.getBagId());
+            newChildren.add(niceRightChild);
         }
 
 
         niceBag.setChildren(newChildren);
-        niceBag.updateNeighbors();
+//        niceBag.updateNeighbors();
 
 
 
@@ -419,11 +419,11 @@ public class Converter
                                            List<DecompositionNode> bags,
                                            List<Edge> edges)
     {
-        child.setBagId(new Node(bags.size()));
+        child.setId(bags.size());
         bags.add(child);
-        child.setParent(parent.getBagId());
-        parent.addChild(child.getBagId());
-        edges.add(new Edge(parent.getBagId(), child.getBagId()));
+        child.setParent(parent);
+        parent.addChild(child);
+        edges.add(new Edge(parent.getID(), child.getID()));
     }
 
 
@@ -436,25 +436,25 @@ public class Converter
 
             return;
         }
-        niceSourceBag.getChildren().clear();
-        DecompositionNode intersectionBag = new DecompositionNode(niceSourceBag);
-        intersectionBag.retainAll(niceDestinationBag);
+        niceSourceBag.accessChildrenList().clear();
+        DecompositionNode intersectionBag = new DecompositionNode(niceSourceBag.getItemList());
+        intersectionBag.accessItemList().retainAll(niceDestinationBag.accessItemList());
         if(intersectionBag.contentEquals(niceSourceBag))
         {
             //make forget vertices
-            if(niceSourceBag.size() == (niceDestinationBag.size()-1))
+            if(niceSourceBag.accessItemList().size() == (niceDestinationBag.accessItemList().size()-1))
             {
                 makeNewNiceBagAndSetParent(niceSourceBag, niceDestinationBag, niceBags, niceEdges);
                 return;
             }
             else
             {
-                for (int i = 0; i < niceDestinationBag.size(); i++)
+                for (int i = 0; i < niceDestinationBag.accessItemList().size(); i++)
                 {
-                    if (!niceSourceBag.contains(niceDestinationBag.get(i)))
+                    if (!niceSourceBag.accessItemList().contains(niceDestinationBag.accessItemList().get(i)))
                     {
-                        DecompositionNode intermediateNode = new DecompositionNode(niceSourceBag);
-                        intermediateNode.add(niceDestinationBag.get(i));
+                        DecompositionNode intermediateNode = new DecompositionNode(niceSourceBag.getItemList());
+                        intermediateNode.accessItemList().add(niceDestinationBag.accessItemList().get(i));
                         makeNewNiceBagAndSetParent(niceSourceBag, intermediateNode, niceBags, niceEdges);
                         makeForgetIntroducePath(intermediateNode, niceDestinationBag, niceBags, niceEdges);
                         return;
@@ -466,13 +466,13 @@ public class Converter
         }
         else
         {
-            if (niceSourceBag.size() != (intersectionBag.size()+1))
+            if (niceSourceBag.accessItemList().size() != (intersectionBag.accessItemList().size()+1))
             {
-                DecompositionNode sourceNodesNotInIntersection = new DecompositionNode(niceSourceBag);
-                sourceNodesNotInIntersection.removeAll(intersectionBag);
-                for (int i= 0; i < sourceNodesNotInIntersection.size()-1; i++)
+                DecompositionNode sourceNodesNotInIntersection = new DecompositionNode(niceSourceBag.getItemList());
+                sourceNodesNotInIntersection.accessItemList().removeAll(intersectionBag.accessItemList());
+                for (int i= 0; i < sourceNodesNotInIntersection.accessItemList().size()-1; i++)
                 {
-                    intersectionBag.add(sourceNodesNotInIntersection.get(i));
+                    intersectionBag.accessItemList().add(sourceNodesNotInIntersection.accessItemList().get(i));
                 }
             }
 
@@ -487,7 +487,7 @@ public class Converter
 
     static boolean isLeaf(DecompositionNode bag)
     {
-        return bag.getChildren().size()==0;
+        return bag.accessChildrenList().size()==0;
     }
 
 }

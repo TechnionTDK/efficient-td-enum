@@ -739,9 +739,9 @@ public class Graph implements IGraph
         }
         else {
             if (vertex >= 0 && vertex < size) {
-                for (Integer item : node.accessItemList()) {
-                    if (distanceMatrix[vertex][item] == 1) {
-                        ret.add(new Node(item));
+                for (Node item : node.accessItemList()) {
+                    if (distanceMatrix[vertex][item.intValue()] == 1) {
+                        ret.add(item);
                     }
                 }
             }

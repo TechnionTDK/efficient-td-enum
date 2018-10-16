@@ -84,7 +84,7 @@ public class GraphMLPrinter {
             rootElement.appendChild(keyElement);
             Element graphElement = doc.createElement("graph");
             graphElement.setAttribute("edgedefault", "undirected");
-            postOrderTreeWalk(treeDecomposition, treeDecomposition.getBag(treeDecomposition.getRoot()),doc, graphElement);
+            postOrderTreeWalk(treeDecomposition.getBag(treeDecomposition.getRoot()),doc, graphElement);
 //            for (DecompositionNode bag : treeDecomposition.getBags())
 //            {
 //                Element nodeElement = doc.createElement("node");
@@ -130,17 +130,17 @@ public class GraphMLPrinter {
 
     }
 
-    static void postOrderTreeWalk (ITreeDecomposition treeDecomposition, DecompositionNode bag, Document doc , Element graphElement)
+    static void postOrderTreeWalk ( DecompositionNode bag, Document doc , Element graphElement)
     {
         Element nodeElement = doc.createElement("node");
-        nodeElement.setAttribute("id", "n"+(bag.getBagId().intValue()+1));
+        nodeElement.setAttribute("id", "n"+(bag.getID()+1));
         Element dataElement = doc.createElement("data");
         dataElement.setAttribute("key", "bag");
         StringBuilder bagContentBuilder = new StringBuilder();
-        for (int i = 0; i < bag.size(); i++)
+        for (int i = 0; i < bag.accessItemList().size(); i++)
         {
-            bagContentBuilder.append(bag.get(i).intValue());
-            if (i!=bag.size()-1)
+            bagContentBuilder.append(bag.accessItemList().get(i).intValue());
+            if (i!=bag.accessItemList().size()-1)
             {
                 bagContentBuilder.append(", ");
             }
@@ -149,14 +149,14 @@ public class GraphMLPrinter {
         dataElement.setTextContent(bagContentBuilder.toString());
         nodeElement.appendChild(dataElement);
         graphElement.appendChild(nodeElement);
-        if (bag.getChildren().size() != 0)
+        if (bag.accessChildrenList().size() != 0)
         {
-            for (Node child : bag.getChildren())
+            for (DecompositionNode child : bag.accessChildrenList())
             {
-                postOrderTreeWalk(treeDecomposition, treeDecomposition.getBag(child), doc, graphElement);
+                postOrderTreeWalk(child, doc, graphElement);
                 Element edgeElement = doc.createElement("edge");
-                edgeElement.setAttribute("source", "n"+(bag.getBagId().intValue()+1));
-                edgeElement.setAttribute("target", "n"+(child.intValue()+1));
+                edgeElement.setAttribute("source", "n"+(bag.getID()+1));
+                edgeElement.setAttribute("target", "n"+(child.getID()+1));
                 graphElement.appendChild(edgeElement);
             }
         }

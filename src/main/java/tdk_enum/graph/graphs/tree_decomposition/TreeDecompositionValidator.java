@@ -55,10 +55,10 @@ public class TreeDecompositionValidator {
     }
 
     private static boolean isJoinNode(DecompositionNode bag, ITreeDecomposition t) {
-        if (bag.getChildren().size() ==2)
+        if (bag.getChildrenList().size() ==2)
         {
-            DecompositionNode left = t.getBag(bag.getChildren().get(0));
-            DecompositionNode right = t.getBag(bag.getChildren().get(1));
+            DecompositionNode left = bag.getChildrenList().get(0);
+            DecompositionNode right = bag.getChildrenList().get(1);
             if (bag.contentEquals(left) && bag.contentEquals(right))
             {
                 return true;
@@ -69,10 +69,10 @@ public class TreeDecompositionValidator {
     }
 
     private static boolean isForgetNode(DecompositionNode bag, ITreeDecomposition t) {
-        if (bag.getChildren().size() ==1)
+        if (bag.getChildrenList().size() ==1)
         {
-            DecompositionNode child = t.getBag(bag.getChildren().get(0));
-            if (child.size() == bag.size()-1)
+            DecompositionNode child = bag.getChildrenList().get(0);
+            if (child.getItemList().size() == bag.getItemList().size()-1)
             {
                 return true;
             }
@@ -83,10 +83,10 @@ public class TreeDecompositionValidator {
     }
 
     private static boolean isIntroduceNode(DecompositionNode bag, ITreeDecomposition t) {
-        if (bag.getChildren().size() ==1)
+        if (bag.getChildrenList().size() ==1)
         {
-            DecompositionNode child = t.getBag(bag.getChildren().get(0));
-            if (child.size() == bag.size()+1)
+            DecompositionNode child = bag.getChildrenList().get(0);
+            if (child.getItemList().size() == bag.getItemList().size()+1)
             {
                 return true;
             }
@@ -97,7 +97,7 @@ public class TreeDecompositionValidator {
     }
 
     private static boolean isLeaf(DecompositionNode bag) {
-        return bag.getChildren().size() == 0;
+        return bag.getChildrenList().size() == 0;
     }
 
 
@@ -126,7 +126,7 @@ public class TreeDecompositionValidator {
                 }
                 int parent = parent_stack.peek();
                 DecompositionNode bag = t.getBag(new Node(head));
-                for (Node node: bag) {
+                for (Node node: bag.getItemList()) {
                     if (forgotten.get(node)==true)
                     {
                         return false;
@@ -134,7 +134,7 @@ public class TreeDecompositionValidator {
                     if (parent != NIL)
                     {
                         DecompositionNode parentBag = t.getBag(new Node(parent));
-                        if(!parentBag.contains(node))
+                        if(!parentBag.containsItem(node))
                         {
                             forgotten.put(node,true);
                         }
@@ -175,7 +175,7 @@ public class TreeDecompositionValidator {
 
         for (DecompositionNode bag : t.getBags())
         {
-            for (Node node : bag)
+            for (Node node : bag.getItemList())
             {
                 for (Node neighbor : g.accessNeighbors(node))
                 {
@@ -201,7 +201,7 @@ public class TreeDecompositionValidator {
         TdListMap<Boolean> seen = new TdListMap<>(g.getNumberOfNodes(), false);
         for (DecompositionNode bag : t.getBags())
         {
-            for (Node node : bag)
+            for (Node node : bag.getItemList())
             {
                 seen.put(node, true);
             }
