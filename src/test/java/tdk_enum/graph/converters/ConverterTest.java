@@ -27,7 +27,7 @@ public class ConverterTest {
             source.add(new Node(i));
         }
         DecompositionNode sourceBag = new DecompositionNode(source);
-        sourceBag.setBagId(new Node(0));
+        sourceBag.setId(0);
 
         NodeSet destination = new NodeSet();
         for (int i = 0; i < 5; i++)
@@ -36,16 +36,16 @@ public class ConverterTest {
         }
 
         DecompositionNode destinationBag = new DecompositionNode(destination);
-        destinationBag.setBagId(new Node(1));
-        sourceBag.addChild(new Node(1));
-        destinationBag.setParent(new Node(0));
+        destinationBag.setId(1);
+        sourceBag.addChild(destinationBag);
+        destinationBag.setParent(sourceBag);
 
         ArrayList<DecompositionNode> bags = new ArrayList();
         bags.add(sourceBag);
         bags.add(destinationBag);
         TreeDecomposition treeDecomposition = new TreeDecomposition();
         treeDecomposition.setBags(bags);
-        treeDecomposition.setRoot(new Node(0));
+        treeDecomposition.setRoot(sourceBag);
 
         INiceTreeDecomposition niceTreeDecomposition = Converter.treeDecompositionToNiceTreeDecomposition(treeDecomposition);
         System.out.println(niceTreeDecomposition);
@@ -69,18 +69,18 @@ public class ConverterTest {
 
         }
         DecompositionNode sourceBag = new DecompositionNode(source);
-        sourceBag.setBagId(new Node(0));
+        sourceBag.setId(0);
         DecompositionNode destinationBag = new DecompositionNode(destination);
-        destinationBag.setBagId(new Node(1));
-        sourceBag.addChild(new Node(1));
-        destinationBag.setParent(new Node(0));
+        destinationBag.setId(1);
+        sourceBag.addChild(destinationBag);
+        destinationBag.setParent(sourceBag);
 
         ArrayList<DecompositionNode> bags = new ArrayList();
         bags.add(sourceBag);
         bags.add(destinationBag);
         TreeDecomposition treeDecomposition = new TreeDecomposition();
         treeDecomposition.setBags(bags);
-        treeDecomposition.setRoot(new Node(0));
+        treeDecomposition.setRoot(sourceBag);
 
         INiceTreeDecomposition niceTreeDecomposition = Converter.treeDecompositionToNiceTreeDecomposition(treeDecomposition);
         System.out.println(niceTreeDecomposition);
@@ -107,18 +107,18 @@ public class ConverterTest {
         destination.add(new Node(5));
         destination.add(new Node(6));
         DecompositionNode sourceBag = new DecompositionNode(source);
-        sourceBag.setBagId(new Node(0));
+        sourceBag.setId(0);
         DecompositionNode destinationBag = new DecompositionNode(destination);
-        destinationBag.setBagId(new Node(1));
-        sourceBag.addChild(new Node(1));
-        destinationBag.setParent(new Node(0));
+        destinationBag.setId( 1);
+        sourceBag.addChild(destinationBag);
+        destinationBag.setParent(sourceBag);
 
         ArrayList<DecompositionNode> bags = new ArrayList();
         bags.add(sourceBag);
         bags.add(destinationBag);
         TreeDecomposition treeDecomposition = new TreeDecomposition();
         treeDecomposition.setBags(bags);
-        treeDecomposition.setRoot(new Node(0));
+        treeDecomposition.setRoot(sourceBag);
 
         INiceTreeDecomposition niceTreeDecomposition = Converter.treeDecompositionToNiceTreeDecomposition(treeDecomposition);
         System.out.println(niceTreeDecomposition);
@@ -142,18 +142,18 @@ public class ConverterTest {
         }
 
         DecompositionNode sourceBag = new DecompositionNode(source);
-        sourceBag.setBagId(new Node(0));
+        sourceBag.setId(0);
 
         DecompositionNode leftDestinationBag = new DecompositionNode(destination);
-        leftDestinationBag.setBagId(new Node(1));
-        sourceBag.addChild(new Node(1));
-        leftDestinationBag.setParent(new Node(0));
+        leftDestinationBag.setId(1);
+        sourceBag.addChild(leftDestinationBag);
+        leftDestinationBag.setParent(sourceBag);
 
         source.add(new Node(4));
         DecompositionNode rightDestinationBag = new DecompositionNode(source);
-        rightDestinationBag.setBagId(new Node(2));
-        sourceBag.addChild(new Node(2));
-        leftDestinationBag.setParent(new Node(0));
+        rightDestinationBag.setId(2);
+        sourceBag.addChild(rightDestinationBag);
+        leftDestinationBag.setParent(sourceBag);
 
         ArrayList<DecompositionNode> bags = new ArrayList();
         bags.add(sourceBag);
@@ -161,7 +161,7 @@ public class ConverterTest {
         bags.add(leftDestinationBag);
         TreeDecomposition treeDecomposition = new TreeDecomposition();
         treeDecomposition.setBags(bags);
-        treeDecomposition.setRoot(new Node(0));
+        treeDecomposition.setRoot(sourceBag);
 
         INiceTreeDecomposition niceTreeDecomposition = Converter.treeDecompositionToNiceTreeDecomposition(treeDecomposition);
         System.out.println(niceTreeDecomposition);
@@ -179,7 +179,7 @@ public class ConverterTest {
 
 
         DecompositionNode sourceBag = new DecompositionNode(source);
-        sourceBag.setBagId(new Node(0));
+        sourceBag.setId(0);
         ArrayList<DecompositionNode> bags = new ArrayList();
         bags.add(sourceBag);
         for (int i =3; i <7; i++)
@@ -187,16 +187,16 @@ public class ConverterTest {
             source.add(new Node(i));
             DecompositionNode destination = new DecompositionNode(source);
             int id = i-2;
-            destination.setBagId(new Node(id));
-            destination.setBagId(new Node(0));
-            sourceBag.addChild(new Node(id));
+            destination.setId(id);
+            //destination.setBagId(new Node(0));
+            sourceBag.addChild(destination);
             bags.add(destination);
             source.remove(new Node(i));
         }
 
         TreeDecomposition treeDecomposition = new TreeDecomposition();
         treeDecomposition.setBags(bags);
-        treeDecomposition.setRoot(new Node(0));
+        treeDecomposition.setRoot(sourceBag);
 
         INiceTreeDecomposition niceTreeDecomposition = Converter.treeDecompositionToNiceTreeDecomposition(treeDecomposition);
         System.out.println(niceTreeDecomposition);
@@ -220,18 +220,18 @@ public class ConverterTest {
         }
 
         DecompositionNode sourceBag = new DecompositionNode(source);
-        sourceBag.setBagId(new Node(0));
+        sourceBag.setId(0);
         DecompositionNode destinationBag = new DecompositionNode(destination);
-        destinationBag.setBagId(new Node(1));
-        sourceBag.addChild(new Node(1));
-        destinationBag.setParent(new Node(0));
+        destinationBag.setId(1);
+        sourceBag.addChild(destinationBag);
+        destinationBag.setParent(sourceBag);
 
         ArrayList<DecompositionNode> bags = new ArrayList();
         bags.add(sourceBag);
         bags.add(destinationBag);
         TreeDecomposition treeDecomposition = new TreeDecomposition();
         treeDecomposition.setBags(bags);
-        treeDecomposition.setRoot(new Node(0));
+        treeDecomposition.setRoot(sourceBag);
 
         INiceTreeDecomposition niceTreeDecomposition = Converter.treeDecompositionToNiceTreeDecomposition(treeDecomposition);
         System.out.println(niceTreeDecomposition);
@@ -259,7 +259,7 @@ public class ConverterTest {
             nodesArr0.add(new Node(i));
         }
         DecompositionNode node0 = new DecompositionNode(nodesArr0);
-        node0.setBagId(new Node(0));
+        node0.setId(0);
         bags.add(node0);
 
 
@@ -269,7 +269,7 @@ public class ConverterTest {
             nodesArr1.add(new Node(i));
         }
         DecompositionNode node1 = new DecompositionNode(nodesArr1);
-        node1.setBagId(new Node(1));
+        node1.setId(1);
         bags.add(node1);
 
 
@@ -279,7 +279,7 @@ public class ConverterTest {
             nodesArr2.add(new Node(i));
         }
         DecompositionNode node2 = new DecompositionNode(nodesArr2);
-        node2.setBagId(new Node(2));
+        node2.setId(2);
         bags.add(node2);
 
         NodeSet nodesArr3 = new NodeSet();
@@ -288,7 +288,7 @@ public class ConverterTest {
             nodesArr3.add(new Node(i));
         }
         DecompositionNode node3 = new DecompositionNode(nodesArr3);
-        node3.setBagId(new Node(3));
+        node3.setId(3);
         bags.add(node3);
 
         NodeSet nodesArr4 = new NodeSet();
@@ -297,7 +297,7 @@ public class ConverterTest {
             nodesArr4.add(new Node(i));
         }
         DecompositionNode node4 = new DecompositionNode(nodesArr4);
-        node4.setBagId(new Node(4));
+        node4.setId(4);
         bags.add(node4);
 
         NodeSet nodesArr5 = new NodeSet();
@@ -306,7 +306,7 @@ public class ConverterTest {
             nodesArr5.add(new Node(i));
         }
         DecompositionNode node5 = new DecompositionNode(nodesArr5);
-        node5.setBagId(new Node(5));
+        node5.setId(5);
         bags.add(node5);
 
         NodeSet nodesArr6 = new NodeSet();
@@ -315,7 +315,7 @@ public class ConverterTest {
             nodesArr6.add(new Node(i));
         }
         DecompositionNode node6 = new DecompositionNode(nodesArr6);
-        node6.setBagId(new Node(6));
+        node6.setId(6);
         bags.add(node6);
 
         NodeSet nodesArr7 = new NodeSet();
@@ -324,7 +324,7 @@ public class ConverterTest {
             nodesArr7.add(new Node(i));
         }
         DecompositionNode node7 = new DecompositionNode(nodesArr7);
-        node7.setBagId(new Node(7));
+        node7.setId(7);
         bags.add(node7);
 
         NodeSet nodesArr8 = new NodeSet();
@@ -333,7 +333,7 @@ public class ConverterTest {
             nodesArr8.add(new Node(i));
         }
         DecompositionNode node8 = new DecompositionNode(nodesArr8);
-        node8.setBagId(new Node(8));
+        node8.setId(8);
         bags.add(node8);
 
         NodeSet nodesArr9 = new NodeSet();
@@ -342,39 +342,39 @@ public class ConverterTest {
             nodesArr9.add(new Node(i));
         }
         DecompositionNode node9 = new DecompositionNode(nodesArr9);
-        node9.setBagId(new Node(9));
+        node9.setId(9);
         bags.add(node9);
 
-        node1.addChild(new Node(0));
-        node0.setParent(new Node(1));
+        node1.addChild(node0);
+        node0.setParent(node1);
 
-        node1.addChild(new Node(2));
-        node2.setParent(new Node(1));
+        node1.addChild(node2);
+        node2.setParent(node1);
 
-        node1.addChild(new Node(4));
-        node4.setParent(new Node(1));
+        node1.addChild(node4);
+        node4.setParent(node1);
 
-        node1.addChild(new Node(5));
-        node5.setParent(new Node(1));
+        node1.addChild(node5);
+        node5.setParent(node1);
 
-        node1.addChild(new Node(6));
-        node6.setParent(new Node(1));
+        node1.addChild(node6);
+        node6.setParent(node1);
 
-        node1.addChild(new Node(7));
-        node7.setParent(new Node(1));
+        node1.addChild(node7);
+        node7.setParent(node1);
 
-        node1.addChild(new Node(8));
-        node8.setParent(new Node(1));
+        node1.addChild(node8);
+        node8.setParent(node1);
 
-        node1.addChild(new Node(3));
-        node3.setParent(new Node(1));
+        node1.addChild(node3);
+        node3.setParent(node1);
 
-        node3.addChild(new Node(9));
-        node9.setParent(new Node(3));
+        node3.addChild(node9);
+        node9.setParent(node3);
 
         TreeDecomposition treeDecomposition = new TreeDecomposition();
         treeDecomposition.setBags(bags);
-        treeDecomposition.setRoot(new Node(1));
+        treeDecomposition.setRoot(node1);
 
         System.out.println(treeDecomposition);
 

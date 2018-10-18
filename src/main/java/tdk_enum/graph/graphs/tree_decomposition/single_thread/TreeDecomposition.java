@@ -627,7 +627,7 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
                 sb.append(bag.getID());
                 for (DecompositionNode child : bag.accessChildrenList())
                 {
-                    sb.append(" ").append(child);
+                    sb.append(" ").append(child.getID());
                 }
                 sb.append(System.lineSeparator());
             }
