@@ -85,7 +85,7 @@ public class GraphMLPrinter {
             Element graphElement = doc.createElement("graph");
             graphElement.setAttribute("edgedefault", "undirected");
             postOrderTreeWalk(treeDecomposition.getBag(treeDecomposition.getRoot()),doc, graphElement);
-//            for (DecompositionNode bag : treeDecomposition.getBags())
+//            for (DecompositionNode bag : treeDecomposition.getNodeList())
 //            {
 //                Element nodeElement = doc.createElement("node");
 //                nodeElement.setAttribute("id", "n"+(bag.getBagId().intValue()+1));
@@ -106,7 +106,7 @@ public class GraphMLPrinter {
 //                graphElement.appendChild(nodeElement);
 //
 //            }
-//            for (DecompositionNode bag : treeDecomposition.getBags())
+//            for (DecompositionNode bag : treeDecomposition.getNodeList())
 //            {
 //                if (bag.getChildren().size() != 0)
 //                {

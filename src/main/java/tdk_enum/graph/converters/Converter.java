@@ -194,7 +194,7 @@ public class Converter
     {
         Map<Node, Integer> ranks = new HashMap<>();
 
-        Node root= new Node(-1);
+        DecompositionNode root= null;
         for (Node bagId : treeDecomposition.accessVertices())
         {
             ranks.put(bagId, treeDecomposition.accessNeighbors(bagId).size());
@@ -223,7 +223,7 @@ public class Converter
                 vBag.setParent(ubag);
                 ranksCopy.remove(new Node(ubag.getID()));
                 ranksCopy.remove(vBag.getID());
-                root = ubag.getID();
+                root = ubag;
 
             }
 
@@ -256,7 +256,7 @@ public class Converter
                         bag.setParent(parent);
                         ranksCopy.remove(bagId);
                         ranksCopy.put(parentId, ranks.get(parentId)-1);
-                        root = parentId;
+                        root = parent;
                         break;
                     }
                 }
@@ -278,15 +278,15 @@ public class Converter
 
     static INiceTreeDecomposition treeDecompositionToNiceTreeDecomposition(ITreeDecomposition treeDecomposition)
     {
-        Node root = treeDecomposition.getRoot();
+        DecompositionNode root = treeDecomposition.getRoot();
         List<DecompositionNode> bags = new ArrayList<>();
         List<Edge> edges = new ArrayList<>();
 
 
 
         INiceTreeDecomposition niceTreeDecomposition = new NiceTreeDecomposition();
-        DecompositionNode niceRoot = makeNiceDecompositionRoot(root, bags, edges, treeDecomposition.getBags());
-        niceTreeDecomposition.setRoot(niceRoot.getID());
+        DecompositionNode niceRoot = makeNiceDecompositionRoot(root, bags, edges, treeDecomposition.accessNodeList());
+        niceTreeDecomposition.setRoot(niceRoot);
         niceTreeDecomposition.setBags(bags);
         for(Edge edge :edges)
         {
@@ -297,12 +297,12 @@ public class Converter
     }
 
 
-    static DecompositionNode makeNiceDecompositionRoot(Node originalNodeId,
+    static DecompositionNode makeNiceDecompositionRoot(DecompositionNode originalBag,
                                                        List<DecompositionNode> niceBags,
                                                        List<Edge> niceEdges,
                                                        List<DecompositionNode> originalBags)
     {
-        DecompositionNode originalBag = originalBags.get(originalNodeId.intValue());
+
         DecompositionNode niceRoot = new DecompositionNode(originalBag.getItemList());
         niceRoot.setId(niceBags.size());
         niceBags.add(niceRoot);

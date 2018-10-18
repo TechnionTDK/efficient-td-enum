@@ -12,9 +12,11 @@ public class DecompositionNode  {
     int depth = -1;
     DecompositionNode parent = null;
 
-    List<DecompositionNode> children = null;
-    List<Node> content = null;
+    List<DecompositionNode> children = new ArrayList<>();
+    List<Node> content = new NodeSet();
 
+
+    List<DecompositionNode> neighbors = new ArrayList<>();
 
 
     public DecompositionNode(List<Node> content)
@@ -31,7 +33,14 @@ public class DecompositionNode  {
     {
         this.id = id;
         this.parent = parent;
+
+
         this.content = new NodeSet(content);
+
+        if(parent!=null)
+        {
+            neighbors.add(parent);
+        }
     }
 
 
@@ -53,6 +62,10 @@ public class DecompositionNode  {
     public void setParent(DecompositionNode parent)
     {
         this.parent = parent;
+        if(parent!=null && !neighbors.contains(parent))
+        {
+            neighbors.add(parent);
+        }
     }
 
     public int getDepth() {
@@ -243,19 +256,24 @@ public class DecompositionNode  {
         return children;
     }
 
+    public List<DecompositionNode> accessNeighborList()
+    {
+        return neighbors;
+    }
+
     public List<DecompositionNode> getNeighborList() {
         List<DecompositionNode> ret =
-                new ArrayList<>();
-
-        if (parent != null) {
-            ret.add(parent);
-        }
-
-        for (DecompositionNode child : children) {
-            if (child != null) {
-                ret.add(child);
-            }
-        }
+                new ArrayList<>(neighbors);
+//
+//        if (parent != null) {
+//            ret.add(parent);
+//        }
+//
+//        for (DecompositionNode child : children) {
+//            if (child != null) {
+//                ret.add(child);
+//            }
+//        }
 
         return ret;
     }

@@ -42,7 +42,7 @@ public class TreeDecompositionValidator {
 
         NodeSet bagsId = new NodeSet(t.accessVertices());
 
-        for (DecompositionNode bag : t.getBags())
+        for (DecompositionNode bag : t.accessNodeList())
         {
             if(!isLeaf(bag) && !isIntroduceNode(bag, t) && !isForgetNode(bag, t) && !isJoinNode(bag, t))
             {
@@ -103,7 +103,7 @@ public class TreeDecompositionValidator {
 
     private static boolean check_connectedness(ITreeDecomposition t, IGraph g) {
 
-        List<DecompositionNode> nodes = new ArrayList<>(t.getBags());
+        List<DecompositionNode> nodes = t.getNodeList();
         TdListMap<Boolean> forgotten = new TdListMap<>(g.getNumberOfNodes(), false);
         Stack<Integer> parent_stack = new Stack<>();
         int NIL = t.getNumberOfNodes() +1;
@@ -173,7 +173,7 @@ public class TreeDecompositionValidator {
 
         }
 
-        for (DecompositionNode bag : t.getBags())
+        for (DecompositionNode bag : t.accessNodeList())
         {
             for (Node node : bag.getItemList())
             {
@@ -199,7 +199,7 @@ public class TreeDecompositionValidator {
 
     private static boolean check_vertex_coverage(ITreeDecomposition t, IGraph g) {
         TdListMap<Boolean> seen = new TdListMap<>(g.getNumberOfNodes(), false);
-        for (DecompositionNode bag : t.getBags())
+        for (DecompositionNode bag : t.accessNodeList())
         {
             for (Node node : bag.getItemList())
             {
