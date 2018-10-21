@@ -34,7 +34,7 @@ public class DecompositionNode {
 
         this.content = new NodeSet(content);
 
-        if (parent != null) {
+        if (parent != null && !neighbors.contains(parent)) {
             neighbors.add(parent);
         }
     }

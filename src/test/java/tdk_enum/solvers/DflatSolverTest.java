@@ -20,7 +20,7 @@ public class DflatSolverTest {
         command.add("-p");
         command.add("./dflat/dynamic.lp");
         command.add("--graphml-in");
-        command.add("./dflat/2.gml");
+        command.add("./dflat/8.gml");
         command.add("-f");
         command.add("./dflat/instance_n20_p0.10_001.lp");
         command.add("--depth");

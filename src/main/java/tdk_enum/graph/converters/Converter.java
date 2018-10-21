@@ -290,7 +290,7 @@ public class Converter
         DecompositionNode niceRoot = makeNiceDecompositionRoot(root, bags, edges, treeDecomposition.accessNodeList());
 //        niceTreeDecomposition.setRoot(niceRoot);
 //        niceTreeDecomposition.setBags(bags);
-        INiceTreeDecomposition niceTreeDecomposition = new NiceTreeDecomposition(root, bags);
+        INiceTreeDecomposition niceTreeDecomposition = new NiceTreeDecomposition(niceRoot, bags);
         for(Edge edge :edges)
         {
             niceTreeDecomposition.addEdge(edge.getKey(), edge.getValue());

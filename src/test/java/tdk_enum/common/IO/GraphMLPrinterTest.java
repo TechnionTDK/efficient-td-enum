@@ -36,14 +36,14 @@ public class GraphMLPrinterTest {
         for (TDKEnumConfiguration configuration : experimentConfigurations)
         {
             TDKEnumFactory.setConfiguration(configuration);
-            ITreeDecompositionEnumerator enumerator = new TreeDecompositionEnumeratorFactory().produce();
+            ITreeDecompositionEnumerator enumerator = new NiceTreeDecompositionEnumeratorFactory().produce();
             Set<ITreeDecomposition> newResultSet = new HashSet<>();
             int i=1;
             while (enumerator.hasNext())
             {
                 ITreeDecomposition result = enumerator.next();
 
-                System.out.println(TreeDecompositionValidator.isValidDecomposition(result, g));
+                System.out.println(TreeDecompositionValidator.isNiceTreeDecomposition(result, g));
                 System.out.println(result);
                 //System.out.println(GraphMLPrinter.treeDecompositionToGraphMLFormat(result));
                 GraphMLPrinter.treeDecompositionToGraphMLFile(result, "/home/dvirdu/tree decomposition/instances/3col/instances_width2/instance_n20_p0.10_001.lp/"+i+".gml");
