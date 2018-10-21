@@ -13,6 +13,7 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
     List<DecompositionNode> bags = new ArrayList<>();
     DecompositionNode root = null;
     List<Node> items = new NodeSet();
+    boolean updateNeeded = false;
 
 
 
@@ -47,16 +48,18 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
     public void update() {
 
         this.items = new NodeSet();
-        vertices.clear();
-        adjacentVertices.clear();
-        for (int i =0; i< bags.size(); i++)
-        {
-            vertices.add(new Node(i));
-            adjacentVertices.put(new Node(i), new HashSet<>());
-        }
-        numberOfNodes = vertices.size();
+//        vertices.clear();
+//        adjacentVertices.clear();
+//        for (int i =0; i< bags.size(); i++)
+//        {
+//            vertices.add(new Node(i));
+//            adjacentVertices.put(new Node(i), new HashSet<>());
+//        }
+//        numberOfNodes = vertices.size();
 
         update(root, 0);
+        super.update();
+        updateNeeded = false;
 
     }
 
@@ -81,6 +84,7 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
 
             if (children != null) {
                 for (DecompositionNode child : children) {
+//                    adjacentVertices.get(new Node(parent.getID())).add(new Node(child.getID()));
                     update(child, currentDepth + 1);
                 }
             }
@@ -94,6 +98,9 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
 
     @Override
     public int getMaximumDepth(DecompositionNode parent) {
+        if (updateNeeded) {
+            update();
+        }
         return getMaximumDepth(parent, 0);
     }
 
@@ -136,11 +143,17 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
 
     @Override
     public List<DecompositionNode> accessNodeList() {
+        if (updateNeeded) {
+            update();
+        }
         return bags;
     }
 
     @Override
     public List<DecompositionNode> getNodeList() {
+        if (updateNeeded) {
+            update();
+        }
         return new ArrayList<>(bags);
     }
 
@@ -154,6 +167,7 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
 
     @Override
     public List<DecompositionNode> getLeafNodeList() {
+
         List<DecompositionNode> ret = getNodeList();
 
         for (int i = ret.size() - 1; i >= 0; i--) {
@@ -229,12 +243,16 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
     }
 
     public List<Node> getItemList() {
-
+        if (updateNeeded) {
+            update();
+        }
         return new ArrayList<>(items);
     }
 
     public List<Node> accessItemList() {
-
+        if (updateNeeded) {
+            update();
+        }
 
         return items;
     }
@@ -251,6 +269,8 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
 
         uBag.accessNeighborList().add(vBag);
         vBag.accessNeighborList().add(uBag);
+        updateNeeded = true;
+
     }
 
     @Override
@@ -300,7 +320,7 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
     }
 
     private void removeEmptyLeaves(DecompositionNode target) {
-        boolean updateNeeded = false;
+
         if (target != null) {
             List<DecompositionNode> children =
                     target.accessChildrenList();
@@ -328,10 +348,7 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
                 updateNeeded = true;
             }
         }
-        if (updateNeeded)
-        {
-            update();
-        }
+
     }
 
 
@@ -345,11 +362,15 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
     @Override
     public int getDistance(int startBagID, int targetBagID) {
 
+
         return getDistance(getBag(startBagID), getBag(targetBagID));
     }
 
     @Override
     public int getDistance(DecompositionNode start, DecompositionNode target) {
+        if (updateNeeded) {
+            update();
+        }
         int ret = -1;
 
         if (start != null && target != null) {
@@ -482,6 +503,10 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
 
     @Override
     public int getLifetime(int item) {
+
+        if (updateNeeded) {
+            update();
+        }
         int ret = 0;
 
         List<DecompositionNode> containers =
@@ -582,6 +607,7 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
     @Override
     public Set<NodeSet> getMaximalCliques()
     {
+
         Set ret = new HashSet();
         for (DecompositionNode bag : bags)
         {
@@ -594,21 +620,22 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TreeDecomposition)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
         TreeDecomposition that = (TreeDecomposition) o;
 
-        if (accessNodeList() != null ? !accessNodeList().equals(that.accessNodeList()) : that.accessNodeList() != null) return false;
-
-        return (getRoot() != null ? getRoot().equals(that.getRoot()) : that.getRoot() == null);
+        if (bags != null ? !bags.equals(that.bags) : that.bags != null) return false;
+        if (root != null ? !root.equals(that.root) : that.root != null) return false;
+        return items != null ? items.equals(that.items) : that.items == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (accessNodeList() != null ? accessNodeList().hashCode() : 0);
-        result = 31 * result + (getRoot() != null ? getRoot().hashCode() : 0);
+        result = 31 * result + (bags != null ? bags.hashCode() : 0);
+        result = 31 * result + (root != null ? root.hashCode() : 0);
+        result = 31 * result + (items != null ? items.hashCode() : 0);
         return result;
     }
 

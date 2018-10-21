@@ -3,6 +3,7 @@ package tdk_enum.enumerators.tree_decomposition;
 import org.junit.Test;
 import tdk_enum.common.IO.GraphReader;
 import tdk_enum.common.configuration.TDKEnumConfiguration;
+import tdk_enum.enumerators.tree_decomposition.single_thread.TreeDecompositionEnumerator;
 import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.factories.configuration_parser.ConfigurationParserFactory;
 import tdk_enum.factories.tree_decomposition_enumerator_factory.NiceTreeDecompositionEnumeratorFactory;
@@ -29,7 +30,7 @@ public class TreeDecompositionEnumeratorTest {
     @Test
     public void testCompareVannilaToNew()
     {
-        IGraph g = GraphReader.read("C:\\tddatasets\\Datasets\\pace2016\\100\\AhrensSzekeresGeneralizedQuadrangleGraph_3.gr");
+        IGraph g = GraphReader.read("/home/dvirdu/tddatasets/instances/3col/instances_width2/instance_n20_p0.10_001.lp");
 
         TDKEnumFactory.init(g);
         ArrayList<TDKEnumConfiguration> experimentConfigurations = new ConfigurationParserFactory().produce("config.json").parseConfigFile();
@@ -41,7 +42,7 @@ public class TreeDecompositionEnumeratorTest {
             while (enumerator.hasNext())
             {
                 ITreeDecomposition result = enumerator.next();
-               
+
                 if (!newResultSet.add(result))
                 {
                     System.out.println("TD already in");

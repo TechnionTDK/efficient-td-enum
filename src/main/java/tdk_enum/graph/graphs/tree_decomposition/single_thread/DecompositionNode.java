@@ -5,7 +5,7 @@ import tdk_enum.graph.data_structures.NodeSet;
 
 import java.util.*;
 
-public class DecompositionNode  {
+public class DecompositionNode {
 
     int id = -1;
     int index = -1;
@@ -19,51 +19,42 @@ public class DecompositionNode  {
     List<DecompositionNode> neighbors = new ArrayList<>();
 
 
-    public DecompositionNode(List<Node> content)
-    {
+    public DecompositionNode(List<Node> content) {
         this.content = content;
     }
 
-    DecompositionNode(int id, List<Node> content)
-    {
+    DecompositionNode(int id, List<Node> content) {
         this(id, null, content);
     }
 
-    DecompositionNode(int id, DecompositionNode parent, List<Node> content)
-    {
+    DecompositionNode(int id, DecompositionNode parent, List<Node> content) {
         this.id = id;
         this.parent = parent;
 
 
         this.content = new NodeSet(content);
 
-        if(parent!=null)
-        {
+        if (parent != null) {
             neighbors.add(parent);
         }
     }
-
 
 
     public int getID() {
         return id;
     }
 
-    public void setId(int id)
-    {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public DecompositionNode getParent()
-    {
+    public DecompositionNode getParent() {
         return parent;
     }
 
-    public void setParent(DecompositionNode parent)
-    {
+    public void setParent(DecompositionNode parent) {
         this.parent = parent;
-        if(parent!=null && !neighbors.contains(parent))
-        {
+        if (parent != null && !neighbors.contains(parent)) {
             neighbors.add(parent);
         }
     }
@@ -247,7 +238,7 @@ public class DecompositionNode  {
         return ret;
     }
 
-        public void setChildren(List<DecompositionNode> children) {
+    public void setChildren(List<DecompositionNode> children) {
         this.children = children;
 
     }
@@ -256,8 +247,7 @@ public class DecompositionNode  {
         return children;
     }
 
-    public List<DecompositionNode> accessNeighborList()
-    {
+    public List<DecompositionNode> accessNeighborList() {
         return neighbors;
     }
 
@@ -300,8 +290,7 @@ public class DecompositionNode  {
         return containsItem(new Node(item));
     }
 
-    public boolean containsItem(Node item)
-    {
+    public boolean containsItem(Node item) {
         return content.contains(item);
     }
 
@@ -310,7 +299,7 @@ public class DecompositionNode  {
     }
 
     public static DecompositionNode createInstance(int id, DecompositionNode parent, List<Node> content) {
-       NodeSet newContent =
+        NodeSet newContent =
                 new NodeSet();
 
         if (content != null) {
@@ -336,8 +325,7 @@ public class DecompositionNode  {
         return ret;
     }
 
-        public boolean contentEquals(DecompositionNode decompositionNode)
-    {
+    public boolean contentEquals(DecompositionNode decompositionNode) {
         return new HashSet<>(this.content).equals(new HashSet<>(decompositionNode.content));
         //return super.equals(decompositionNode);
     }
@@ -436,4 +424,40 @@ public class DecompositionNode  {
 //        }
 //        return sb.toString();
 //    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DecompositionNode that = (DecompositionNode) o;
+
+        if (id != that.id) return false;
+        if (index != that.index) return false;
+        if (depth != that.depth) return false;
+        return content != null ? content.equals(that.content) : that.content == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + index;
+        result = 31 * result + depth;
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("b ");
+        sb.append(id);
+        for (Node node : this.content)
+        {
+            sb.append(" ").append(node);
+        }
+        return sb.toString();
+    }
+
+
 }

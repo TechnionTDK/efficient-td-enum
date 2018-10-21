@@ -12,7 +12,7 @@ import java.util.*;
 //public class Graph<Node extends Integer > implements IGraph<Node>
 public class Graph implements IGraph
 {
-    private int size = 0;
+   // private int size = 0;
 
     private int distanceMatrix[][];
 
@@ -63,7 +63,7 @@ public class Graph implements IGraph
 
             adjacentVertices.put(v, new HashSet<>());
         }
-        this.distanceMatrix = new int[numberOfNodes][size];
+        this.distanceMatrix = new int[numberOfNodes][numberOfNodes];
 
 
     }
@@ -80,7 +80,7 @@ public class Graph implements IGraph
             set.addAll(g.getAdjacentVertices().get(v));
             adjacentVertices.put(v, set);
         }
-
+        this.distanceMatrix = new int[numberOfNodes][numberOfNodes];
         update();
 //        for (int i = 0; i < g.getAdjacentVertices().size(); i++)
 //        {
@@ -162,7 +162,7 @@ public class Graph implements IGraph
         adjacentVertices.get(v).add(u);
         numberOfEdges++;
 
-        update();
+        updateNeeded = true;
 
     }
 
@@ -208,6 +208,7 @@ public class Graph implements IGraph
         {
             addClique(set);
         }
+
 
     }
 
@@ -555,11 +556,18 @@ public class Graph implements IGraph
 //        return adjacentVertices;
 //    }
     public TdMap<Set<Node>> getAdjacentVertices() {
+
+        if (updateNeeded) {
+            update();
+        }
         return adjacentVertices;
     }
 
     @Override
     public Set<Set<Node>> getEdgesDelta(NodeSet nodes) {
+        if (updateNeeded) {
+            update();
+        }
         Set edges = new HashSet();
         for (Node u : nodes)
         {
@@ -685,7 +693,7 @@ public class Graph implements IGraph
             update();
         }
 
-        if (vertex1 >= 0 && vertex1 < size && vertex2 >= 0 && vertex2 < size) {
+        if (vertex1 >= 0 && vertex1 < numberOfNodes && vertex2 >= 0 && vertex2 < numberOfNodes) {
             ret = connected || vertex1 == vertex2 || distanceMatrix[vertex1][vertex2] > 0;
         }
 
@@ -738,7 +746,7 @@ public class Graph implements IGraph
             ret = new NodeSet(getNeighbors(new Node(vertex)));
         }
         else {
-            if (vertex >= 0 && vertex < size) {
+            if (vertex >= 0 && vertex < numberOfNodes) {
                 for (Node item : node.accessItemList()) {
                     if (distanceMatrix[vertex][item.intValue()] == 1) {
                         ret.add(item);
@@ -764,6 +772,9 @@ public class Graph implements IGraph
     @Override
     public int getEccentricity(Node vertex)
     {
+        if (updateNeeded) {
+            update();
+        }
         int ret = -1;
         if (vertexEccentricity.containsKey(vertex)) {
             ret = vertexEccentricity.get(vertex);
@@ -795,14 +806,14 @@ public class Graph implements IGraph
 
         for (Node vertex : vertices) {
 
-            updateDistance(vertex.intValue(), new boolean[size], 0, vertex.intValue());
+            updateDistance(vertex.intValue(), new boolean[numberOfNodes], 0, vertex.intValue());
         }
 
         Collections.sort(vertices);
 
         connected = true;
 
-        if (size > 1)
+        if (numberOfNodes > 1)
         {
             for (int i = 1; connected && i < numberOfNodes; i++)
             {
@@ -814,7 +825,7 @@ public class Graph implements IGraph
             for (Node vertex : vertices) {
                 int max = 0;
 
-                for (int i = 0; i < size; i++) {
+                for (int i = 0; i < numberOfNodes; i++) {
                     if (distanceMatrix[vertex.intValue()][i] > max) {
                         max = distanceMatrix[vertex.intValue()][i];
                     }
@@ -822,7 +833,7 @@ public class Graph implements IGraph
 
                 Set<Node> reachable = new HashSet<>();
 
-                for (int i = 0; i < size; i++) {
+                for (int i = 0; i < numberOfNodes; i++) {
                     if (distanceMatrix[vertex.intValue()][i] > 0) {
                         reachable.add(new Node(i));
                     }
@@ -850,12 +861,13 @@ public class Graph implements IGraph
                 reachableVertices.put(vertex, reachable);
             }
         }
+        updateNeeded = false;
 
     }
 
     private void updateDistance(int vertex, boolean[] visitedVertices, int currentDistance, int originalIndex) {
         boolean[] neighbors =
-                new boolean[size];
+                new boolean[numberOfNodes];
 
         if (!visitedVertices[vertex]) {
             visitedVertices[vertex] = true;
@@ -863,7 +875,7 @@ public class Graph implements IGraph
             distanceMatrix[originalIndex][vertex] = currentDistance;
         }
 
-        for (Node neighbor : adjacentVertices.get(vertex)) {
+        for (Node neighbor : adjacentVertices.get(new Node(vertex))) {
             if (!visitedVertices[neighbor.intValue()]) {
                 neighbors[neighbor.intValue()] = true;
 
@@ -871,7 +883,7 @@ public class Graph implements IGraph
             }
         }
 
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < numberOfNodes; i++) {
             if (neighbors[i])
             {
                 updateDistance(i,

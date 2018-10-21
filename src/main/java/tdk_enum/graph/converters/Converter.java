@@ -185,6 +185,8 @@ public class Converter
                 }
 
         }
+        treeDecomposition.update();
+
 
 
         return treeDecomposition;
@@ -244,7 +246,7 @@ public class Converter
                         {
                             for (Node neighbor : treeDecomposition.accessNeighbors(bagId))
                             {
-                                if (!bag.getChildrenList().contains(neighbor))
+                                if (!bag.getChildrenList().stream().anyMatch(decompositionNode -> decompositionNode.getID()==neighbor.intValue()))
                                 {
                                     parentId = neighbor;
                                 }
@@ -284,10 +286,11 @@ public class Converter
 
 
 
-        INiceTreeDecomposition niceTreeDecomposition = new NiceTreeDecomposition();
+
         DecompositionNode niceRoot = makeNiceDecompositionRoot(root, bags, edges, treeDecomposition.accessNodeList());
-        niceTreeDecomposition.setRoot(niceRoot);
-        niceTreeDecomposition.setBags(bags);
+//        niceTreeDecomposition.setRoot(niceRoot);
+//        niceTreeDecomposition.setBags(bags);
+        INiceTreeDecomposition niceTreeDecomposition = new NiceTreeDecomposition(root, bags);
         for(Edge edge :edges)
         {
             niceTreeDecomposition.addEdge(edge.getKey(), edge.getValue());
