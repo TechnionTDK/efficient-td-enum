@@ -33,6 +33,10 @@ public interface ITreeDecomposition  extends IChordalGraph{
 
     DecompositionNode getBag(int id);
 
+    List<Node> getItemList();
+
+    List<Node> accessItemList();
+
     DecompositionNode getRoot();
 
     void setRoot(DecompositionNode root);
@@ -54,6 +58,10 @@ public interface ITreeDecomposition  extends IChordalGraph{
     int getLifetime(Node item);
 
     boolean isEmpty();
+
+    int getContainerCount(Integer item);
+
+    List<DecompositionNode> getContainerList(Integer item);
 
 //    boolean isTree();
 }

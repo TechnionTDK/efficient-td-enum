@@ -2,6 +2,13 @@ package tdk_enum.ml.feature_extractor.abseher.feature;
 
 import tdk_enum.graph.graphs.IGraph;
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
+import tdk_enum.ml.feature_extractor.abseher.feature.graph.GraphFeature;
+import tdk_enum.ml.feature_extractor.abseher.feature.graph.internal.ComponentSizeFeature;
+import tdk_enum.ml.feature_extractor.abseher.feature.graph.internal.EdgeProbabilityFeature;
+import tdk_enum.ml.feature_extractor.abseher.feature.graph.internal.GraphEccentricityFeature;
+import tdk_enum.ml.feature_extractor.abseher.feature.graph.internal.GraphSizeFeature;
+import tdk_enum.ml.feature_extractor.abseher.feature.treedecomposition.TreeDecompositionFeature;
+import tdk_enum.ml.feature_extractor.abseher.feature.treedecomposition.internal.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,20 +36,20 @@ public class FeatureCollection {
         }
     }
 
-    public FeatureExtractionResult getEvaluationResult(int seed,
+    public FeatureExtractionResult getEvaluationResult(int tdID,
                                                        IGraph instance,
                                                        ITreeDecomposition decomposition) {
         FeatureExtractionResult ret = null;
 
         if (instance != null && decomposition != null) {
-            ret = new FeatureExtractionResult(seed,
+            ret = new FeatureExtractionResult(tdID,
                     instance);
 
             for (Feature feature : features) {
                 if (feature != null) {
-                    if (feature instanceof InstanceFeature) {
+                    if (feature instanceof GraphFeature) {
                         FeatureMeasurement measurement =
-                                ((InstanceFeature)feature).extractMeasurement(instance);
+                                ((GraphFeature)feature).extractMeasurement(instance);
 
                         if (measurement != null) {
                             ret.addMeasurement(measurement);
@@ -64,7 +71,7 @@ public class FeatureCollection {
         return ret;
     }
 
-    public FeatureExtractionResult getEvaluationResult(int seed,
+    public FeatureExtractionResult getEvaluationResult(int tdID,
                                                        IGraph instance,
                                                        double userTime,
                                                        double systemTime,
@@ -77,7 +84,7 @@ public class FeatureCollection {
         FeatureExtractionResult ret = null;
 
         if (instance != null && decomposition != null) {
-            ret = new FeatureExtractionResult(seed,
+            ret = new FeatureExtractionResult(tdID,
                     instance,
                     userTime,
                     systemTime,
@@ -89,9 +96,9 @@ public class FeatureCollection {
 
             for (Feature feature : features) {
                 if (feature != null) {
-                    if (feature instanceof InstanceFeature) {
+                    if (feature instanceof GraphFeature) {
                         FeatureMeasurement measurement =
-                                ((InstanceFeature)feature).extractMeasurement(instance);
+                                ((GraphFeature)feature).extractMeasurement(instance);
 
                         if (measurement != null) {
                             ret.addMeasurement(measurement);
@@ -127,9 +134,9 @@ public class FeatureCollection {
 
                 FeatureMeasurement measurement = null;
 
-                if (feature instanceof InstanceFeature) {
+                if (feature instanceof GraphFeature) {
                     measurement =
-                            ((InstanceFeature)feature).extractMeasurement(instance);
+                            ((GraphFeature)feature).extractMeasurement(instance);
                 }
                 else if (feature instanceof TreeDecompositionFeature) {
                     measurement =

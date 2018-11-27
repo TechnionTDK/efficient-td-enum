@@ -1,10 +1,7 @@
 package tdk_enum.ml.feature_extractor.abseher.feature;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author ABSEHER Michael (abseher@dbai.tuwien.ac.at)
@@ -459,6 +456,30 @@ public class StatisticsSummary {
         builder.append(StringOperations.formatNumber(format, getMaximum()));
 
         return builder.toString();
+    }
+
+    Map<String, Double> toFlatMap()
+    {
+        Map<String, Double> data = new LinkedHashMap<>();
+        {
+            data.put("Total Count",(double) getTotalCount());
+            data.put("Active Count",(double) getActiveCount());
+            data.put("Statistic Median", getMedian());
+            data.put("Arithmetic Average", getAverage());
+            data.put("Median Absolute Deviation", getMedianAbsoluteDeviation());
+            data.put("Statistical Standard Deviation", getStandardDeviation());
+            data.put("Minimum", getMinimum());
+            data.put("5%-Quantile", getQuantile05());
+            data.put("10%-Quantile", getQuantile10());
+            data.put("25%-Quantile", getQuantile25());
+            data.put("50%-Quantile (Median)", getQuantile50());
+            data.put("75%-Quantile", getQuantile75());
+            data.put("90%-Quantile", getQuantile90());
+            data.put("95%-Quantile", getQuantile95());
+            data.put("Maximum", getMaximum());
+
+        }
+        return data;
     }
 
     public static String getCSVHeaders() {

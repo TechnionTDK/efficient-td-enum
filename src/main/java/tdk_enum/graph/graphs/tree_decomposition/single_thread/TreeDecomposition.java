@@ -242,6 +242,7 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
         return ret;
     }
 
+    @Override
     public List<Node> getItemList() {
         if (updateNeeded) {
             update();
@@ -249,6 +250,7 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
         return new ArrayList<>(items);
     }
 
+    @Override
     public List<Node> accessItemList() {
         if (updateNeeded) {
             update();
@@ -548,10 +550,12 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
         return root == null;
     }
 
+    @Override
     public int getContainerCount(Integer item) {
         return getContainerList(item).size();
     }
 
+    @Override
     public List<DecompositionNode> getContainerList(Integer item) {
         List<DecompositionNode> ret =
                 new ArrayList<>();

@@ -2,6 +2,8 @@ package tdk_enum.ml.feature_extractor.abseher.feature;
 
 
 import java.text.DecimalFormat;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author ABSEHER Michael (abseher@dbai.tuwien.ac.at)
@@ -93,6 +95,40 @@ public class FeatureMeasurement {
         }
 
         return ret;
+    }
+
+    public Map<String, Double> toFlatMap()
+    {
+        Map<String, Double> data = new LinkedHashMap<>();
+        if(measurementResult == null)
+        {
+            data.put(featureName, Double.NaN);
+        }
+        else
+        {
+            if (isAtomic())
+            {
+                if (measurementResult.getActiveCount() == 0)
+                {
+                    data.put(featureName, Double.NaN);
+                }
+                else
+                {
+                    data.put(featureName, measurementResult.getAverage());
+                }
+
+            }
+            else
+            {
+                Map<String, Double> innerData = measurementResult.toFlatMap();
+                for(String key : innerData.keySet())
+                {
+                    data.put(featureName + ": " + key, innerData.get(key));
+                }
+
+            }
+        }
+        return data;
     }
 
     public String getCSVHeaders() {

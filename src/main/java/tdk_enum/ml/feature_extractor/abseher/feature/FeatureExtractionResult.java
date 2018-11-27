@@ -4,14 +4,16 @@ import tdk_enum.graph.graphs.IGraph;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ABSEHER Michael (abseher@dbai.tuwien.ac.at)
  */
 public class FeatureExtractionResult {
 
-    private int seed = 0;
+    private int tdID = 0;
     private IGraph instance = null;
 
     private double userTime = -1;
@@ -26,11 +28,11 @@ public class FeatureExtractionResult {
 
     private List<FeatureMeasurement> measurements = null;
 
-    public FeatureExtractionResult(int seed,
+    public FeatureExtractionResult(int tdID,
                                    IGraph instance) {
         this.measurements = new ArrayList<>();
 
-        this.seed = seed;
+        this.tdID = this.tdID;
         this.instance = instance;
 
         this.userTime = Double.NaN;
@@ -43,7 +45,7 @@ public class FeatureExtractionResult {
         this.exitCodeError = false;
     }
 
-    public FeatureExtractionResult(int seed,
+    public FeatureExtractionResult(int tdID,
                                    IGraph instance,
                                    double userTime,
                                    double systemTime,
@@ -54,7 +56,7 @@ public class FeatureExtractionResult {
                                    boolean exitCodeError) {
         this.measurements = new ArrayList<>();
 
-        this.seed = seed;
+        this.tdID = tdID;
         this.instance = instance;
         this.userTime = userTime;
         this.systemTime = systemTime;
@@ -66,8 +68,8 @@ public class FeatureExtractionResult {
         this.exitCodeError = exitCodeError;
     }
 
-    public int getSeed() {
-        return seed;
+    public int getTdID() {
+        return tdID;
     }
 
     public String getInstancePath() {
@@ -185,7 +187,7 @@ public class FeatureExtractionResult {
             sb.append("<UNKNOWN>");
         }
         sb.append("\",");
-        sb.append(seed);
+        sb.append(tdID);
         sb.append(",");
 
         if (userTime >= 0) {
@@ -264,5 +266,28 @@ public class FeatureExtractionResult {
 
         return sb.toString();
     }
+
+    public Map<String, Double> toFlatMap()
+    {
+        Map<String, Double> features = new LinkedHashMap<>();
+
+        features.put("ID", (double)tdID);
+        features.put("User-Time", userTime);
+        features.put("System-Time", systemTime);
+        features.put("Wall-Clock-Time", wallClockTime);
+        features.put("MemoryConsumption", memoryConsumption);
+        features.put("Number of Memory-Errors", memoryError ? 1.0 : 0.0);
+        features.put("Number of Timeout-Errors", timeoutError ? 1.0: 0.0);
+        features.put("Number of Exitcode-Errors", exitCodeError? 1.0: 0.0);
+        for (int i = 0; i < measurements.size(); i++) {
+            FeatureMeasurement measurement =
+                    measurements.get(i);
+
+           features.putAll(measurement.toFlatMap());
+        }
+        return features;
+
+    }
+
 
 }
