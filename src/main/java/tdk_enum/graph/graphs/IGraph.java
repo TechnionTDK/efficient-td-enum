@@ -78,12 +78,14 @@ public interface IGraph
     boolean isConnected();
 
     boolean isConnected(int vertex1, int vertex2);
+    boolean isConnected(Node vertex1, Node vertex2);
 
     List<Node> getReachableVertices(int vertex);
 
     List<Node> accessReachableVertices(int vertex);
 
     List<Node> getNeighbors(int vertex, DecompositionNode node);
+    List<Node> getNeighbors(Node vertex, DecompositionNode node);
 
     int getEccentricity(int vertex);
 

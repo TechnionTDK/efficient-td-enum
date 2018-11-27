@@ -1,8 +1,8 @@
-package tdk_enum.ml.feature_extractor.feature.graph_feature;
+package tdk_enum.ml.feature_extractor.abseher.feature.graph;
 
 import tdk_enum.graph.graphs.IGraph;
-import tdk_enum.ml.feature_extractor.feature.Feature;
-import tdk_enum.ml.feature_extractor.feature.FeatureMeasurement;
+import tdk_enum.ml.feature_extractor.abseher.feature.Feature;
+import tdk_enum.ml.feature_extractor.abseher.feature.FeatureMeasurement;
 
 public abstract class GraphFeature extends Feature {
 

@@ -51,5 +51,9 @@ public interface ITreeDecomposition  extends IChordalGraph{
 
     int getLifetime(int item);
 
+    int getLifetime(Node item);
+
+    boolean isEmpty();
+
 //    boolean isTree();
 }

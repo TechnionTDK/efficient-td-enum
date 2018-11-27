@@ -1,9 +1,10 @@
-package tdk_enum.ml.feature_extractor.feature.graph_feature.internal;
+package tdk_enum.ml.feature_extractor.abseher.feature.graph.internal;
 
 import tdk_enum.graph.data_structures.Node;
 import tdk_enum.graph.graphs.IGraph;
-import tdk_enum.ml.feature_extractor.feature.FeatureMeasurement;
-import tdk_enum.ml.feature_extractor.feature.graph_feature.GraphFeature;
+import tdk_enum.ml.feature_extractor.abseher.feature.FeatureMeasurement;
+import tdk_enum.ml.feature_extractor.abseher.feature.StatisticsSummary;
+import tdk_enum.ml.feature_extractor.abseher.feature.graph.GraphFeature;
 
 import java.util.ArrayList;
 import java.util.List;

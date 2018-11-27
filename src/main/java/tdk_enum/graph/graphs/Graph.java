@@ -701,6 +701,11 @@ public class Graph implements IGraph
     }
 
     @Override
+    public boolean isConnected(Node vertex1, Node vertex2) {
+        return isConnected(vertex1.intValue(), vertex2.intValue());
+    }
+
+    @Override
     public List<Node> getReachableVertices(int vertex) {
         NodeSet ret = new NodeSet();
 
@@ -758,6 +763,10 @@ public class Graph implements IGraph
         return ret;
     }
 
+    @Override
+    public List<Node> getNeighbors(Node vertex, DecompositionNode node) {
+        return getNeighbors(vertex.intValue(), node);
+    }
 
 
     @Override

@@ -537,6 +537,17 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
         return ret;
     }
 
+    @Override
+    public int getLifetime(Node item)
+    {
+        return getLifetime(item.intValue());
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return root == null;
+    }
+
     public int getContainerCount(Integer item) {
         return getContainerList(item).size();
     }
