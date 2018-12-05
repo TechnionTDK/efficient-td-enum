@@ -31,7 +31,7 @@ public class JsonConfigurationParser extends AbstractConfigurationParser {
                 switch (EnumerationType.valueOf( jsonObject.get("enumerationType").getAsString()))
                 {
                     case NICE_TD:
-                        configurations.add(gson.fromJson(jsonElement, TDKNiceTreeDecompositionEnumConfiguration.class));
+                        configurations.add(gson.fromJson(jsonElement, TDKTreeDecompositionEnumConfiguration.class));
                         break;
                     case PROPER_TD:
                         configurations.add(gson.fromJson(jsonElement, TDKTreeDecompositionEnumConfiguration.class));

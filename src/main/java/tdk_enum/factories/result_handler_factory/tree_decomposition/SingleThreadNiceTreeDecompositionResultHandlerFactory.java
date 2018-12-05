@@ -2,9 +2,7 @@ package tdk_enum.factories.result_handler_factory.tree_decomposition;
 
 import tdk_enum.common.IO.result_handler.IResultHandler;
 import tdk_enum.common.IO.result_handler.tree_decomposition.single_thread.SingleThreadNiceTreeDecompositionResultHandler;
-import tdk_enum.common.IO.result_handler.tree_decomposition.single_thread.SingleThreadTreeDecompositionResultHandler;
 import tdk_enum.common.Utils;
-import tdk_enum.common.configuration.TDKNiceTreeDecompositionEnumConfiguration;
 import tdk_enum.common.configuration.TDKTreeDecompositionEnumConfiguration;
 import tdk_enum.common.configuration.config_types.SeparatorsScoringCriterion;
 import tdk_enum.common.configuration.config_types.TriangulationAlgorithm;
@@ -58,7 +56,7 @@ public class SingleThreadNiceTreeDecompositionResultHandlerFactory implements IR
 
     private String getEnumeratorString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(((TDKNiceTreeDecompositionEnumConfiguration) TDKEnumFactory.getConfiguration()).getSingleThreadMISEnumeratorType());
+        sb.append(((TDKTreeDecompositionEnumConfiguration) TDKEnumFactory.getConfiguration()).getSingleThreadMISEnumeratorType());
         return sb.toString();
     }
 

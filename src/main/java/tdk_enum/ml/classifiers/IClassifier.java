@@ -1,4 +1,4 @@
-package tdk_enum.ml;
+package tdk_enum.ml.classifiers;
 
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
 

@@ -2,6 +2,7 @@ package tdk_enum.ml.feature_extractor.abseher.comperator;
 
 import tdk_enum.ml.feature_extractor.abseher.feature.FeatureExtractionResult;
 import tdk_enum.ml.feature_extractor.abseher.feature.FeatureMeasurement;
+import tdk_enum.ml.feature_extractor.abseher.feature.StatisticsSummary;
 
 import java.util.List;
 

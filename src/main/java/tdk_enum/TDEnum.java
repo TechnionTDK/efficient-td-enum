@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-import static tdk_enum.common.configuration.config_types.EnumerationPurpose.ML_CREATE_TEST_SET;
+
 import static tdk_enum.common.configuration.config_types.EnumerationPurpose.ML_PREDICT;
 import static tdk_enum.common.configuration.config_types.EnumerationPurpose.ML_TRAIN_MODEL;
 
@@ -63,11 +63,11 @@ public class TDEnum {
 
         List<TDKEnumConfiguration> configurations = new ConfigurationParserFactory().produce(args[0]).parseConfigFile();
         mlConfigurations = configurations.stream().filter(tdkEnumConfiguration ->
-                tdkEnumConfiguration.getEnumerationPurpose().equals(ML_CREATE_TEST_SET)||
+
                         tdkEnumConfiguration.getEnumerationPurpose().equals(ML_PREDICT)||
                         tdkEnumConfiguration.getEnumerationPurpose().equals(ML_TRAIN_MODEL)).collect(Collectors.toCollection(ArrayList::new));
         experimentConfigurations = configurations.stream().filter(tdkEnumConfiguration ->
-                (!tdkEnumConfiguration.getEnumerationPurpose().equals(ML_CREATE_TEST_SET)&&
+                (
                         !tdkEnumConfiguration.getEnumerationPurpose().equals(ML_PREDICT)&&
                         !tdkEnumConfiguration.getEnumerationPurpose().equals(ML_TRAIN_MODEL))).collect(Collectors.toCollection(ArrayList::new));
         if (experimentConfigurations.size() > 0 && args.length < 2)
@@ -149,7 +149,7 @@ public class TDEnum {
     static boolean mlConfigurationFound(List<TDKEnumConfiguration> configurations)
     {
         return  configurations.stream().anyMatch(tdkEnumConfiguration ->
-                tdkEnumConfiguration.getEnumerationPurpose().equals(ML_CREATE_TEST_SET)||
+
                         tdkEnumConfiguration.getEnumerationPurpose().equals(ML_PREDICT)||
                         tdkEnumConfiguration.getEnumerationPurpose().equals(ML_TRAIN_MODEL));
     }
