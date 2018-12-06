@@ -1,7 +1,6 @@
 package tdk_enum.ml.solvers;
 
 import org.junit.Test;
-import tdk_enum.common.configuration.config_types.MLProblemType;
 import tdk_enum.ml.solvers.execution.CommandExecutor;
 import tdk_enum.ml.solvers.execution.CommandResult;
 import tdk_enum.ml.solvers.execution.FileSystemOperations;
@@ -26,7 +25,7 @@ public class DflatSolverTest {
         dflatSolver.setTimeLimit(5000);
         File graphFile = new File("./dflat/instance_n20_p0.10_001.lp");
         File tdFile = new File("./dflat/instance_n20_p0.10_001_8.gml");
-        CommandResult ret = dflatSolver.solve(graphFile, tdFile, MLProblemType.DFLAT_3COL);
+        CommandResult ret = dflatSolver.solve(graphFile, tdFile);
 
     }
 

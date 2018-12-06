@@ -14,14 +14,7 @@ public class ParallelMinimalTriangulationsEnumerator  extends AbstractMinimalTri
     IChordalGraph nextChordalGraph;
 
 
-    Set<IChordalGraph> triangulations = ConcurrentHashMap.newKeySet();
 
-
-
-
-    public Set<IChordalGraph> getTriangulations() {
-        return triangulations;
-    }
 
     @Override
     public boolean hasNext()

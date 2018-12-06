@@ -11,6 +11,8 @@ import java.io.File;
 
 public class DflatSolver extends AbstractSolver {
 
+
+
     String threeColorsPath = "./dflat/problems/3col_dynamic.lp";
 
     String command = "./dflat/dflat -p $PROBLEM_PATH --graphml-in $TD_PATH -f $FILE_PATH --depth 0 --output quiet";
@@ -23,7 +25,7 @@ public class DflatSolver extends AbstractSolver {
     }
 
     @Override
-    public CommandResult solve(File graphFile, File tdFile, MLProblemType mlProblemType) {
+    public CommandResult solve(File graphFile, File tdFile) {
         String solverCommand = command;
         solverCommand = solverCommand.replace("$TD_PATH", tdFile.getPath());
         solverCommand = solverCommand.replace("$FILE_PATH", graphFile.getPath());

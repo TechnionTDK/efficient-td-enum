@@ -5,19 +5,19 @@ import org.ehcache.config.builders.CacheManagerBuilder;
 import tdk_enum.common.configuration.TDKEnumConfiguration;
 import tdk_enum.common.IO.GraphReader;
 import tdk_enum.common.IO.InputFile;
-import tdk_enum.factories.cache_factory.ICacheFactory;
-import tdk_enum.factories.enumeration_runner_factory.IEnumerationRunnerFactory;
-import tdk_enum.factories.idconverter_factory.IIDConverterFactory;
-import tdk_enum.factories.maximal_independent_sets_enumerator_factory.IMaximalIndependentSetsEnumeratorFactory;
-import tdk_enum.factories.minimal_separators_enumerator_factory.IMinimalSeparatorsEnumeratorFactory;
-import tdk_enum.factories.minimal_triangulations_enumerator_factory.IMinimalTriangulationsEnumeratorFactory;
-import tdk_enum.factories.minimal_triangulator_factory.IMinimalTriangulatorFactory;
-import tdk_enum.factories.result_handler_factory.IResultHandlerFactory;
-import tdk_enum.factories.separator_graph_factory.ISeparatorGraphFactory;
-import tdk_enum.factories.separator_scorer_factory.ISeparatorScorerFactory;
-import tdk_enum.factories.set_scorer_factory.ISetScorerFactory;
-import tdk_enum.factories.sets_extender_factory.ISetsExtenderFactory;
-import tdk_enum.factories.weighted_queue_factory.IWeightedQueueFactory;
+import tdk_enum.factories.enumeration.cache_factory.ICacheFactory;
+import tdk_enum.factories.enumeration.enumeration_runner_factory.IEnumerationRunnerFactory;
+import tdk_enum.factories.enumeration.idconverter_factory.IIDConverterFactory;
+import tdk_enum.factories.enumeration.maximal_independent_sets_enumerator_factory.IMaximalIndependentSetsEnumeratorFactory;
+import tdk_enum.factories.enumeration.minimal_separators_enumerator_factory.IMinimalSeparatorsEnumeratorFactory;
+import tdk_enum.factories.enumeration.minimal_triangulations_enumerator_factory.IMinimalTriangulationsEnumeratorFactory;
+import tdk_enum.factories.enumeration.minimal_triangulator_factory.IMinimalTriangulatorFactory;
+import tdk_enum.factories.enumeration.result_handler_factory.IResultHandlerFactory;
+import tdk_enum.factories.enumeration.separator_graph_factory.ISeparatorGraphFactory;
+import tdk_enum.factories.enumeration.separator_scorer_factory.ISeparatorScorerFactory;
+import tdk_enum.factories.enumeration.set_scorer_factory.ISetScorerFactory;
+import tdk_enum.factories.enumeration.sets_extender_factory.ISetsExtenderFactory;
+import tdk_enum.factories.enumeration.weighted_queue_factory.IWeightedQueueFactory;
 import tdk_enum.graph.graphs.IGraph;
 
 public class TDKEnumFactory {
@@ -49,6 +49,10 @@ public class TDKEnumFactory {
     static IGraph graph;
 
    // static Properties properties;
+
+    public static void setInputFile(InputFile inputFile) {
+        TDKEnumFactory.inputFile = inputFile;
+    }
 
     static InputFile inputFile;
 

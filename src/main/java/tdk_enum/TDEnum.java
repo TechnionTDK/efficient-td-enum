@@ -5,21 +5,28 @@ import tdk_enum.common.IO.logger.Logger;
 import tdk_enum.common.IO.result_handler.IResultHandler;
 import tdk_enum.common.Utils;
 import tdk_enum.common.configuration.TDKEnumConfiguration;
-import tdk_enum.common.configuration.TDKMachineLearningConfiguration;
+import tdk_enum.common.configuration.TDKMLConfiguration;
 import tdk_enum.common.configuration.config_types.EnumerationPurpose;
 import tdk_enum.enumerators.common.IEnumerator;
+import tdk_enum.enumerators.tree_decomposition.ITreeDecompositionEnumerator;
+import tdk_enum.enumerators.triangulation.IMinimalTriangulationsEnumerator;
+import tdk_enum.enumerators.triangulation.parallel.StoringParallelMinimalTriangulationsEnumerator;
 import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.factories.configuration_parser.ConfigurationParserFactory;
-import tdk_enum.factories.enumerator_factory.EnumeratorFactory;
+import tdk_enum.factories.enumeration.enumerator_factory.EnumeratorFactory;
+import tdk_enum.factories.enumeration.minimal_triangulations_enumerator_factory.MinimalTriangulationsEnumeratorFactory;
+import tdk_enum.factories.enumeration.tree_decomposition_enumerator_factory.TreeDecompositionEnumeratorFactory;
+import tdk_enum.factories.ml.ml_runner_factory.TDMLRunnerFactory;
+import tdk_enum.ml.TDMLRunner;
 
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
+import static tdk_enum.common.configuration.config_types.EnumerationPurpose.*;
+import static tdk_enum.common.configuration.config_types.MLModelInput.FILES;
 
-import static tdk_enum.common.configuration.config_types.EnumerationPurpose.ML_PREDICT;
-import static tdk_enum.common.configuration.config_types.EnumerationPurpose.ML_TRAIN_MODEL;
 
 
 public class TDEnum {
@@ -79,7 +86,7 @@ public class TDEnum {
         }
 
         if (args.length <2 && !mlConfigurations.stream().allMatch(tdkEnumConfiguration ->
-                ((TDKMachineLearningConfiguration)tdkEnumConfiguration).getInputPath()!=""))
+                ((TDKMLConfiguration)tdkEnumConfiguration).getInputPath()!=""))
         {
             System.out.println("Please provide valid graph files or graphs folder for ML experiments either by command line or the configuration file");
             System.out.println("command line is : java -jar {jar_name}.jar {path_to_json_config_file} {path_to_input_file_or_folder}");
@@ -143,6 +150,35 @@ public class TDEnum {
     }
 
     private static void runMLExperiments() {
+
+
+        for (TDKEnumConfiguration configuration : mlConfigurations)
+        {
+            TDKMLConfiguration mlconfiguration = (TDKMLConfiguration)configuration;
+            TDKEnumFactory.setConfiguration(mlconfiguration);
+            TDMLRunner tdmlRunner = new TDMLRunnerFactory().produce();
+            if (mlconfiguration.getEnumerationPurpose() == ML_TRAIN_MODEL )
+            {
+               if(((TDKMLConfiguration) configuration).getMlModelInput()==FILES)
+               {
+                   List<String> inputs = new ArrayList<>();
+                   getAllInputFiles(new File(((TDKMLConfiguration) configuration).getInputPath()), inputs);
+                   for (String input: inputs)
+                   {
+                       init (input);
+                       TDKEnumFactory.setConfiguration(configuration);
+                       ExecutorService executorService = Executors.newFixedThreadPool(1);
+                       StoringParallelMinimalTriangulationsEnumerator enumerator = (StoringParallelMinimalTriangulationsEnumerator)
+                               new MinimalTriangulationsEnumeratorFactory().produce();
+                       runTimeLimited(executorService,Arrays.asList(enumerator), configuration.getTime_limit());
+                       tdmlRunner.trainByInput(TDKEnumFactory.getInputFile(), enumerator.getTriangulations());
+                   }
+
+               }
+
+            }
+
+        }
     }
 
 
@@ -151,6 +187,7 @@ public class TDEnum {
         return  configurations.stream().anyMatch(tdkEnumConfiguration ->
 
                         tdkEnumConfiguration.getEnumerationPurpose().equals(ML_PREDICT)||
+
                         tdkEnumConfiguration.getEnumerationPurpose().equals(ML_TRAIN_MODEL));
     }
 

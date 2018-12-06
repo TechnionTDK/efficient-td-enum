@@ -7,7 +7,11 @@ import java.io.File;
 
 public interface ISolver {
 
-    CommandResult solve(File graphFile, File tdFile, MLProblemType mlProblemType);
+    CommandResult solve(File graphFile, File tdFile);
+
+    MLProblemType getMlProblemType();
+
+    void setMlProblemType(MLProblemType mlProblemType);
 
     long getTimeLimit();
 
@@ -16,4 +20,6 @@ public interface ISolver {
     long getMemeoryLimit();
 
     void setMemeoryLimit(long memeoryLimit);
+
+
 }

@@ -4,7 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import tdk_enum.common.IO.GraphReader;
 import tdk_enum.factories.TDKEnumFactory;
-import tdk_enum.factories.minimal_triangulations_enumerator_factory.ParallelMinimalTriangulationsEnumeratorFactory;
+import tdk_enum.factories.enumeration.minimal_triangulations_enumerator_factory.ParallelMinimalTriangulationsEnumeratorFactory;
 import tdk_enum.graph.TestsUtils;
 import tdk_enum.graph.data_structures.Node;
 import tdk_enum.graph.graphs.IGraph;
