@@ -29,7 +29,7 @@ public class SolverFactory implements ISolverFactory {
     {
         TDKMLConfiguration configuration = (TDKMLConfiguration) TDKEnumFactory.getConfiguration();
         solver.setTimeLimit(configuration.getSolverTimeLimit());
-        solver.setMemeoryLimit(configuration.getSolverMemoryLimit());
+        solver.setMemoryLimit(configuration.getSolverMemoryLimit());
         solver.setMlProblemType(configuration.getMlProblemType());
         return solver;
 

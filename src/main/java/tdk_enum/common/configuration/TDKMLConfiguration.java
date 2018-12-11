@@ -14,7 +14,7 @@ public class TDKMLConfiguration extends TDKTreeDecompositionEnumConfiguration {
     public TDKMLConfiguration()
     {
         parallelMISEnumeratorType = ParallelMISEnumeratorType.NESTED;
-        enumerationType = EnumerationType.MINIMAL_TRIANGULATIONS;
+        enumerationType = EnumerationType.SAVE_MINIMAL_TRIANGULATIONS;
         runningMode = RunningMode.PARALLEL;
         separatorsGraphType = SeparatorsGraphType.DEMON;
     }

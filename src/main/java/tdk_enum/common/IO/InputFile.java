@@ -2,6 +2,7 @@ package tdk_enum.common.IO;
 
 import org.apache.commons.io.FilenameUtils;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -12,10 +13,16 @@ public class InputFile {
     String innerContainingFolder = "None";
     String outerContainingFolder = "None";
 
+    Path path;
+
+    File file;
+
     public InputFile(String fileName)
     {
         wholeName = fileName;
         Path path = Paths.get(fileName);
+        this.path = path;
+        this.file = path.toFile();
         Path parent = path.getParent();
         if (parent == null)
         {
@@ -55,6 +62,11 @@ public class InputFile {
 
     public String getField() {
         return outerContainingFolder;
+    }
+
+    public File getFile()
+    {
+        return file;
     }
 
 

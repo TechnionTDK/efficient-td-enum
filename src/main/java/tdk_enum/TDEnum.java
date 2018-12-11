@@ -136,7 +136,8 @@ public class TDEnum {
     }
 
     private static void getAllInputFiles(File inputFolder, List<String> inputs) {
-        for (File file :inputFolder.listFiles())
+        File in = inputFolder;
+        for (File file :in.listFiles())
         {
             if(file.isDirectory())
             {
@@ -163,16 +164,18 @@ public class TDEnum {
                {
                    List<String> inputs = new ArrayList<>();
                    getAllInputFiles(new File(((TDKMLConfiguration) configuration).getInputPath()), inputs);
-                   for (String input: inputs)
-                   {
-                       init (input);
-                       TDKEnumFactory.setConfiguration(configuration);
-                       ExecutorService executorService = Executors.newFixedThreadPool(1);
-                       StoringParallelMinimalTriangulationsEnumerator enumerator = (StoringParallelMinimalTriangulationsEnumerator)
-                               new MinimalTriangulationsEnumeratorFactory().produce();
-                       runTimeLimited(executorService,Arrays.asList(enumerator), configuration.getTime_limit());
-                       tdmlRunner.trainByInput(TDKEnumFactory.getInputFile(), enumerator.getTriangulations());
-                   }
+                   tdmlRunner.trainByDataSet(inputs);
+
+//                   for (String input: inputs)
+//                   {
+//                       init (input);
+//                       TDKEnumFactory.setConfiguration(configuration);
+////                       ExecutorService executorService = Executors.newFixedThreadPool(1);
+////                       StoringParallelMinimalTriangulationsEnumerator enumerator = (StoringParallelMinimalTriangulationsEnumerator)
+////                               new MinimalTriangulationsEnumeratorFactory().produce();
+////                       runTimeLimited(executorService,Arrays.asList(enumerator), configuration.getTime_limit());
+//                       tdmlRunner.trainByInput(TDKEnumFactory.getInputFile(), enumerator.getTriangulations());
+//                   }
 
                }
 

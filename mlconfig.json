@@ -1,0 +1,25 @@
+[
+  {
+    "enumerationType" : "SAVE_MINIMAL_TRIANGULATIONS",
+    "enumerationPurpose" : "ML_TRAIN_MODEL",
+    "time_limit": 60,
+    "inputPath": "/home/dvirdu/IdeaProjects/efficient-td-enum/dflat/test_instances",
+
+
+    "mlClassifierType" : "WEKA",
+
+    "mlModelType": "OMNI",
+
+    "mlModelInput": "FILES",
+
+    "mlProblemType": "DFLAT_3COL",
+
+    "mlSortTD": "NO",
+
+    "solverTimeLimit": 10805,
+
+    "solverMemoryLimit" : 33554432,
+    "tdLimitPerGraph": 400
+
+  }
+]

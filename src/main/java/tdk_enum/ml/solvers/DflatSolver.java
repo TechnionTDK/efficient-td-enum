@@ -1,6 +1,5 @@
 package tdk_enum.ml.solvers;
 
-import tdk_enum.common.configuration.config_types.MLProblemType;
 import tdk_enum.ml.solvers.execution.CommandResult;
 import tdk_enum.ml.solvers.execution.SolverRunner;
 
@@ -40,7 +39,7 @@ public class DflatSolver extends AbstractSolver {
             }
 
         }
-        return SolverRunner.RunSolverCommand(solverCommand, memeoryLimit, timeLimit, permitedErrorCodes, graphFile);
+        return SolverRunner.RunSolverCommand(solverCommand, memoryLimit, timeLimit, permitedErrorCodes, graphFile);
 
     }
 }

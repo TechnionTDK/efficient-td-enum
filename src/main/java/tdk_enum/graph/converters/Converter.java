@@ -142,7 +142,7 @@ public class Converter
             {
                 DecompositionNode u = bags.get(i);
                 DecompositionNode v = bags.get(j);
-                int weight = (int) u.accessItemList().stream().filter(v.accessItemList()::contains).count();
+                int weight = (int) u.accessItemList().stream().filter(v.accessItemList()::contains).count() +1;
                 if(weight!=0)
                 {
                     WeightedEdge edge = new WeightedEdge(i,j,weight);
@@ -212,6 +212,7 @@ public class Converter
                     DecompositionNode node = treeDecomposition.getBag(bagId);
                     //node.setParent(new Node(-1));
                     ranksCopy.remove(bagId);
+                    root = node;
                 }
             }
 

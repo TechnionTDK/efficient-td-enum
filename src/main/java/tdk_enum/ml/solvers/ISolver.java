@@ -17,9 +17,9 @@ public interface ISolver {
 
     void setTimeLimit(long timeLimit);
 
-    long getMemeoryLimit();
+    long getMemoryLimit();
 
-    void setMemeoryLimit(long memeoryLimit);
+    void setMemoryLimit(long memoryLimit);
 
 
 }

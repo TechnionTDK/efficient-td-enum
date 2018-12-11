@@ -8,7 +8,7 @@ import java.util.List;
 public abstract class AbstractSolver implements  ISolver{
 
     long timeLimit;
-    long memeoryLimit;
+    long memoryLimit;
     List<Integer> permitedErrorCodes = new ArrayList<>();
     MLProblemType mlProblemType;
 
@@ -41,13 +41,13 @@ public abstract class AbstractSolver implements  ISolver{
     }
 
     @Override
-    public long getMemeoryLimit() {
-        return memeoryLimit;
+    public long getMemoryLimit() {
+        return memoryLimit;
     }
 
 
     @Override
-    public void setMemeoryLimit(long memeoryLimit) {
-        this.memeoryLimit = memeoryLimit;
+    public void setMemoryLimit(long memoryLimit) {
+        this.memoryLimit = memoryLimit;
     }
 }

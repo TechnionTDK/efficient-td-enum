@@ -1,5 +1,7 @@
 package tdk_enum.ml.feature_extractor.abseher.feature;
 
+import tdk_enum.ml.solvers.execution.CommandResult;
+
 import java.io.File;
 import java.text.DecimalFormat;
 
@@ -164,6 +166,28 @@ public class BenchmarkRun {
         }
 
         return ret;
+    }
+
+    public static BenchmarkRun getInstance(int tdID, File instance, CommandResult commandResult)
+    {
+        BenchmarkRun ret = null;
+        if(instance != null)
+        {
+            ret = new BenchmarkRun(tdID, instance,
+                    commandResult.getTotalDuration_UserTime(),
+                    commandResult.getTotalDuration_SystemTime(),
+                    commandResult.getTotalDuration_WallClockTime(),
+                    commandResult.getPeakMemory(),
+                    commandResult.isMemoryExceeded(),
+                    commandResult.isTimeoutOccurred(),
+                    commandResult.isExitCodeErrorOccurred(),
+                    commandResult.getOutputLineCount(),
+                    commandResult.getErrorLineCount(),
+                    commandResult.getCommandString(),
+                    commandResult.getExitCode());
+        }
+        return  ret;
+
     }
 
     public String toCSV() {

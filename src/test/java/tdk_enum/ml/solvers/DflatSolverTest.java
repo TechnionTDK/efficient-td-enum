@@ -21,7 +21,7 @@ public class DflatSolverTest {
     public void test3()
     {
         ISolver dflatSolver = new DflatSolver();
-        dflatSolver.setMemeoryLimit(67108864);
+        dflatSolver.setMemoryLimit(67108864);
         dflatSolver.setTimeLimit(5000);
         File graphFile = new File("./dflat/instance_n20_p0.10_001.lp");
         File tdFile = new File("./dflat/instance_n20_p0.10_001_8.gml");

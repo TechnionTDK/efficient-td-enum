@@ -17,7 +17,7 @@ public class TDMLRunnerFactory implements ITDMLRunnerFactory {
 
     private TDMLRunner inject(TDMLRunner tdmlRunner) {
         TDKMLConfiguration configuration = (TDKMLConfiguration) TDKEnumFactory.getConfiguration();
-        tdmlRunner.setEnumerator(new TreeDecompositionEnumeratorFactory().produce());
+//        tdmlRunner.setEnumerator(new TreeDecompositionEnumeratorFactory().produce());
         tdmlRunner.setSolver(new SolverFactory().produce());
         tdmlRunner.setFeatureExtractor(new FeatureExtractorFactory().produce());
         tdmlRunner.setClassifier(new ClassifierFactory().produce());

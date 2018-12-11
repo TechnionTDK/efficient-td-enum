@@ -1,8 +1,8 @@
 [
 
   {
-    enumerationType : "NICE_TD",
-    runningMode : "SINGLE_THREAD",
+    enumerationType : "MINIMAL_TRIANGULATIONS",
+    runningMode : "PARALLEL",
     enumerationPurpose : "STANDALONE",
     time_limit : 100
   }
