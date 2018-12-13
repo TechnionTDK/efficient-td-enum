@@ -3,6 +3,7 @@ package tdk_enum.ml;
 import org.joda.time.DateTime;
 import tdk_enum.common.IO.GraphMLPrinter;
 import tdk_enum.common.IO.InputFile;
+import tdk_enum.common.configuration.TDKMLConfiguration;
 import tdk_enum.common.configuration.config_types.MLModelInput;
 import tdk_enum.common.configuration.config_types.MLSortTD;
 import tdk_enum.enumerators.common.IEnumerator;
@@ -10,6 +11,7 @@ import tdk_enum.enumerators.tree_decomposition.ITreeDecompositionEnumerator;
 import tdk_enum.enumerators.triangulation.parallel.StoringParallelMinimalTriangulationsEnumerator;
 import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.factories.enumeration.minimal_triangulations_enumerator_factory.MinimalTriangulationsEnumeratorFactory;
+import tdk_enum.factories.ml.classifier_factory.ClassifierFactory;
 import tdk_enum.factories.ml.feature_extractor_factory.FeatureExtractorFactory;
 import tdk_enum.factories.ml.solver_factory.SolverFactory;
 import tdk_enum.graph.converters.Converter;
@@ -21,6 +23,8 @@ import tdk_enum.ml.feature_extractor.abseher.feature.BenchmarkRun;
 import tdk_enum.ml.feature_extractor.abseher.feature.FeatureExtractionResult;
 import tdk_enum.ml.solvers.ISolver;
 import tdk_enum.ml.solvers.execution.CommandResult;
+import weka.core.Instances;
+import weka.core.converters.CSVLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -292,10 +296,10 @@ public class TDMLRunner {
 
         System.out.println("dataset raw features were written on " + csv.getAbsolutePath());
         File refinedOutput = new File("./csv_files/datasetFeatures_"+ dateFormat.format(date) + "_prepared.csv");
-        featureExtractor.prepareCSV(csv.getAbsolutePath(), refinedOutput.getAbsolutePath());
-        System.out.println("dataset prepared features were written on " + csv.getAbsolutePath());
+        String csvFile = featureExtractor.prepareCSV(csv.getAbsolutePath(), refinedOutput.getAbsolutePath());
 
-        trainByCSV(csv.getAbsolutePath());
+
+        trainByCSV(csvFile);
 
     }
 
@@ -335,6 +339,11 @@ public class TDMLRunner {
 
     public void trainByCSV(String csvFile)
     {
+
+        TDKMLConfiguration configuration = (TDKMLConfiguration)TDKEnumFactory.getConfiguration();
+        IClassifier classifier = new ClassifierFactory().produce();
+        classifier.trainModel(csvFile, configuration.getModelStorePath(), configuration.getMlModelType() );
+
 
     }
 

@@ -17,5 +17,5 @@ public interface IFeatureExtractor {
     void toCSV(File csv, FeatureExtractionResult features);
     void toCSV (File csv, Map<String, Double> flatFeatures);
 
-    void prepareCSV(String rawCSV, String output);
+    String prepareCSV(String rawCSV, String output);
 }

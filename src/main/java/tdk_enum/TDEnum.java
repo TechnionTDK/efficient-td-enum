@@ -25,6 +25,7 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static tdk_enum.common.configuration.config_types.EnumerationPurpose.*;
+import static tdk_enum.common.configuration.config_types.MLModelInput.CSV;
 import static tdk_enum.common.configuration.config_types.MLModelInput.FILES;
 
 
@@ -178,6 +179,11 @@ public class TDEnum {
 //                   }
 
                }
+                if(((TDKMLConfiguration) configuration).getMlModelInput()==CSV)
+                {
+                    String input = ((TDKMLConfiguration) configuration).getInputPath();
+                    tdmlRunner.trainByCSV(input);
+                }
 
             }
 

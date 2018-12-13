@@ -37,7 +37,7 @@ public class AbeseherFeatuerExtractor extends AbstractFeatureExtractor {
 //    }
 
     @Override
-    public void prepareCSV(String rawCSV, String output) {
+    public String prepareCSV(String rawCSV, String output) {
 
         String command = "sed s/-//g -i.bak " + rawCSV +"\n" +
                 "sed s/://g -i.bak " + rawCSV +"\n" +
@@ -68,6 +68,12 @@ public class AbeseherFeatuerExtractor extends AbstractFeatureExtractor {
                 "\n" +
                 "rm tmp4.csv";
         new CommandExecutor().runScript(command);
+
+        command = "Rscript ./dflat/preparation.r " +output;
+        new CommandExecutor().runScript(command);
+        String outputFile = output.replace(".csv", "")+"_results_standardized.csv";
+        System.out.println("dataset prepared features were written on " + outputFile);
+        return outputFile;
 
     }
 }

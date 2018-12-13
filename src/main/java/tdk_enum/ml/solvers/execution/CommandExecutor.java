@@ -51,6 +51,27 @@ public class CommandExecutor {
         return timeoutOccurred;
     }
 
+    public void runRscript(String script)
+    {
+        try {
+
+            Runtime runtime =
+                    Runtime.getRuntime();
+            currentProcess = runtime.exec(script);
+            Worker worker =
+                    new Worker(currentProcess);
+            worker.start();
+            worker.join(0);
+            worker.interrupt();
+            abortCurrentProcess();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void runScript(String script)
     {
         try {
