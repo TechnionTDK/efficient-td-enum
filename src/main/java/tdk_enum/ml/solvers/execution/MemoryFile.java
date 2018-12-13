@@ -297,4 +297,12 @@ public class MemoryFile {
         return ret;
 
     }
+
+
+    @Override
+    public String toString() {
+        return "MemoryFile{" +
+                "content=" + content +
+                '}';
+    }
 }

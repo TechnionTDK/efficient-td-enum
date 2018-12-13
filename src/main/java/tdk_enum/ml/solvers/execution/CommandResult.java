@@ -280,4 +280,25 @@ public class CommandResult {
         return ret;
     }
 
+
+    @Override
+    public String toString() {
+        return "CommandResult{" +
+                "exitCode=" + exitCode +
+                ", peakMemory=" + peakMemory +
+                ", errorLineCount=" + errorLineCount +
+                ", outputLineCount=" + outputLineCount +
+                ", totalDuration_UserTime=" + totalDuration_UserTime +
+                ", totalDuration_SystemTime=" + totalDuration_SystemTime +
+                ", totalDuration_WallClockTime=" + totalDuration_WallClockTime +
+                ", commandString='" + commandString + '\'' +
+                ", memoryExceeded=" + memoryExceeded +
+                ", timeoutOccurred=" + timeoutOccurred +
+                ", timeoutValueUsed=" + timeoutValueUsed +
+                ", exitCodeErrorOccurred=" + exitCodeErrorOccurred +
+                ", storedException=" + storedException +
+                ", errorContent=" + errorContent +
+                ", outputContent=" + outputContent +
+                '}';
+    }
 }

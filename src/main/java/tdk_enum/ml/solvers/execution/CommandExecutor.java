@@ -51,6 +51,28 @@ public class CommandExecutor {
         return timeoutOccurred;
     }
 
+    public void runScript(String script)
+    {
+        try {
+            String[] cmd = { "/bin/bash", "-c", script };
+            Runtime runtime =
+                    Runtime.getRuntime();
+            currentProcess = runtime.exec(cmd);
+            Worker worker =
+                    new Worker(currentProcess);
+            worker.start();
+            worker.join(0);
+            worker.interrupt();
+            abortCurrentProcess();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public int execute(String command) {
         return execute(command, null, null, 0);
     }
@@ -79,75 +101,96 @@ public class CommandExecutor {
         timeoutOccurred = false;
 
         if (currentProcess == null && command != null) {
-            String[] cmd = { "/bin/sh", "-c", command };
+            String[] cmd = { "/bin/bash", "-c", command };
 
             try {
                 Runtime runtime =
                         Runtime.getRuntime();
 
-                currentProcess = runtime.exec(cmd);
+                StreamHandlerThread errorStreamHandler;
+                StreamHandlerThread outputStreamHandler;
+                do {
+                    currentProcess = runtime.exec(cmd);
+                    errorStreamHandler =
+                            new StreamHandlerThread(currentProcess.getErrorStream(), errorFile);
 
-                StreamHandlerThread errorStreamHandler =
-                        new StreamHandlerThread(currentProcess.getErrorStream(), errorFile);
+                    outputStreamHandler =
+                            new StreamHandlerThread(currentProcess.getInputStream(), outputFile);
 
-                StreamHandlerThread outputStreamHandler =
-                        new StreamHandlerThread(currentProcess.getInputStream(), outputFile);
+                    errorStreamHandler.start();
+                    outputStreamHandler.start();
 
-                errorStreamHandler.start();
-                outputStreamHandler.start();
 
-                Worker worker =
-                        new Worker(currentProcess);
+                    Worker worker =
+                            new Worker(currentProcess);
 
-                long start =
-                        BenchmarkOperations.getWallClockTime();
+                    long start =
+                            BenchmarkOperations.getWallClockTime();
 
-                worker.start();
 
-                try {
-                    if (timeout < 0) {
-                        worker.join();
+
+                    worker.start();
+
+                    try {
+                        if (timeout < 0) {
+                            worker.join();
+                        }
+                        else {
+                            worker.join(timeout);
+                        }
+
+                        ret = worker.getExitCode();
                     }
-                    else {
-                        worker.join(timeout);
+                    catch(InterruptedException ex) {
+                        ex.printStackTrace();
+                        ret = -1;
                     }
 
-                    ret = worker.getExitCode();
+
+                    worker.interrupt();
+
+
+
+                    lastDuration =
+                            BenchmarkOperations.getWallClockTime() - start;
+
+                    timeoutOccurred = timeout > 0 && lastDuration >= timeout;
+
+                    errorStreamHandler.abort();
+                    outputStreamHandler.abort();
+
+                    errorStreamHandler.join(1000);
+                    outputStreamHandler.join(1000);
+                    abortCurrentProcess();
+                    errorLineCount =
+                            errorStreamHandler.getCurrentLineCount();
+
+                    outputLineCount =
+                            outputStreamHandler.getCurrentLineCount();
                 }
-                catch(InterruptedException ex) {
-                    ret = -1;
-                }
+                while(errorLineCount==0);
 
-                worker.interrupt();
 
-                abortCurrentProcess();
 
-                lastDuration =
-                        BenchmarkOperations.getWallClockTime() - start;
-
-                timeoutOccurred = timeout > 0 && lastDuration >= timeout;
-
-                errorStreamHandler.abort();
-                outputStreamHandler.abort();
-
-                errorStreamHandler.join(1000);
-                outputStreamHandler.join(1000);
-
-                errorLineCount =
-                        errorStreamHandler.getCurrentLineCount();
-
-                outputLineCount =
-                        outputStreamHandler.getCurrentLineCount();
-            }
-            catch (IOException | InterruptedException ex) {
+            }catch (Exception e)
+            {
+                e.printStackTrace();
                 abortCurrentProcess();
 
                 outputLineCount = -1;
 
                 errorLineCount = -1;
-
-                ret = -1;
+                ret =-1;
             }
+//            catch (IOException | InterruptedException ex) {
+//                abortCurrentProcess();
+//
+//                outputLineCount = -1;
+//
+//                errorLineCount = -1;
+//
+//                ret = -1;
+//            }
         }
 
         lastExitCode = ret;

@@ -32,7 +32,7 @@ public class FeatureExtractionResult {
                                    IGraph instance) {
         this.measurements = new ArrayList<>();
 
-        this.tdID = this.tdID;
+        this.tdID = tdID;
         this.instance = instance;
 
         this.userTime = Double.NaN;
@@ -145,7 +145,7 @@ public class FeatureExtractionResult {
                 new StringBuilder();
 
         sb.append("Instance,");
-        sb.append("Seed,");
+        sb.append("TDID,");
         sb.append("User-Time,");
         sb.append("System-Time,");
         sb.append("Wall-Clock-Time,");
@@ -267,10 +267,10 @@ public class FeatureExtractionResult {
         return sb.toString();
     }
 
-    public Map<String, Double> toFlatMap()
+    public Map<String, Object> toFlatMap()
     {
-        Map<String, Double> features = new LinkedHashMap<>();
-
+        Map<String, Object> features = new LinkedHashMap<>();
+        features.put("Instace", getInstancePath());
         features.put("ID", (double)tdID);
         features.put("User-Time", userTime);
         features.put("System-Time", systemTime);

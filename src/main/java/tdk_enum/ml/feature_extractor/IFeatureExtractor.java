@@ -12,9 +12,10 @@ public interface IFeatureExtractor {
 
     FeatureExtractionResult getFeatures(int tdID, ITreeDecomposition treeDecomposition, IGraph graph);
     FeatureExtractionResult getFeatures(int tdID, ITreeDecomposition treeDecomposition, IGraph graph, BenchmarkRun benchmarkRun);
-    Map<String, Double> getFlatFeatures(int tdID, ITreeDecomposition treeDecomposition, IGraph graph);
-    Map<String, Double> getFlatFeatures(int tdID, ITreeDecomposition treeDecomposition, IGraph graph, BenchmarkRun benchmarkRun);
+//    Map<String, Double> getFlatFeatures(int tdID, ITreeDecomposition treeDecomposition, IGraph graph);
+//    Map<String, Double> getFlatFeatures(int tdID, ITreeDecomposition treeDecomposition, IGraph graph, BenchmarkRun benchmarkRun);
     void toCSV(File csv, FeatureExtractionResult features);
     void toCSV (File csv, Map<String, Double> flatFeatures);
 
+    void prepareCSV(String rawCSV, String output);
 }

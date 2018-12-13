@@ -44,7 +44,7 @@ public class ComponentSizeFeature extends GraphFeature {
                     vertices.remove(vertex2);
                 }
 
-                vertices.remove(vertex);
+                vertices.remove(new Node(vertex));
             }
             ret = new StatisticsSummary(values);
         }

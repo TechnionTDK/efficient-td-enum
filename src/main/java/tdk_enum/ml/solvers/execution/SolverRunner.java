@@ -80,6 +80,7 @@ public class SolverRunner {
 //        if (timeoutValue >= 0) {
 //            ret.updateTimeoutValue(timeoutValue);
 //        }
+//        System.out.println(ret);
         return ret;
     }
 

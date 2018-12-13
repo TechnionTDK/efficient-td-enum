@@ -129,6 +129,7 @@ public class TDKEnumFactory {
     {
         TDKEnumFactory.inputFile = inputFile;
         IGraph graph = GraphReader.read(inputFile.getPath());
+        graph.setOriginalPath(inputFile.getPath());
         init(graph);
 
     }

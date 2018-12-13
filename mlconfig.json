@@ -18,8 +18,8 @@
 
     "solverTimeLimit": 10805,
 
-    "solverMemoryLimit" : 33554432,
-    "tdLimitPerGraph": 400
+    "solverMemoryLimit" : 554432,
+    "tdLimitPerGraph": 40
 
   }
 ]

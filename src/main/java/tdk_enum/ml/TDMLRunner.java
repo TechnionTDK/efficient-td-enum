@@ -24,6 +24,7 @@ import tdk_enum.ml.solvers.execution.CommandResult;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -146,7 +147,7 @@ public class TDMLRunner {
             this.treeDecomposition = Converter.chordalGraphToNiceTreeDecomposition(chordalGraph);
             this.graphName = graphName;
             this.id = id;
-            this.file = new File("./"+graphName + id + ".gml");
+            this.file = new File("./"+graphName + "_" + id + ".gml");
             this.graph = graph;
         }
 
@@ -170,12 +171,8 @@ public class TDMLRunner {
         public File getFile()
         {
 
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            GraphMLPrinter.treeDecompositionToGraphMLFile(treeDecomposition, file.getName());
+
+            GraphMLPrinter.treeDecompositionToGraphMLFile(treeDecomposition, file.getAbsolutePath());
             return file;
         }
 
@@ -230,7 +227,10 @@ public class TDMLRunner {
     }
     public void trainByDataSet(List<String> inputs)
     {
-        File csv = new File("datasetFeatures_"+ DateTime.now());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy:HH:mm:SS");
+        Date date = new Date();
+
+        File csv = new File("./csv_files/datasetFeatures_"+ dateFormat.format(date) + ".csv");
         System.out.println("Starting enumeration and features extraction for input dataset");
         for (String filePath : inputs)
         {
@@ -290,7 +290,11 @@ public class TDMLRunner {
 
         }
 
-        System.out.println("dataset features were written on " + csv.getAbsolutePath());
+        System.out.println("dataset raw features were written on " + csv.getAbsolutePath());
+        File refinedOutput = new File("./csv_files/datasetFeatures_"+ dateFormat.format(date) + "_prepared.csv");
+        featureExtractor.prepareCSV(csv.getAbsolutePath(), refinedOutput.getAbsolutePath());
+        System.out.println("dataset prepared features were written on " + csv.getAbsolutePath());
+
         trainByCSV(csv.getAbsolutePath());
 
     }
@@ -318,6 +322,7 @@ public class TDMLRunner {
                 f.cancel(true);
             }
         }
+        executorService.shutdownNow();
 
 
 

@@ -225,7 +225,7 @@ public class Converter
                 ubag.addChild(vBag);
                 vBag.setParent(ubag);
                 ranksCopy.remove(new Node(ubag.getID()));
-                ranksCopy.remove(vBag.getID());
+                ranksCopy.remove(new Node(vBag.getID()));
                 root = ubag;
 
             }

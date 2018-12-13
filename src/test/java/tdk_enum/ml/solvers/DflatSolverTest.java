@@ -60,7 +60,7 @@ public class DflatSolverTest {
             commandPrefix += " timeout -k 5 " +
                     ((long)Math.ceil((double)timeout / 1000) + 5);
         }
-        String actualCommand = "./dflat/dflat -p ./dflat/problems/3col_dynamic.lp --graphml-in ./dflat/instance_n20_p0.10_001_8.gml -f ./dflat/instance_n20_p0.10_001.lp --depth 0 --output quiet";
+        String actualCommand = "./dflat/dflat -p ./dflat/problems/3col_dynamic.lp --graphml-in ./dflat/instance_n20_p0.10_001_8.gml  --depth 0 --output quiet < ./dflat/instance_n20_p0.10_001.lp";
         String command =
                 commandPrefix + " " + actualCommand;
 
