@@ -1,16 +1,17 @@
 package tdk_enum.ml;
 
-import org.joda.time.DateTime;
 import tdk_enum.common.IO.GraphMLPrinter;
 import tdk_enum.common.IO.InputFile;
+import tdk_enum.common.configuration.TDKEnumConfiguration;
 import tdk_enum.common.configuration.TDKMLConfiguration;
-import tdk_enum.common.configuration.config_types.MLModelInput;
-import tdk_enum.common.configuration.config_types.MLSortTD;
+import tdk_enum.common.configuration.TDKTreeDecompositionEnumConfiguration;
+import tdk_enum.common.configuration.config_types.*;
 import tdk_enum.enumerators.common.IEnumerator;
 import tdk_enum.enumerators.tree_decomposition.ITreeDecompositionEnumerator;
 import tdk_enum.enumerators.triangulation.parallel.StoringParallelMinimalTriangulationsEnumerator;
 import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.factories.enumeration.minimal_triangulations_enumerator_factory.MinimalTriangulationsEnumeratorFactory;
+import tdk_enum.factories.enumeration.tree_decomposition_enumerator_factory.NiceTreeDecompositionEnumeratorFactory;
 import tdk_enum.factories.ml.classifier_factory.ClassifierFactory;
 import tdk_enum.factories.ml.feature_extractor_factory.FeatureExtractorFactory;
 import tdk_enum.factories.ml.solver_factory.SolverFactory;
@@ -18,16 +19,14 @@ import tdk_enum.graph.converters.Converter;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
 import tdk_enum.ml.classifiers.IClassifier;
+import tdk_enum.ml.classifiers.common.*;
 import tdk_enum.ml.feature_extractor.IFeatureExtractor;
 import tdk_enum.ml.feature_extractor.abseher.feature.BenchmarkRun;
 import tdk_enum.ml.feature_extractor.abseher.feature.FeatureExtractionResult;
 import tdk_enum.ml.solvers.ISolver;
 import tdk_enum.ml.solvers.execution.CommandResult;
-import weka.core.Instances;
-import weka.core.converters.CSVLoader;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
@@ -231,7 +230,7 @@ public class TDMLRunner {
     }
     public void trainByDataSet(List<String> inputs)
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy:HH:mm:SS");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy:HH:mm:ss");
         Date date = new Date();
 
         File csv = new File("./csv_files/datasetFeatures_"+ dateFormat.format(date) + ".csv");
@@ -332,34 +331,189 @@ public class TDMLRunner {
 
     }
 
-    public void trainByInput(InputFile inputFile, Set<IChordalGraph> chordalGraphs)
-    {
-
-    }
 
     public void trainByCSV(String csvFile)
     {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy:HH:mm:ss");
+        Date date = new Date();
 
         TDKMLConfiguration configuration = (TDKMLConfiguration)TDKEnumFactory.getConfiguration();
         IClassifier classifier = new ClassifierFactory().produce();
-        classifier.trainModel(csvFile, configuration.getModelStorePath(), configuration.getMlModelType() );
+        String outputPath = configuration.getModelStorePath()+"/"+configuration.getMlProblemType()+"/"+dateFormat.format(date);
+
+        classifier.trainModel(csvFile, outputPath, configuration.getMlModelType() );
 
 
     }
 
-    public void loadTrainedModels()
+    public void classify(List<String> inputs)
     {
 
+
+
+        for (String filePath : inputs)
+        {
+
+            InputFile inputFile = new InputFile(filePath);
+            System.out.println("Starting prediction for " + inputFile.getPath());
+            TDKEnumFactory.init(inputFile);
+            ITreeDecompositionEnumerator singleThreadEnumerator = creatSingleThreadEnumerator();
+            ITreeDecompositionEnumerator randomEnumerator = createSingleThreadRandomEnumerator();
+
+
+            List<ITreeDecomposition> first40 = getFirst40(singleThreadEnumerator);
+            List<ITreeDecomposition> first40Random = getFirst40(randomEnumerator);
+            StoringParallelMinimalTriangulationsEnumerator enumerator = (StoringParallelMinimalTriangulationsEnumerator) new MinimalTriangulationsEnumeratorFactory().produce();
+            runTimeLimited(enumerator);
+            Set<IChordalGraph> chordalGraphs = enumerator.getTriangulations();
+            System.out.println(chordalGraphs.size() + " chordal graphs where produced");
+            List<ITreeDecomposition> treeDecompositions = chordalGraphs.parallelStream().map(chordalGraph ->{ chordalGraphs.remove(chordalGraph); return Converter.chordalGraphToNiceTreeDecomposition(chordalGraph); } ).collect(Collectors.toCollection(CopyOnWriteArrayList::new));
+            System.out.println(treeDecompositions.size() + " TD where produced");
+
+            predict(first40);
+            predict(first40Random);
+            predict(treeDecompositions);
+
+
+        }
+
+
+
+
+
     }
 
-    void train()
-    {
+    private void predict(List<ITreeDecomposition> treeDecompositions) {
+        List<DecompositionDetails> decompositionDetails = new ArrayList<>();
+        IClassifier classifier = new ClassifierFactory().produce();
+        classifier.loadModels(modelLoadPath);
+        ISolver solver = new SolverFactory().produce();
+        IFeatureExtractor featureExtractor = new FeatureExtractorFactory().produce();
+        for (int i = 0; i < treeDecompositions.size(); i++)
+        {
+            DecompositionDetails details = DecompositionDetails.getInstance(featureExtractor.getFeatures(i,treeDecompositions.get(i),TDKEnumFactory.getGraph() ));
+            decompositionDetails.add(details);
+        }
 
-    }
+        DecompositionPool decompositionPool = DecompositionPool.createDecompositionPool(decompositionDetails, TDKEnumFactory.getInputFile().getFile());
+        DecompositionPool transformedDecompositionPool = decompositionPool;
+        TDKMLConfiguration configuration = (TDKMLConfiguration)TDKEnumFactory.getConfiguration();
 
-//    public Map<String, Double> predict(ITreeDecomposition td)
-//    {
+        switch (configuration.getTransformationMode()) {
+            case NORMALIZE: {
+                transformedDecompositionPool = decompositionPool.normalize();
+
+                break;
+            }
+            case STANDARDIZE: {
+                transformedDecompositionPool = decompositionPool.standardize();
+
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+
+        DecompositionPool normalizedDecompositionPool = decompositionPool.normalize();
+        DecompositionPool standardizedDecompositionPool = decompositionPool.standardize();
+
+        List<SelectionTemplate> selectionTemplates = new ArrayList<>();
+
+
+
+
+//        List<EvaluatedDecompositionDetails> details =
+//                getEvaluatedDecompositionDetails(benchmarkDetails, decompositionPool);
 //
-//    }
+//        List<EvaluatedDecompositionDetails> normalizedDetails =
+//                getEvaluatedDecompositionDetails(benchmarkDetails, normalizedDecompositionPool);
+//
+//        List<EvaluatedDecompositionDetails> transformedDetails =
+//                getEvaluatedDecompositionDetails(benchmarkDetails, transformedDecompositionPool);
+//
+//        List<EvaluatedDecompositionDetails> standardizedDetails =
+//                getEvaluatedDecompositionDetails(benchmarkDetails, standardizedDecompositionPool);
+
+
+    }
+
+    private static List<EvaluatedDecompositionDetails> getEvaluatedDecompositionDetails(BenchmarkDetails benchmarkDetails, DecompositionPool decompositionPool) {
+        List<EvaluatedDecompositionDetails> ret = new ArrayList<>();
+
+        if (benchmarkDetails != null && decompositionPool != null) {
+            List<BenchmarkRun> benchmarkRuns =
+                    benchmarkDetails.getBenchmarkRuns();
+
+            List<DecompositionDetails> decompositions =
+                    decompositionPool.accessDecompositions();
+
+            if (benchmarkRuns != null &&
+                    decompositions != null &&
+                    decompositions.size() == benchmarkRuns.size()) {
+
+                for (int i = 0; i < benchmarkRuns.size(); i++) {
+                    BenchmarkRun benchmarkRun = benchmarkRuns.get(i);
+                    DecompositionDetails decomposition = decompositions.get(i);
+
+                    PredictedDecompositionDetails predictedDecompositionDetails =
+                            PredictedDecompositionDetails.getInstance(decomposition);
+
+                    if (predictedDecompositionDetails != null) {
+                        EvaluatedDecompositionDetails evaluatedDecompositionDetails =
+                                EvaluatedDecompositionDetails.getInstance(predictedDecompositionDetails,
+                                        benchmarkRun.getUserTime(),
+                                        benchmarkRun.getMemoryConsumption(),
+                                        benchmarkRun.getExitCode(),
+                                        benchmarkRun.isMemoryError(),
+                                        benchmarkRun.isTimeoutError(),
+                                        benchmarkRun.isExitCodeError());
+
+                        if (evaluatedDecompositionDetails != null) {
+                            ret.add(evaluatedDecompositionDetails);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    private List<ITreeDecomposition> getFirst40(ITreeDecompositionEnumerator enumerator) {
+        List<ITreeDecomposition> decompositions = new ArrayList<>();
+        while(enumerator.hasNext() && decompositions.size()<40)
+        {
+            decompositions.add(enumerator.next());
+        }
+        return decompositions;
+    }
+
+    private ITreeDecompositionEnumerator createSingleThreadRandomEnumerator() {
+        return createSingleThreadEnumerator(true);
+
+    }
+
+    private ITreeDecompositionEnumerator creatSingleThreadEnumerator() {
+       return createSingleThreadEnumerator(false);
+
+    }
+
+    private ITreeDecompositionEnumerator createSingleThreadEnumerator(boolean rand)
+    {
+        TDKEnumConfiguration configuration = TDKEnumFactory.getConfiguration();
+        TDKTreeDecompositionEnumConfiguration  decompositionEnumConfiguration = new TDKTreeDecompositionEnumConfiguration();
+        if(rand)
+        {
+            decompositionEnumConfiguration.setMinimalTriangulatorType(MinimalTriangulatorType.RANDOM);
+        }
+
+        decompositionEnumConfiguration.setEnumerationType(EnumerationType.NICE_TD);
+        decompositionEnumConfiguration.setRunningMode(RunningMode.SINGLE_THREAD);
+        TDKEnumFactory.setConfiguration(decompositionEnumConfiguration);
+        ITreeDecompositionEnumerator enumerator = new NiceTreeDecompositionEnumeratorFactory().produce();
+        TDKEnumFactory.setConfiguration(configuration);
+        return enumerator;
+    }
+
 
 }

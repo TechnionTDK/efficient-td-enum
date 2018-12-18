@@ -9,7 +9,7 @@ exchangeEnc=$DIR/exchange.lp
 exchangeDecEnc=$DIR/exchange_decision.lp
 monolithicEnc=$DIR/monolithic.lp
 
-echo "width,nodes,num,edges,seed,vc_opt-value,monolithic_opt-value,vc_opt-counting,monolithic_opt-counting_value_given,vc_opt-enum,monolithic_opt-enum_value_given,optimum,optimal_vcs"
+echo "width,nodes,num,edges,tdId,vc_opt-value,monolithic_opt-value,vc_opt-counting,monolithic_opt-counting_value_given,vc_opt-enum,monolithic_opt-enum_value_given,optimum,optimal_vcs"
 
 function printTime {
 time=$1
@@ -30,14 +30,14 @@ esac
 for f in $@; do
 	suffix=${f##*width}
 	instance_data=${suffix%%.lp}
-	IFS="_/" read width nodes num edges seed <<< "$instance_data"
-	echo -n "$width,$nodes,$num,$edges,$seed,"
+	IFS="_/" read width nodes num edges tdId <<< "$instance_data"
+	echo -n "$width,$nodes,$num,$edges,$tdId,"
 
 	unset optValue
 	unset count
 
 	# OPT-VALUE
-	read curOptValue time exitCode <<< $(\time -f "TIME %U %S %x" bash -c "$dflat -p opt-value -e edge -x $exchangeEnc -s $seed -n semi < $f" 2>&1 | grep "^Minimum cost:\|^TIME" | awk 'BEGIN { cost = 0 } /^Minimum cost:/ { cost = $3 } /^TIME/ { time = $2+$3; code = $4 } END { printf("%s %s %s", cost, time, code) }')
+	read curOptValue time exitCode <<< $(\time -f "TIME %U %S %x" bash -c "$dflat -p opt-value -e edge -x $exchangeEnc -s $tdId -n semi < $f" 2>&1 | grep "^Minimum cost:\|^TIME" | awk 'BEGIN { cost = 0 } /^Minimum cost:/ { cost = $3 } /^TIME/ { time = $2+$3; code = $4 } END { printf("%s %s %s", cost, time, code) }')
 	printTime $time $exitCode
 
 	if [[ $exitCode -eq 10 || $exitCode -eq 20 ]]; then
@@ -59,7 +59,7 @@ for f in $@; do
 	[ "$optValue" ] || (echo -n "?,?,?,?,?,?"; continue)
 
 	# OPT-COUNTING
-	read curCount time exitCode <<< $(\time -f "TIME %U %S %x" bash -c "$dflat -p opt-counting -e edge -x $exchangeEnc -s $seed -n semi < $f" 2>&1 | grep "^Optimal solutions:\|^TIME" | awk 'BEGIN { sol = 0 } /^Optimal solutions:/ { sol = $3 } /^TIME/ { time = $2+$3; code = $4 } END { printf("%s %s %s", sol, time, code) }')
+	read curCount time exitCode <<< $(\time -f "TIME %U %S %x" bash -c "$dflat -p opt-counting -e edge -x $exchangeEnc -s $tdId -n semi < $f" 2>&1 | grep "^Optimal solutions:\|^TIME" | awk 'BEGIN { sol = 0 } /^Optimal solutions:/ { sol = $3 } /^TIME/ { time = $2+$3; code = $4 } END { printf("%s %s %s", sol, time, code) }')
 	printTime $time $exitCode
 
 	if [[ $exitCode -eq 10 || $exitCode -eq 20 ]]; then
@@ -82,7 +82,7 @@ for f in $@; do
 	fi
 
 	# OPT-ENUM
-	read curCount time exitCode <<< $(\time -f "TIME %U %S %x" bash -c "$dflat -p opt-enum -e edge -x $exchangeEnc -s $seed -n semi < $f" 2>&1 | grep "^Optimal solutions:\|^TIME" | awk 'BEGIN { sol = 0 } /^Optimal solutions:/ { sol = $3 } /^TIME/ { time = $2+$3; code = $4 } END { printf("%s %s %s", sol, time, code) }')
+	read curCount time exitCode <<< $(\time -f "TIME %U %S %x" bash -c "$dflat -p opt-enum -e edge -x $exchangeEnc -s $tdId -n semi < $f" 2>&1 | grep "^Optimal solutions:\|^TIME" | awk 'BEGIN { sol = 0 } /^Optimal solutions:/ { sol = $3 } /^TIME/ { time = $2+$3; code = $4 } END { printf("%s %s %s", sol, time, code) }')
 	printTime $time $exitCode
 
 	if [[ $exitCode -eq 10 || $exitCode -eq 20 ]]; then

@@ -4,14 +4,14 @@ import random
 import sys
 
 if len(sys.argv) not in (3, 4):
-	sys.stderr.write("Usage: " + sys.argv[0] + " numNodes numEdges [seed]\n")
+	sys.stderr.write("Usage: " + sys.argv[0] + " numNodes numEdges [tdId]\n")
 	sys.exit(1)
 
 numNodes = int(sys.argv[1])
 numEdges = int(sys.argv[2])
 
 if len(sys.argv) == 4:
-	random.seed(int(sys.argv[3]))
+	random.tdId(int(sys.argv[3]))
 
 if numEdges < numNodes:
 	sys.stderr.write("Must have at least one edge per node.\n")

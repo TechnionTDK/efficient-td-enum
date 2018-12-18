@@ -3,14 +3,14 @@ import random
 import sys
 
 if len(sys.argv) not in (3, 4):
-	sys.stderr.write("Usage: " + sys.argv[0] + " numElements numOrderings [seed]\n")
+	sys.stderr.write("Usage: " + sys.argv[0] + " numElements numOrderings [tdId]\n")
 	sys.exit(1)
 
 n = int(sys.argv[1])
 o = int(sys.argv[2])
 
 if len(sys.argv) == 4:
-	random.seed(int(sys.argv[3]))
+	random.tdId(int(sys.argv[3]))
 
 if o < n:
 	sys.stderr.write("Must have at least as many orderings as elements.\n")

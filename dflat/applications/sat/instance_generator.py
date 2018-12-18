@@ -6,7 +6,7 @@ import sys
 dimacs = len(sys.argv) == 5
 
 if len(sys.argv) not in (3, 4, 5) or (dimacs and sys.argv[4] != "--dimacs"):
-	sys.stderr.write("Usage: " + sys.argv[0] + " numClauses numVars [seed] [--dimacs]\n")
+	sys.stderr.write("Usage: " + sys.argv[0] + " numClauses numVars [tdId] [--dimacs]\n")
 	sys.exit(1)
 
 numClauses = int(sys.argv[1])
@@ -17,7 +17,7 @@ if numClauses < numVars:
 	sys.exit(1)
 
 if len(sys.argv) >= 4:
-	random.seed(int(sys.argv[3]))
+	random.tdId(int(sys.argv[3]))
 
 if dimacs:
 	print("p cnf {} {}".format(numVars, numClauses))

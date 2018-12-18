@@ -8,24 +8,24 @@ if [[ -z "$instanceGen" || -z "$dflatArguments" || -z "$monolithicEncoding" ]]; 
 fi
 
 for instance in $(seq 1 $numInstances); do
-	seed=$RANDOM
+	tdId=$RANDOM
 
 	instance=$(mktemp)
 	trap "rm -f $instance" EXIT
 
-	$instanceGen $seed > $instance || exit
+	$instanceGen $tdId > $instance || exit
 
 	gringo $monolithicEncoding $instance 2>/dev/null | clasp -q >/dev/null
 	claspExit=$?
-	dflat $dflatArguments --depth 0 --seed $seed < $instance >/dev/null
+	dflat $dflatArguments --depth 0 --tdId $tdId < $instance >/dev/null
 	dflatExit=$?
 
 	[ $claspExit -ne 30 ] || claspExit=10
 
 	if [ $claspExit -ne $dflatExit ]; then
-		cp $instance mismatch${seed}.lp
+		cp $instance mismatch${tdId}.lp
 		echo
-		echo "Mismatch for seed $seed (dflat: ${dflatExit}, clasp: ${claspExit})"
+		echo "Mismatch for tdId $tdId (dflat: ${dflatExit}, clasp: ${claspExit})"
 		exit 1
 	else
 #		echo -n .

@@ -8,14 +8,9 @@ import tdk_enum.common.configuration.TDKEnumConfiguration;
 import tdk_enum.common.configuration.TDKMLConfiguration;
 import tdk_enum.common.configuration.config_types.EnumerationPurpose;
 import tdk_enum.enumerators.common.IEnumerator;
-import tdk_enum.enumerators.tree_decomposition.ITreeDecompositionEnumerator;
-import tdk_enum.enumerators.triangulation.IMinimalTriangulationsEnumerator;
-import tdk_enum.enumerators.triangulation.parallel.StoringParallelMinimalTriangulationsEnumerator;
 import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.factories.configuration_parser.ConfigurationParserFactory;
 import tdk_enum.factories.enumeration.enumerator_factory.EnumeratorFactory;
-import tdk_enum.factories.enumeration.minimal_triangulations_enumerator_factory.MinimalTriangulationsEnumeratorFactory;
-import tdk_enum.factories.enumeration.tree_decomposition_enumerator_factory.TreeDecompositionEnumeratorFactory;
 import tdk_enum.factories.ml.ml_runner_factory.TDMLRunnerFactory;
 import tdk_enum.ml.TDMLRunner;
 
@@ -100,6 +95,7 @@ public class TDEnum {
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return false;
         }
 
@@ -185,6 +181,12 @@ public class TDEnum {
                     tdmlRunner.trainByCSV(input);
                 }
 
+            }
+            else
+            {
+                List<String> inputs = new ArrayList<>();
+                getAllInputFiles(new File(((TDKMLConfiguration) configuration).getInputPath()), inputs);
+                tdmlRunner.classify(inputs);
             }
 
         }

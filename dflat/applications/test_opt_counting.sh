@@ -8,14 +8,14 @@ if [[ -z "$instanceGen" || -z "$dflatArguments" || -z "$monolithicEncoding" ]]; 
 fi
 
 for instance in $(seq 1 $numInstances); do
-	seed=$RANDOM
+	tdId=$RANDOM
 
 	instance=$(mktemp)
 	claspOptValAndCountFile=$(mktemp)
 	dflatOptValAndCountFile=$(mktemp)
 	trap "rm -f $instance $claspOptValAndCountFile $dflatOptValAndCountFile" EXIT
 
-	$instanceGen $seed > $instance 2>/dev/null || exit
+	$instanceGen $tdId > $instance 2>/dev/null || exit
 
 	gringo $monolithicEncoding $instance | clasp -q 0 --opt-mode=optN | awk '
 			BEGIN { count = 1 }
@@ -43,8 +43,8 @@ for instance in $(seq 1 $numInstances); do
 #				;;
 #			*)
 #				echo "Clasp did report optimum value and number of optimum models" 1>&2
-#				cp $instance mismatch${seed}.lp
-#				echo "Instance written to mismatch${seed}.lp" 1>&2
+#				cp $instance mismatch${tdId}.lp
+#				echo "Instance written to mismatch${tdId}.lp" 1>&2
 #				exit 9
 #				;;
 #		esac
@@ -53,7 +53,7 @@ for instance in $(seq 1 $numInstances); do
 		claspOptVal=0
 	fi
 
-	dflat $dflatArguments --depth 0 --seed $seed < $instance | tail -n1 | awk '
+	dflat $dflatArguments --depth 0 --tdId $tdId < $instance | tail -n1 | awk '
 		{
 			print $3 ? substr($3,1,length($3)-1) : 0
 			print substr($1,2,length($1)-2)
@@ -71,19 +71,19 @@ for instance in $(seq 1 $numInstances); do
 	[ $claspExit -ne 30 ] || claspExit=10
 
 	if [ $claspExit -ne $dflatExit ]; then
-		cp $instance mismatch${seed}.lp
+		cp $instance mismatch${tdId}.lp
 		echo
-		echo "Exit code mismatch for seed $seed (dflat: ${dflatExit}, clasp: ${claspExit})"
+		echo "Exit code mismatch for tdId $tdId (dflat: ${dflatExit}, clasp: ${claspExit})"
 		exit 1
 	elif [ "$claspOptVal" != "$dflatOptVal" ]; then
-		cp $instance mismatch${seed}.lp
+		cp $instance mismatch${tdId}.lp
 		echo
-		echo "Optimum value mismatch for seed $seed (dflat: ${dflatOptVal}, clasp: ${claspOptVal})"
+		echo "Optimum value mismatch for tdId $tdId (dflat: ${dflatOptVal}, clasp: ${claspOptVal})"
 		exit 2
 	elif [ "$claspCount" != "$dflatCount" ]; then
-		cp $instance mismatch${seed}.lp
+		cp $instance mismatch${tdId}.lp
 		echo
-		echo "Count mismatch for seed $seed (dflat: ${dflatCount}, clasp: ${claspCount})"
+		echo "Count mismatch for tdId $tdId (dflat: ${dflatCount}, clasp: ${claspCount})"
 		exit 3
 	else
 #		echo -n "$dflatExit "

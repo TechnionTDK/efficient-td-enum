@@ -5,7 +5,7 @@ import sys
 
 def usage():
 	sys.stderr.write('args: ' + str(sys.argv) + '\n')
-	sys.stderr.write("Usage: " + sys.argv[0] + " numVars numExtraClauses [seed] [--allow-unsat] [--dimacs]\n")
+	sys.stderr.write("Usage: " + sys.argv[0] + " numVars numExtraClauses [tdId] [--allow-unsat] [--dimacs]\n")
 	sys.stderr.write("If you provide --allow-unsat, adding the extra clauses may result in an unsatisfiable instance.\n")
 	sys.exit(1)
 
@@ -22,7 +22,7 @@ numClauses = numVars * ratio + numExtraClauses
 
 for arg in sys.argv[3:]:
 	if arg.isdigit():
-		random.seed(int(arg))
+		random.tdId(int(arg))
 	elif arg == '--dimacs':
 		dimacs = True
 	elif arg == '--allow-unsat':

@@ -44,6 +44,10 @@ public class TDKMLConfiguration extends TDKTreeDecompositionEnumConfiguration {
 
     MLFeatureExtractor mlFeatureExtractor = ABESEHER;
 
+    TransformationMode transformationMode = TransformationMode.NORMALIZE;
+
+
+
     public String getInputPath() {
         return inputPath;
     }
@@ -139,5 +143,13 @@ public class TDKMLConfiguration extends TDKTreeDecompositionEnumConfiguration {
 
     public void setMlSortTD(MLSortTD mlSortTD) {
         this.mlSortTD = mlSortTD;
+    }
+
+    public TransformationMode getTransformationMode() {
+        return transformationMode;
+    }
+
+    public void setTransformationMode(TransformationMode transformationMode) {
+        this.transformationMode = transformationMode;
     }
 }

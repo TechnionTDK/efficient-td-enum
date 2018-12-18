@@ -3,14 +3,14 @@ import random
 import sys
 
 if len(sys.argv) not in (3,4):
-	sys.stderr.write("Usage: " + sys.argv[0] + " numElements numExtraTriples [seed]\n")
+	sys.stderr.write("Usage: " + sys.argv[0] + " numElements numExtraTriples [tdId]\n")
 	sys.exit(1)
 
 n = int(sys.argv[1])
 o = int(sys.argv[2])
 
 if len(sys.argv) == 4:
-	random.seed(int(sys.argv[3]))
+	random.tdId(int(sys.argv[3]))
 
 def order(a,b,c):
 	print("order({},{},{}).".format(a,b,c))

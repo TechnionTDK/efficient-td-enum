@@ -44,22 +44,25 @@ public class WekaClassifierTest {
             e.printStackTrace();
         }
 
+
         for (int i =1; i < 100; i++)
         {
             double[] values = new double[trainSet.numAttributes()];
             values[0]=i;
-            values[1]=2*i;
+            values[1]=0;
             Instance inst = new DenseInstance(1.0, values);
             testSet.add(inst);
         }
 
-        try {
-            Evaluation eval = new Evaluation(trainSet);
-            eval.evaluateModel(lr, testSet);
-            System.out.println(eval.toSummaryString("\nResults\n\n", false));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Evaluation eval = new Evaluation(trainSet);
+//            eval.evaluateModel(lr, testSet);
+//            System.out.println(eval.toSummaryString("\nResults\n\n", false));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+
 
         for (Instance row: testSet)
         {

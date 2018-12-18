@@ -5,7 +5,7 @@ import random
 import sys
 
 if len(sys.argv) not in (3, 4):
-	sys.stderr.write("Usage: " + sys.argv[0] + " numVertices maxColors [seed]\n")
+	sys.stderr.write("Usage: " + sys.argv[0] + " numVertices maxColors [tdId]\n")
 	sys.exit(1)
 
 numVertices = int(sys.argv[1])
@@ -14,7 +14,7 @@ maxColors = int(sys.argv[2])
 colors = range(maxColors)
 
 if len(sys.argv) == 4:
-	random.seed(int(sys.argv[3]))
+	random.tdId(int(sys.argv[3]))
 
 for i in range(numVertices):
 	numColors = 1 + random.randrange(maxColors)

@@ -25,11 +25,14 @@
 
   {
     "enumerationType" : "SAVE_MINIMAL_TRIANGULATIONS",
-    "enumerationPurpose" : "ML_TRAIN_MODEL",
+    "enumerationPurpose" : "ML_PREDICT",
     "time_limit": 60,
-    "inputPath": "/home/dvirdu/IdeaProjects/efficient-td-enum/csv_files/datasetFeatures_13-12-2018:04:21:281_prepared_results_standardized.csv",
+    "inputPath": "/home/dvirdu/IdeaProjects/efficient-td-enum/dflat/test_instances",
+//    "inputPath": "/home/dvirdu/IdeaProjects/efficient-td-enum/csv_files/datasetFeatures_13-12-2018:04:21:281_prepared_results_standardized.csv",
+
 
     "modelStorePath" : "/home/dvirdu/IdeaProjects/efficient-td-enum/models",
+    "modelLoadPath" : "/home/dvirdu/IdeaProjects/efficient-td-enum/models/3COL_DFLAT/17-12-2018:00:39:39",
     "mlClassifierType" : "WEKA",
 
     "mlModelType": "OMNI",

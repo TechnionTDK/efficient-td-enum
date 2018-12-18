@@ -95,6 +95,38 @@
             <artifactId>weka-dev</artifactId>
             <version>3.9.3</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/weka-stable -->
+        <!--<dependency>-->
+            <!--<groupId>nz.ac.waikato.cms.weka</groupId>-->
+            <!--<artifactId>weka-stable</artifactId>-->
+            <!--<version>3.8.3</version>-->
+        <!--</dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/paceRegression -->
+        <dependency>
+            <groupId>nz.ac.waikato.cms.weka</groupId>
+            <artifactId>paceRegression</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/leastMedSquared -->
+        <dependency>
+            <groupId>nz.ac.waikato.cms.weka</groupId>
+            <artifactId>leastMedSquared</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/isotonicRegression -->
+        <dependency>
+            <groupId>nz.ac.waikato.cms.weka</groupId>
+            <artifactId>isotonicRegression</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/partialLeastSquares -->
+        <dependency>
+            <groupId>nz.ac.waikato.cms.weka</groupId>
+            <artifactId>partialLeastSquares</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+
 
     </dependencies>
 </project>

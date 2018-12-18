@@ -15,7 +15,7 @@ optparse = OptionParser.new do |opts|
     reify = true
   end
 
-  opts.on('--seed N', 'Use N as random seed') do |n|
+  opts.on('--tdId N', 'Use N as random tdId') do |n|
     srand(Integer(n))
   end
 end

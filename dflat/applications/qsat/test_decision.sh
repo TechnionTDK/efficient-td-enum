@@ -13,24 +13,24 @@ qdimacs2lp=$DIR/qdimacs2lp.awk
 dflatArguments="-p $DIR/dynamic.lp"
 
 for instance in $(seq 1 $numInstances); do
-	seed=$RANDOM
+	tdId=$RANDOM
 
 	instance=$(mktemp)
 	trap "rm -f $instance" EXIT
 
-	$instanceGen -s $seed > $instance || exit
+	$instanceGen -s $tdId > $instance || exit
 
 	depqbf $instance >/dev/null
 	depQbfExit=$?
-	awk -f $qdimacs2lp $instance | dflat $dflatArguments --depth 0 --seed $seed >/dev/null
+	awk -f $qdimacs2lp $instance | dflat $dflatArguments --depth 0 --tdId $tdId >/dev/null
 	dflatExit=$?
 
 	if [ $depQbfExit -ne $dflatExit ]; then
 		mkdir -p $MISMATCH_DIR
-		cp $instance $MISMATCH_DIR/mismatch${seed}.qdimacs
-		awk -f $qdimacs2lp $instance > $MISMATCH_DIR/mismatch${seed}.lp
+		cp $instance $MISMATCH_DIR/mismatch${tdId}.qdimacs
+		awk -f $qdimacs2lp $instance > $MISMATCH_DIR/mismatch${tdId}.lp
 		echo
-		echo "Mismatch for seed $seed (dflat: ${dflatExit}, DepQBF: ${depQbfExit})"
+		echo "Mismatch for tdId $tdId (dflat: ${dflatExit}, DepQBF: ${depQbfExit})"
 		exit 1
 	else
 #		echo -n .
