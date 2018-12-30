@@ -1,13 +1,11 @@
 package tdk_enum.ml.classifiers;
 
 import tdk_enum.common.configuration.config_types.MLModelType;
-import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
 import tdk_enum.ml.classifiers.common.DecompositionDetails;
 import tdk_enum.ml.classifiers.common.DecompositionPool;
 import tdk_enum.ml.classifiers.common.PredictedDecompositionPool;
 import tdk_enum.ml.classifiers.common.SelectionTemplate;
 import tdk_enum.ml.feature_extractor.abseher.feature.FeatureExtractionResult;
-import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 
 import weka.classifiers.functions.*;
@@ -156,7 +154,7 @@ public class WekaClassifier implements IClassifier{
 
             data.setClassIndex(0);
             new File(outputPath).mkdirs();
-            if(mlModelType == MLModelType.OMNI)
+            if(mlModelType == MLModelType.COMBINED)
             {
                 for(MLModelType type : classifierMap.keySet())
                 {
@@ -205,6 +203,8 @@ public class WekaClassifier implements IClassifier{
         File modelsFolder = new File(modelLoadPath);
         List<Classifier> classifiers = new ArrayList<>();
         List<MLModelType> modelTypes = new ArrayList<>();
+        List<SelectionTemplate> selectionTemplates = new ArrayList<>();
+
         for (File modelFile : modelsFolder.listFiles())
         {
             try {
@@ -224,8 +224,27 @@ public class WekaClassifier implements IClassifier{
         }
         for(int i=0; i< classifiers.size(); i++)
         {
-            generateSelectionTemplate(classifiers.get(i), modelTypes.get(i), decompositions);
+            selectionTemplates.add(generateSelectionTemplate(classifiers.get(i), modelTypes.get(i), decompositions));
         }
+        selectionTemplates.add(generateSelectionTemplate(classifiers, decompositions));
+        return selectionTemplates;
+    }
+
+    private SelectionTemplate generateSelectionTemplate(List<Classifier> classifiers, DecompositionPool decompositions) {
+        SelectionTemplate ret = null;
+
+        if (decompositions != null && classifiers != null && decompositions.getSize() > 0) {
+            long start =
+                    System.currentTimeMillis();
+
+            PredictedDecompositionPool predictedInstances =
+                    predictDecompositions(decompositions, classifiers);
+
+            ret = generateSelectionTemplate(predictedInstances, start);
+        }
+        ret.setMlModelType(MLModelType.COMBINED);
+
+        return ret;
     }
 
     private SelectionTemplate generateSelectionTemplate(Classifier classifier, MLModelType mlModelType, DecompositionPool decompositions) {
@@ -235,6 +254,7 @@ public class WekaClassifier implements IClassifier{
 
         PredictedDecompositionPool predictedInstances = predictDecompositions(classifier, decompositions);
         ret = generateSelectionTemplate(predictedInstances, start);
+        ret.setMlModelType(mlModelType);
         return ret;
     }
 
@@ -304,6 +324,40 @@ public class WekaClassifier implements IClassifier{
             predictedRuntimes.add(predictInstance(instances.instance(i), classifier));
         }
         ret = PredictedDecompositionPool.createPredictedDecompositionPool(decompositions, predictedRuntimes);
+        return ret;
+    }
+
+    public  PredictedDecompositionPool predictDecompositions(DecompositionPool decompositions, List<Classifier> classifiers) {
+        PredictedDecompositionPool ret = null;
+
+        if (classifiers != null && decompositions != null) {
+            List<Double> weights = new ArrayList<>();
+
+            for (Classifier classifier : classifiers) {
+                weights.add(1.0);
+            }
+
+            ret = predictDecompositions(decompositions, classifiers, weights);
+
+        }
+
+        return ret;
+    }
+
+    private  PredictedDecompositionPool predictDecompositions(DecompositionPool decompositions, List<Classifier> classifiers, List<Double> weights) {
+        PredictedDecompositionPool ret = null;
+        Instances instances =
+                new InstanceConverter().getInstancesFromDecompositionPool(decompositions, true);
+        List<Double> predictedRuntimes = new ArrayList<>();
+        for (int i = 0; i < instances.numInstances(); i++) {
+            predictedRuntimes.add(predictInstance(instances.instance(i), classifiers, weights));
+        }
+
+        ret = PredictedDecompositionPool.createPredictedDecompositionPool(decompositions, predictedRuntimes);
+
+
+
+        return ret;
     }
 
     private Double predictInstance(Instance instance, Classifier classifier) {
@@ -328,6 +382,55 @@ public class WekaClassifier implements IClassifier{
                 }
                 catch (Exception e) {
 
+                }
+            }
+        }
+
+        return ret;
+    }
+
+    public  double predictInstance(Instance instance, List<Classifier> classifiers, List<Double> weights) {
+        double ret =
+                Double.NaN;
+
+        if (instance != null && classifiers != null && !classifiers.isEmpty() && weights != null && weights.size() == classifiers.size()) {
+            double totalWeight = 0.0;
+
+            List<Double> actualWeights =
+                    new ArrayList<>(weights);
+
+            for (Double weight : weights) {
+                if (weight != null && !weight.isNaN() && weight >= 0) {
+                    totalWeight += weight;
+                }
+            }
+
+            for (int i = 0; i < actualWeights.size(); i++) {
+                Double weight =
+                        actualWeights.get(i);
+
+                if (weight != null && !weight.isNaN() && !weight.isInfinite() && weight >= 0) {
+                    actualWeights.set(i, weight / totalWeight);
+                }
+                else {
+                    actualWeights.set(i, Double.NaN);
+                }
+            }
+
+            ret = 0.0;
+
+            for (int i = 0; i < classifiers.size(); i++) {
+                double weight =
+                        actualWeights.get(i);
+
+                Classifier classifier =
+                        classifiers.get(i);
+
+                if (classifier != null) {
+                    ret += predictInstance(instance, classifier) * weight;
+                }
+                else {
+                    ret = Double.NaN;
                 }
             }
         }

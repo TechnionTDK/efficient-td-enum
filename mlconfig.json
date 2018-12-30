@@ -8,7 +8,7 @@
 //
 //    "mlClassifierType" : "WEKA",
 //
-//    "mlModelType": "OMNI",
+//    "mlModelType": "COMBINED",
 //
 //    "mlModelInput": "FILES",
 //
@@ -32,7 +32,7 @@
 
 
     "modelStorePath" : "/home/dvirdu/IdeaProjects/efficient-td-enum/models",
-    "modelLoadPath" : "/home/dvirdu/IdeaProjects/efficient-td-enum/models/3COL_DFLAT/17-12-2018:00:39:39",
+    "modelLoadPath" : "/home/dvirdu/IdeaProjects/efficient-td-enum/models/DFLAT_3COL/17-12-2018:00:39:39",
     "mlClassifierType" : "WEKA",
 
     "mlModelType": "OMNI",

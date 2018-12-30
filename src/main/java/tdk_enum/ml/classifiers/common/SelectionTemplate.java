@@ -1,5 +1,6 @@
 package tdk_enum.ml.classifiers.common;
 
+import tdk_enum.common.configuration.config_types.MLModelType;
 import tdk_enum.ml.classifiers.IClassifier;
 
 import java.io.File;
@@ -23,6 +24,7 @@ public class SelectionTemplate {
     private PredictedDecompositionPool decompositions = null;
 
     private double selectionOverhead = -1;
+    private MLModelType mlModelType;
 
     public SelectionTemplate(int firstId,
                               int optimalId,
@@ -249,4 +251,11 @@ public class SelectionTemplate {
         return ret;
     }
 
+    public MLModelType getMlModelType() {
+        return mlModelType;
+    }
+
+    public void setMlModelType(MLModelType mlModelType) {
+        this.mlModelType = mlModelType;
+    }
 }

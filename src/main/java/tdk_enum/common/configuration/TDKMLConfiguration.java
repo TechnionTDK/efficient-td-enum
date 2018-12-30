@@ -5,7 +5,7 @@ import tdk_enum.common.configuration.config_types.*;
 import static tdk_enum.common.configuration.config_types.MLClassifierType.WEKA;
 import static tdk_enum.common.configuration.config_types.MLFeatureExtractor.ABESEHER;
 import static tdk_enum.common.configuration.config_types.MLModelInput.FILES;
-import static tdk_enum.common.configuration.config_types.MLModelType.OMNI;
+import static tdk_enum.common.configuration.config_types.MLModelType.COMBINED;
 import static tdk_enum.common.configuration.config_types.MLProblemType.DFLAT_3COL;
 import static tdk_enum.common.configuration.config_types.MLSortTD.NO;
 
@@ -27,7 +27,7 @@ public class TDKMLConfiguration extends TDKTreeDecompositionEnumConfiguration {
 
     MLClassifierType mlClassifierType = WEKA;
 
-    MLModelType mlModelType = OMNI;
+    MLModelType mlModelType = COMBINED;
 
     MLModelInput mlModelInput = FILES;
 
