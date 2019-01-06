@@ -1,5 +1,6 @@
 package tdk_enum.ml;
 
+import tdk_enum.common.IO.CSVOperations;
 import tdk_enum.common.IO.GraphMLPrinter;
 import tdk_enum.common.IO.InputFile;
 import tdk_enum.common.configuration.TDKEnumConfiguration;
@@ -29,6 +30,9 @@ import tdk_enum.ml.solvers.execution.CommandResult;
 import tdk_enum.ml.solvers.execution.MemoryFile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -149,19 +153,22 @@ public class TDMLRunner {
         File graph;
         FeatureExtractionResult featureExtractionResult;
 
-        public TreeDecompositionMeta(IChordalGraph chordalGraph, int id, String graphName, File graph)
+        public TreeDecompositionMeta(ITreeDecomposition treeDecomposition, int id, String graphName, File graph)
         {
-            this.treeDecomposition = Converter.chordalGraphToNiceTreeDecomposition(chordalGraph);
+//            this.treeDecomposition = Converter.chordalGraphToNiceTreeDecomposition(chordalGraph);
+            this.treeDecomposition = treeDecomposition;
             this.graphName = graphName;
             this.id = id;
             this.file = new File("./"+graphName + "_" + id + ".gml");
             this.graph = graph;
         }
 
-        public TreeDecompositionMeta(ITreeDecomposition treeDecomposition, int id)
+        public TreeDecompositionMeta(ITreeDecomposition treeDecomposition, int id, String graphName)
         {
             this.treeDecomposition = treeDecomposition;
             this.id = id;
+            this.graphName = graphName;
+            this.file = new File("./"+graphName + "_" + id + ".gml");
         }
 
 
@@ -287,7 +294,8 @@ public class TDMLRunner {
 
             for(int i =0 ; i < results.size(); i++)
             {
-                decompositionMetas.add( new TreeDecompositionMeta(results.get(i), i, TDKEnumFactory.getInputFile().getName(), TDKEnumFactory.getInputFile().getFile()));
+                decompositionMetas.add( new TreeDecompositionMeta(
+                        Converter.chordalGraphToNiceTreeDecomposition(results.get(i)), i, TDKEnumFactory.getInputFile().getName(), TDKEnumFactory.getInputFile().getFile()));
             }
             ISolver solver = new SolverFactory().produce();
             IFeatureExtractor featureExtractor = new FeatureExtractorFactory().produce();
@@ -305,7 +313,7 @@ public class TDMLRunner {
         }
 
         System.out.println("dataset raw features were written on " + csv.getAbsolutePath());
-        File refinedOutput = new File("./csv_files/datasetFeatures_"+ dateFormat.format(date) + "_prepared.csv");
+        File refinedOutput = new File("./csv_files/datasetFeatures_"+ dateFormat.format(date) + ".csv");
         String csvFile = featureExtractor.prepareCSV(csv.getAbsolutePath(), refinedOutput.getAbsolutePath());
 
 
@@ -368,22 +376,26 @@ public class TDMLRunner {
             InputFile inputFile = new InputFile(filePath);
             System.out.println("Starting prediction for " + inputFile.getPath());
             TDKEnumFactory.init(inputFile);
-            ITreeDecompositionEnumerator singleThreadEnumerator = creatSingleThreadEnumerator();
-            ITreeDecompositionEnumerator randomEnumerator = createSingleThreadRandomEnumerator();
+
+            predictVanilla(inputFile);
+            predictReal(inputFile);
+//            ITreeDecompositionEnumerator singleThreadEnumerator = creatSingleThreadEnumerator();
+//            ITreeDecompositionEnumerator randomEnumerator = createSingleThreadRandomEnumerator();
 
 
-            List<ITreeDecomposition> first40 = getFirst40(singleThreadEnumerator);
-            List<ITreeDecomposition> first40Random = getFirst40(randomEnumerator);
-//            StoringParallelMinimalTriangulationsEnumerator enumerator = (StoringParallelMinimalTriangulationsEnumerator) new MinimalTriangulationsEnumeratorFactory().produce();
-//            runTimeLimited(enumerator);
-//            Set<IChordalGraph> chordalGraphs = enumerator.getTriangulations();
-//            System.out.println(chordalGraphs.size() + " chordal graphs where produced");
-//            List<ITreeDecomposition> treeDecompositions = chordalGraphs.parallelStream().map(chordalGraph ->{ chordalGraphs.remove(chordalGraph); return Converter.chordalGraphToNiceTreeDecomposition(chordalGraph); } ).collect(Collectors.toCollection(CopyOnWriteArrayList::new));
-//            System.out.println(treeDecompositions.size() + " TD where produced");
+//            List<ITreeDecomposition> first40 = getFirst40(singleThreadEnumerator);
+//            List<ITreeDecomposition> first40Random = getFirst40(randomEnumerator);
 
-            predict(first40, inputFile);
-            predict(first40Random, inputFile);
-//            predict(treeDecompositions, inputFile);
+//           List<EvaluationDetails> detFirst40 = predict(first40, inputFile);
+//            List<EvaluationDetails> randomized40 =  predict(first40Random, inputFile);
+
+
+
+//            printPredictionsToCSV(detFirst40, "deterministic first40", filePath);
+//            printPredictionsToCSV(randomized40, "randomized40", filePath);
+
+
+
 
 
         }
@@ -394,7 +406,124 @@ public class TDMLRunner {
 
     }
 
-    private void predict(List<ITreeDecomposition> treeDecompositions, InputFile inputFile) {
+    private void predictVanilla(InputFile inputFile)
+    {
+        ITreeDecompositionEnumerator vanillaEnumerator = createVanillaEnumerator();
+        List<ITreeDecomposition> vanillaTrees = new ArrayList<>();
+        long timeLimit = TDKEnumFactory.getConfiguration().getTime_limit();
+        long start =   System.currentTimeMillis();
+        while (vanillaEnumerator.hasNext() && System.currentTimeMillis() - start < timeLimit*1000)
+
+        {
+            vanillaTrees.add(vanillaEnumerator.next());
+        }
+
+        System.out.println("Vaniila trees: " + vanillaTrees.size());
+        List<EvaluationDetails> vanillaDetails = predict(vanillaTrees, inputFile);
+        printPredictionsToCSV(vanillaDetails, "vanilla", inputFile.getPath());
+    }
+
+    private void predictReal(InputFile inputFile)
+    {
+        StoringParallelMinimalTriangulationsEnumerator enumerator = (StoringParallelMinimalTriangulationsEnumerator) new MinimalTriangulationsEnumeratorFactory().produce();
+        runTimeLimited(enumerator);
+        Set<IChordalGraph> chordalGraphs = enumerator.getTriangulations();
+        System.out.println(chordalGraphs.size() + " chordal graphs where produced");
+        List<ITreeDecomposition> treeDecompositions = chordalGraphs.stream().map(chordalGraph ->{ chordalGraphs.remove(chordalGraph); return Converter.chordalGraphToNiceTreeDecomposition(chordalGraph); } ).collect(Collectors.toCollection(ArrayList::new));
+        System.out.println(treeDecompositions.size() + " TD where produced");
+        List<EvaluationDetails> real = predict(treeDecompositions, inputFile);
+        printPredictionsToCSV(real, "real", inputFile.getPath());
+
+    }
+
+    private void printPredictionsToCSV(List<EvaluationDetails> evaluations, String mode, String filePath) {
+
+        File csvFile = new File(modelLoadPath + "/models evaluation.csv");
+        if(!csvFile.exists())
+        {
+            csvFile.getParentFile().mkdirs();
+            try (PrintWriter writer = new PrintWriter(csvFile)) {
+                writer.println(CSVOperations.dataToCSV("file path", "mode","model",
+                        "first TD prediction", "first TD actual runtime",
+                        "optimal TD prediction", "optimal TD actual runtime",
+                        "preferred TD prediction", "preferred TD actual runtime",
+                        "beneficial TD prediction", "beneficial TD actual runtime"));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        try ( PrintWriter writer = new PrintWriter(new FileOutputStream(csvFile, true))){
+
+            for (EvaluationDetails evaluationDetails : evaluations)
+            {
+                writer.println(CSVOperations.dataToCSV(filePath,mode, evaluationDetails.toCSV()));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    class EvaluationDetails
+    {
+
+        EvaluationInput firstDecomposition = null;
+        EvaluationInput optimalDecomposition = null;
+        EvaluationInput preferredDecomposition = null;
+        EvaluationInput beneficialDecomposition = null;
+        MLModelType mlModelType;
+
+        public EvaluationInput getFirstDecomposition() {
+            return firstDecomposition;
+        }
+
+        public void setFirstDecomposition(EvaluationInput firstDecomposition) {
+            this.firstDecomposition = firstDecomposition;
+        }
+
+        public EvaluationInput getOptimalDecomposition() {
+            return optimalDecomposition;
+        }
+
+        public void setOptimalDecomposition(EvaluationInput optimalDecomposition) {
+            this.optimalDecomposition = optimalDecomposition;
+        }
+
+        public EvaluationInput getPreferredDecomposition() {
+            return preferredDecomposition;
+        }
+
+        public void setPreferredDecomposition(EvaluationInput preferredDecomposition) {
+            this.preferredDecomposition = preferredDecomposition;
+        }
+
+        public EvaluationInput getBeneficialDecomposition() {
+            return beneficialDecomposition;
+        }
+
+        public void setBeneficialDecomposition(EvaluationInput beneficialDecomposition) {
+            this.beneficialDecomposition = beneficialDecomposition;
+        }
+
+        public MLModelType getMlModelType() {
+            return mlModelType;
+        }
+
+        public void setMlModelType(MLModelType mlModelType) {
+            this.mlModelType = mlModelType;
+        }
+
+        public String toCSV()
+        {
+            return CSVOperations.dataToCSV(mlModelType,
+                    firstDecomposition.getPredictedValue(), firstDecomposition.getActualValue(),
+                    optimalDecomposition.getPredictedValue(), optimalDecomposition.getActualValue(),
+                    preferredDecomposition.getPredictedValue(), preferredDecomposition.getActualValue(),
+                    beneficialDecomposition.getPredictedValue(), beneficialDecomposition.getActualValue());
+        }
+    }
+
+    private List<EvaluationDetails> predict(List<ITreeDecomposition> treeDecompositions, InputFile inputFile) {
         DecimalFormat format =
                 new DecimalFormat("0.000");
 
@@ -406,7 +535,7 @@ public class TDMLRunner {
         List<DecompositionDetails> allDecompositionDetails = new ArrayList<>();
         IClassifier classifier = new ClassifierFactory().produce();
         classifier.loadModels(modelLoadPath);
-        ISolver solver = new SolverFactory().produce();
+
         IFeatureExtractor featureExtractor = new FeatureExtractorFactory().produce();
         for (int i = 0; i < treeDecompositions.size(); i++)
         {
@@ -462,7 +591,7 @@ public class TDMLRunner {
 
 
 
-        Map< MLModelType, List<EvaluationInput>> evaluation = new HashMap<>();
+        List<EvaluationDetails> evaluation = new ArrayList<>();
 
         for (SelectionTemplate selectionTemplate : selectionTemplates) {
             if (selectionTemplate != null) {
@@ -480,7 +609,7 @@ public class TDMLRunner {
                 resultStringBuilder.append(StringOperations.formatNumber(format, selectionTemplate.getSelectionOverhead()));
                 resultStringBuilder.append(",");
 
-                List<EvaluationInput> evaluationInput = new ArrayList<>();
+                //List<EvaluationInput> evaluationInput = new ArrayList<>();
                 firstDecomposition = transformedDetails.stream().filter(
                         evaluatedDecompositionDetails -> evaluatedDecompositionDetails.getTdId()==selectionTemplate.getFirstId()).
                         findFirst().get();
@@ -493,10 +622,13 @@ public class TDMLRunner {
                 beneficialDecomposition = transformedDetails.stream().filter(
                         evaluatedDecompositionDetails -> evaluatedDecompositionDetails.getTdId()==selectionTemplate.getBeneficialId()).
                         findFirst().get();
-                evaluationInput.add(new EvaluationInput(firstDecomposition.getActualRuntime(), selectionTemplate.getFirstPredictedRuntime()));
-                evaluationInput.add(new EvaluationInput(optimalDecomposition.getActualRuntime(), selectionTemplate.getOptimalPredictedRuntime()));
-                evaluationInput.add(new EvaluationInput(preferredDecomposition.getActualRuntime(), selectionTemplate.getPreferredPredictedRuntime()));
-                evaluationInput.add(new EvaluationInput(beneficialDecomposition.getActualRuntime(), selectionTemplate.getBeneficialPredictedRuntime()));
+                EvaluationDetails evaluationDetails = new EvaluationDetails();
+                evaluationDetails.setMlModelType( selectionTemplate.getMlModelType());
+                evaluationDetails.setFirstDecomposition(new EvaluationInput(firstDecomposition.getActualRuntime(), selectionTemplate.getFirstPredictedRuntime()));
+                evaluationDetails.setOptimalDecomposition(new EvaluationInput(optimalDecomposition.getActualRuntime(), selectionTemplate.getOptimalPredictedRuntime()));
+                evaluationDetails.setPreferredDecomposition(new EvaluationInput(preferredDecomposition.getActualRuntime(), selectionTemplate.getPreferredPredictedRuntime()));
+                evaluationDetails.setBeneficialDecomposition(new EvaluationInput(beneficialDecomposition.getActualRuntime(), selectionTemplate.getBeneficialPredictedRuntime()));
+                evaluation.add(evaluationDetails);
 
 //                for (EvaluatedDecompositionDetails decomposition : transformedDetails) {
 //                    if (decomposition != null) {
@@ -528,190 +660,190 @@ public class TDMLRunner {
 //                    }
 //                }
 
-                evaluation.put(selectionTemplate.getMlModelType(), evaluationInput);
+             //   evaluation.put(selectionTemplate.getMlModelType(), evaluationInput);
 
-                resultHeaderBuilder.append(getEvaluatedDecompositionDetailsHeader(headerPrefix, "Random"));
-                resultStringBuilder.append(getEvaluatedDecompositionDetailsString(firstDecomposition, selectionTemplate));
-                resultHeaderBuilder.append(",");
-                resultStringBuilder.append(",");
-                resultHeaderBuilder.append(getEvaluatedDecompositionDetailsHeader(headerPrefix, "Beneficial"));
-                resultStringBuilder.append(getEvaluatedDecompositionDetailsString(beneficialDecomposition, selectionTemplate));
-                resultHeaderBuilder.append(",");
-                resultStringBuilder.append(",");
-                resultHeaderBuilder.append(getEvaluatedDecompositionDetailsHeader(headerPrefix, "Preferred"));
-                resultStringBuilder.append(getEvaluatedDecompositionDetailsString(preferredDecomposition, selectionTemplate));
-                resultHeaderBuilder.append(",");
-                resultStringBuilder.append(",");
-                resultHeaderBuilder.append(getEvaluatedDecompositionDetailsHeader(headerPrefix, "Optimal"));
-                resultStringBuilder.append(getEvaluatedDecompositionDetailsString(optimalDecomposition, selectionTemplate));
-                resultHeaderBuilder.append(",");
-                resultStringBuilder.append(",");
+//                resultHeaderBuilder.append(getEvaluatedDecompositionDetailsHeader(headerPrefix, "Random"));
+//                resultStringBuilder.append(getEvaluatedDecompositionDetailsString(firstDecomposition, selectionTemplate));
+//                resultHeaderBuilder.append(",");
+//                resultStringBuilder.append(",");
+//                resultHeaderBuilder.append(getEvaluatedDecompositionDetailsHeader(headerPrefix, "Beneficial"));
+//                resultStringBuilder.append(getEvaluatedDecompositionDetailsString(beneficialDecomposition, selectionTemplate));
+//                resultHeaderBuilder.append(",");
+//                resultStringBuilder.append(",");
+//                resultHeaderBuilder.append(getEvaluatedDecompositionDetailsHeader(headerPrefix, "Preferred"));
+//                resultStringBuilder.append(getEvaluatedDecompositionDetailsString(preferredDecomposition, selectionTemplate));
+//                resultHeaderBuilder.append(",");
+//                resultStringBuilder.append(",");
+//                resultHeaderBuilder.append(getEvaluatedDecompositionDetailsHeader(headerPrefix, "Optimal"));
+//                resultStringBuilder.append(getEvaluatedDecompositionDetailsString(optimalDecomposition, selectionTemplate));
+//                resultHeaderBuilder.append(",");
+//                resultStringBuilder.append(",");
             }
 
         }
-        File modelTargetFile =
-                Paths.get(modelLoadPath).toAbsolutePath().resolve("model_results.csv").toFile();
-
-        MemoryFile modelTargetFileContent =
-                MemoryFile.getInstance(modelTargetFile, modelTargetFile.toString());
-
-        modelTargetFileContent.appendLine("Model,Correlation,MeanAbsoluteError,RelativeAbsoluteError,RootMeanSquareError,RootRelativeSquareError");
-
-        for(MLModelType modelType : evaluation.keySet())
-        {
-            List<EvaluationInput> evaluationInput = evaluation.get(modelType);
-            String modelName = "Model " + modelType.name();
-
-
-
-            double correlation = EvaluationOperations.getPearsonsCorrelationCoefficient(evaluationInput);
-
-            double meanAbsoluteError = EvaluationOperations.getMeanAbsoluteError(evaluationInput);
-            double relativeAbsoluteError = EvaluationOperations.getRelativeAbsoluteError(evaluationInput) * 100.0;
-
-            double rootMeanSquareError = EvaluationOperations.getRootMeanSquareError(evaluationInput);
-            double rootRelativeSquareError = EvaluationOperations.getRootRelativeSquareError(evaluationInput) * 100.0;
-
-            System.out.println(modelName + ":");
-            System.out.println();
-            System.out.println("   Correlation:                " + String.format("%12s", StringOperations.formatNumber(format, correlation)));
-            System.out.println();
-            System.out.println("   Mean Absolute Error:        " + String.format("%12s", StringOperations.formatNumber(format, meanAbsoluteError)));
-            System.out.println("   Relative Absolute Error:    " + String.format("%12s", StringOperations.formatNumber(format, relativeAbsoluteError)) + " %");
-            System.out.println();
-            System.out.println("   Root Mean Square Error:     " + String.format("%12s", StringOperations.formatNumber(format, rootMeanSquareError)));
-            System.out.println("   Root Relative Square Error: " + String.format("%12s", StringOperations.formatNumber(format, rootRelativeSquareError)) + " %");
-            System.out.println();
-
-            StringBuilder sb = new StringBuilder();
-
-            sb.append("\"");
-            sb.append(modelName);
-            sb.append("\"");
-            sb.append(",");
-            sb.append(StringOperations.formatNumber(format, correlation));
-            sb.append(",");
-            sb.append(StringOperations.formatNumber(format, meanAbsoluteError));
-            sb.append(",");
-            sb.append(StringOperations.formatNumber(format, relativeAbsoluteError));
-            sb.append(",");
-            sb.append(StringOperations.formatNumber(format, rootMeanSquareError));
-            sb.append(",");
-            sb.append(StringOperations.formatNumber(format, rootRelativeSquareError));
-            modelTargetFileContent.appendLine(sb.toString());
-        }
-
-        File evaluationTargetFile =
-                Paths.get(modelLoadPath).toAbsolutePath().resolve("evaluation_results.csv").toFile();
-
-        File performanceTargetFile =
-                Paths.get(modelLoadPath).toAbsolutePath().resolve("performance_results.csv").toFile();
-
-        File featureTargetFile =
-                Paths.get(modelLoadPath).toAbsolutePath().resolve("feature_results.csv").toFile();
-
-        File normalizedFeatureTargetFile =
-                Paths.get(modelLoadPath).toAbsolutePath().resolve("feature_results_normalized.csv").toFile();
-
-        File standardizedFeatureTargetFile =
-                Paths.get(modelLoadPath).toAbsolutePath().resolve("feature_results_standardized.csv").toFile();
-
-        MemoryFile featureTargetFileContent =
-                MemoryFile.getInstance(featureTargetFile, featureTargetFile.toString());
-
-        MemoryFile normalizedFeatureTargetFileContent =
-                MemoryFile.getInstance(normalizedFeatureTargetFile, normalizedFeatureTargetFile.toString());
-
-        MemoryFile standardizedFeatureTargetFileContent =
-                MemoryFile.getInstance(standardizedFeatureTargetFile, standardizedFeatureTargetFile.toString());
-
-        if (details.isEmpty()) {
-            //TODO
-        }
-        else
-        {
-            boolean firstResult = true;
-
-            List<Double> normalizedRuntimes = new ArrayList<>();
-            List<Double> standardizedRuntimes = new ArrayList<>();
-
-            for (EvaluatedDecompositionDetails decomposition: details) {
-                if (decomposition != null) {
-                    normalizedRuntimes.add(decomposition.getActualRuntime());
-                    standardizedRuntimes.add(decomposition.getActualRuntime());
-                }
-                else {
-                    normalizedRuntimes.add(Double.NaN);
-                    standardizedRuntimes.add(Double.NaN);
-                }
-            }
-
-            normalizedRuntimes =
-                    TransformationOperations.normalize(normalizedRuntimes);
-
-            standardizedRuntimes =
-                    TransformationOperations.standardize(standardizedRuntimes);
-            for (int i = 0; i < details.size(); i++) {
-                EvaluatedDecompositionDetails decompositionDetails = details.get(i);
-                EvaluatedDecompositionDetails normalizedDecompositionDetails = normalizedDetails.get(i);
-                EvaluatedDecompositionDetails standardizedDecompositionDetails = standardizedDetails.get(i);
-
-                if (decompositionDetails != null) {
-                    double runtime = benchmarkDetails.getBenchmarkRuns().stream().filter(
-                            benchmarkRun -> benchmarkRun.getTdID() == decompositionDetails.getTdId()).
-                            findFirst().get().getUserTime();
-                            //runtimes.get(i);
-
-                    if (firstResult) {
-                        firstResult = false;
-
-                        featureTargetFileContent.appendLine(DecompositionDetails.getCSVHeader());
-                        normalizedFeatureTargetFileContent.appendLine(DecompositionDetails.getCSVHeader());
-                        standardizedFeatureTargetFileContent.appendLine(DecompositionDetails.getCSVHeader());
-                    }
-
-                    featureTargetFileContent.appendLine(decompositionDetails.toCSV(runtime));
-                }
-
-                if (normalizedDecompositionDetails != null) {
-                    double normalizedRuntime =
-                            normalizedRuntimes.get(i);
-
-                    normalizedFeatureTargetFileContent.appendLine(normalizedDecompositionDetails.toCSV(normalizedRuntime));
-                }
-
-                if (standardizedDecompositionDetails != null) {
-                    double standardizedRuntime =
-                            standardizedRuntimes.get(i);
-
-                    standardizedFeatureTargetFileContent.appendLine(standardizedDecompositionDetails.toCSV(standardizedRuntime));
-                }
-            }
-
-            MemoryFile evaluationTargetFileContent =
-                    MemoryFile.getInstance(evaluationTargetFile, evaluationTargetFile.toString());
-
-            MemoryFile performanceTargetFileContent =
-                    benchmarkDetails.toCSVFile(performanceTargetFile);
-
-            evaluationTargetFileContent.appendLine(resultHeaderBuilder.toString());
-            evaluationTargetFileContent.appendLine(resultStringBuilder.toString());
-
-
-            System.out.println();
-            System.out.println();
-            System.out.println("Additional actions:");
-            printFile(modelTargetFileContent, modelTargetFile, "model");
-            printFile(evaluationTargetFileContent, evaluationTargetFile, "evaluation");
-            printFile(performanceTargetFileContent, performanceTargetFile, "performance" );
-            printFile(featureTargetFileContent, featureTargetFile, "feature");
-            printFile(normalizedFeatureTargetFileContent,normalizedFeatureTargetFile, "normalized feature" );
-            printFile(standardizedFeatureTargetFileContent,standardizedFeatureTargetFile, "standardized feature" );
-
-
-        }
+//        File modelTargetFile =
+//                Paths.get(modelLoadPath).toAbsolutePath().resolve("model_results.csv").toFile();
+//
+//        MemoryFile modelTargetFileContent =
+//                MemoryFile.getInstance(modelTargetFile, modelTargetFile.toString());
+//
+//        modelTargetFileContent.appendLine("Model,Correlation,MeanAbsoluteError,RelativeAbsoluteError,RootMeanSquareError,RootRelativeSquareError");
+//
+//        for(MLModelType modelType : evaluation.keySet())
+//        {
+//            List<EvaluationInput> evaluationInput = evaluation.get(modelType);
+//            String modelName = "Model " + modelType.name();
+//
+//
+//
+//            double correlation = EvaluationOperations.getPearsonsCorrelationCoefficient(evaluationInput);
+//
+//            double meanAbsoluteError = EvaluationOperations.getMeanAbsoluteError(evaluationInput);
+//            double relativeAbsoluteError = EvaluationOperations.getRelativeAbsoluteError(evaluationInput) * 100.0;
+//
+//            double rootMeanSquareError = EvaluationOperations.getRootMeanSquareError(evaluationInput);
+//            double rootRelativeSquareError = EvaluationOperations.getRootRelativeSquareError(evaluationInput) * 100.0;
+//
+//            System.out.println(modelName + ":");
+//            System.out.println();
+//            System.out.println("   Correlation:                " + String.format("%12s", StringOperations.formatNumber(format, correlation)));
+//            System.out.println();
+//            System.out.println("   Mean Absolute Error:        " + String.format("%12s", StringOperations.formatNumber(format, meanAbsoluteError)));
+//            System.out.println("   Relative Absolute Error:    " + String.format("%12s", StringOperations.formatNumber(format, relativeAbsoluteError)) + " %");
+//            System.out.println();
+//            System.out.println("   Root Mean Square Error:     " + String.format("%12s", StringOperations.formatNumber(format, rootMeanSquareError)));
+//            System.out.println("   Root Relative Square Error: " + String.format("%12s", StringOperations.formatNumber(format, rootRelativeSquareError)) + " %");
+//            System.out.println();
+//
+//            StringBuilder sb = new StringBuilder();
+//
+//            sb.append("\"");
+//            sb.append(modelName);
+//            sb.append("\"");
+//            sb.append(",");
+//            sb.append(StringOperations.formatNumber(format, correlation));
+//            sb.append(",");
+//            sb.append(StringOperations.formatNumber(format, meanAbsoluteError));
+//            sb.append(",");
+//            sb.append(StringOperations.formatNumber(format, relativeAbsoluteError));
+//            sb.append(",");
+//            sb.append(StringOperations.formatNumber(format, rootMeanSquareError));
+//            sb.append(",");
+//            sb.append(StringOperations.formatNumber(format, rootRelativeSquareError));
+//            modelTargetFileContent.appendLine(sb.toString());
+//        }
+//
+//        File evaluationTargetFile =
+//                Paths.get(modelLoadPath).toAbsolutePath().resolve("evaluation_results.csv").toFile();
+//
+//        File performanceTargetFile =
+//                Paths.get(modelLoadPath).toAbsolutePath().resolve("performance_results.csv").toFile();
+//
+//        File featureTargetFile =
+//                Paths.get(modelLoadPath).toAbsolutePath().resolve("feature_results.csv").toFile();
+//
+//        File normalizedFeatureTargetFile =
+//                Paths.get(modelLoadPath).toAbsolutePath().resolve("feature_results_normalized.csv").toFile();
+//
+//        File standardizedFeatureTargetFile =
+//                Paths.get(modelLoadPath).toAbsolutePath().resolve("feature_results_standardized.csv").toFile();
+//
+//        MemoryFile featureTargetFileContent =
+//                MemoryFile.getInstance(featureTargetFile, featureTargetFile.toString());
+//
+//        MemoryFile normalizedFeatureTargetFileContent =
+//                MemoryFile.getInstance(normalizedFeatureTargetFile, normalizedFeatureTargetFile.toString());
+//
+//        MemoryFile standardizedFeatureTargetFileContent =
+//                MemoryFile.getInstance(standardizedFeatureTargetFile, standardizedFeatureTargetFile.toString());
+//
+//        if (details.isEmpty()) {
+//            //TODO
+//        }
+//        else
+//        {
+//            boolean firstResult = true;
+//
+//            List<Double> normalizedRuntimes = new ArrayList<>();
+//            List<Double> standardizedRuntimes = new ArrayList<>();
+//
+//            for (EvaluatedDecompositionDetails decomposition: details) {
+//                if (decomposition != null) {
+//                    normalizedRuntimes.add(decomposition.getActualRuntime());
+//                    standardizedRuntimes.add(decomposition.getActualRuntime());
+//                }
+//                else {
+//                    normalizedRuntimes.add(Double.NaN);
+//                    standardizedRuntimes.add(Double.NaN);
+//                }
+//            }
+//
+//            normalizedRuntimes =
+//                    TransformationOperations.normalize(normalizedRuntimes);
+//
+//            standardizedRuntimes =
+//                    TransformationOperations.standardize(standardizedRuntimes);
+//            for (int i = 0; i < details.size(); i++) {
+//                EvaluatedDecompositionDetails decompositionDetails = details.get(i);
+//                EvaluatedDecompositionDetails normalizedDecompositionDetails = normalizedDetails.get(i);
+//                EvaluatedDecompositionDetails standardizedDecompositionDetails = standardizedDetails.get(i);
+//
+//                if (decompositionDetails != null) {
+//                    double runtime = benchmarkDetails.getBenchmarkRuns().stream().filter(
+//                            benchmarkRun -> benchmarkRun.getTdID() != decompositionDetails.getTdId()).
+//                            findFirst().get().getUserTime();
+//                            //runtimes.get(i);
+//
+//                    if (firstResult) {
+//                        firstResult = false;
+//
+//                        featureTargetFileContent.appendLine(DecompositionDetails.getCSVHeader());
+//                        normalizedFeatureTargetFileContent.appendLine(DecompositionDetails.getCSVHeader());
+//                        standardizedFeatureTargetFileContent.appendLine(DecompositionDetails.getCSVHeader());
+//                    }
+//
+//                    featureTargetFileContent.appendLine(decompositionDetails.toCSV(runtime));
+//                }
+//
+//                if (normalizedDecompositionDetails != null) {
+//                    double normalizedRuntime =
+//                            normalizedRuntimes.get(i);
+//
+//                    normalizedFeatureTargetFileContent.appendLine(normalizedDecompositionDetails.toCSV(normalizedRuntime));
+//                }
+//
+//                if (standardizedDecompositionDetails != null) {
+//                    double standardizedRuntime =
+//                            standardizedRuntimes.get(i);
+//
+//                    standardizedFeatureTargetFileContent.appendLine(standardizedDecompositionDetails.toCSV(standardizedRuntime));
+//                }
+//            }
+//
+//            MemoryFile evaluationTargetFileContent =
+//                    MemoryFile.getInstance(evaluationTargetFile, evaluationTargetFile.toString());
+//
+//            MemoryFile performanceTargetFileContent =
+//                    benchmarkDetails.toCSVFile(performanceTargetFile);
+//
+//            evaluationTargetFileContent.appendLine(resultHeaderBuilder.toString());
+//            evaluationTargetFileContent.appendLine(resultStringBuilder.toString());
+//
+//
+//            System.out.println();
+//            System.out.println();
+//            System.out.println("Additional actions:");
+//            printFile(modelTargetFileContent, modelTargetFile, "model");
+//            printFile(evaluationTargetFileContent, evaluationTargetFile, "evaluation");
+//            printFile(performanceTargetFileContent, performanceTargetFile, "performance" );
+//            printFile(featureTargetFileContent, featureTargetFile, "feature");
+//            printFile(normalizedFeatureTargetFileContent,normalizedFeatureTargetFile, "normalized feature" );
+//            printFile(standardizedFeatureTargetFileContent,standardizedFeatureTargetFile, "standardized feature" );
 
 
+//        }
+
+        return evaluation;
     }
 
     private void printFile(MemoryFile targetFileContent, File targetFile, String fileDataName) {
@@ -747,8 +879,8 @@ public class TDMLRunner {
                     decompositionPool.accessDecompositions();
 
             if (benchmarkRuns != null &&
-                    decompositions != null &&
-                    decompositions.size() == benchmarkRuns.size()) {
+                    decompositions != null
+                 ) {
 
                 for (int i = 0; i < benchmarkRuns.size(); i++) {
                     BenchmarkRun benchmarkRun = benchmarkRuns.get(i);
@@ -808,6 +940,20 @@ public class TDMLRunner {
 
         decompositionEnumConfiguration.setEnumerationType(EnumerationType.NICE_TD);
         decompositionEnumConfiguration.setRunningMode(RunningMode.SINGLE_THREAD);
+        TDKEnumFactory.setConfiguration(decompositionEnumConfiguration);
+        ITreeDecompositionEnumerator enumerator = new NiceTreeDecompositionEnumeratorFactory().produce();
+        TDKEnumFactory.setConfiguration(configuration);
+        return enumerator;
+    }
+
+    private ITreeDecompositionEnumerator createVanillaEnumerator()
+    {
+        TDKEnumConfiguration configuration = TDKEnumFactory.getConfiguration();
+        TDKTreeDecompositionEnumConfiguration  decompositionEnumConfiguration = new TDKTreeDecompositionEnumConfiguration();
+        decompositionEnumConfiguration.setEnumerationType(EnumerationType.NICE_TD);
+        decompositionEnumConfiguration.setRunningMode(RunningMode.SINGLE_THREAD);
+        decompositionEnumConfiguration.setSeparatorsGraphType(SeparatorsGraphType.VANILLA);
+        decompositionEnumConfiguration.setSingleThreadMISEnumeratorType(SingleThreadMISEnumeratorType.VANILLA);
         TDKEnumFactory.setConfiguration(decompositionEnumConfiguration);
         ITreeDecompositionEnumerator enumerator = new NiceTreeDecompositionEnumeratorFactory().produce();
         TDKEnumFactory.setConfiguration(configuration);
@@ -973,6 +1119,7 @@ public class TDMLRunner {
 
     BenchmarkDetails getPredictedTDBenchmarkDetails(List<SelectionTemplate> selectionTemplates, List<ITreeDecomposition> treeDecompositions, InputFile inputFile)
     {
+        ISolver solver = new SolverFactory().produce();
         Set<Integer>tdIDs = new HashSet<>();
         for (SelectionTemplate selectionTemplate : selectionTemplates)
         {
@@ -988,7 +1135,8 @@ public class TDMLRunner {
 
         }
         treeDecompositionMetas.parallelStream().forEach(treeDecompositionMeta -> {
-            treeDecompositionMeta.setCommandResult(solver.solve(TDKEnumFactory.getInputFile().getFile(), treeDecompositionMeta.getFile()));
+            treeDecompositionMeta.setCommandResult(solver.solve(inputFile.getFile(), treeDecompositionMeta.getFile()));
+            treeDecompositionMeta.deleteFile();
         });
 
 

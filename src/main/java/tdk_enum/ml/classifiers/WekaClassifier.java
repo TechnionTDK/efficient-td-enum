@@ -1,5 +1,6 @@
 package tdk_enum.ml.classifiers;
 
+import org.apache.commons.io.FilenameUtils;
 import tdk_enum.common.configuration.config_types.MLModelType;
 import tdk_enum.ml.classifiers.common.DecompositionDetails;
 import tdk_enum.ml.classifiers.common.DecompositionPool;
@@ -205,9 +206,16 @@ public class WekaClassifier implements IClassifier{
         List<MLModelType> modelTypes = new ArrayList<>();
         List<SelectionTemplate> selectionTemplates = new ArrayList<>();
 
+        Instances instances =
+                new InstanceConverter().getInstancesFromDecompositionPool(decompositions, true);
+
         for (File modelFile : modelsFolder.listFiles())
         {
             try {
+                String extension = FilenameUtils.getExtension(modelFile.getAbsolutePath());
+                if(!extension.equals( "model"))
+                    continue;
+                System.out.println("loading model " + modelFile.getAbsolutePath());
                 Classifier classifier = (Classifier) SerializationHelper.read(modelFile.getAbsolutePath());
                 classifiers.add(classifier);
                 for(MLModelType mlModelType : classifierMap.keySet())
@@ -224,13 +232,14 @@ public class WekaClassifier implements IClassifier{
         }
         for(int i=0; i< classifiers.size(); i++)
         {
-            selectionTemplates.add(generateSelectionTemplate(classifiers.get(i), modelTypes.get(i), decompositions));
+            System.out.println("running model " + modelTypes.get(i));
+            selectionTemplates.add(generateSelectionTemplate(classifiers.get(i), modelTypes.get(i), decompositions, instances));
         }
-        selectionTemplates.add(generateSelectionTemplate(classifiers, decompositions));
+//        selectionTemplates.add(generateSelectionTemplate(classifiers, decompositions, instances));
         return selectionTemplates;
     }
 
-    private SelectionTemplate generateSelectionTemplate(List<Classifier> classifiers, DecompositionPool decompositions) {
+    private SelectionTemplate generateSelectionTemplate(List<Classifier> classifiers, DecompositionPool decompositions, Instances instances) {
         SelectionTemplate ret = null;
 
         if (decompositions != null && classifiers != null && decompositions.getSize() > 0) {
@@ -238,7 +247,7 @@ public class WekaClassifier implements IClassifier{
                     System.currentTimeMillis();
 
             PredictedDecompositionPool predictedInstances =
-                    predictDecompositions(decompositions, classifiers);
+                    predictDecompositions(decompositions, classifiers, instances);
 
             ret = generateSelectionTemplate(predictedInstances, start);
         }
@@ -247,12 +256,12 @@ public class WekaClassifier implements IClassifier{
         return ret;
     }
 
-    private SelectionTemplate generateSelectionTemplate(Classifier classifier, MLModelType mlModelType, DecompositionPool decompositions) {
+    private SelectionTemplate generateSelectionTemplate(Classifier classifier, MLModelType mlModelType, DecompositionPool decompositions, Instances instances) {
         SelectionTemplate ret = null;
         long start =
                 System.currentTimeMillis();
 
-        PredictedDecompositionPool predictedInstances = predictDecompositions(classifier, decompositions);
+        PredictedDecompositionPool predictedInstances = predictDecompositions(classifier, decompositions, instances);
         ret = generateSelectionTemplate(predictedInstances, start);
         ret.setMlModelType(mlModelType);
         return ret;
@@ -314,20 +323,23 @@ public class WekaClassifier implements IClassifier{
 
 
 
-    private PredictedDecompositionPool predictDecompositions(Classifier classifier, DecompositionPool decompositions) {
+    private PredictedDecompositionPool predictDecompositions(Classifier classifier, DecompositionPool decompositions, Instances instances) {
         PredictedDecompositionPool ret = null;
         List<Double> predictedRuntimes = new ArrayList<>();
 
-        Instances instances =
-               new InstanceConverter().getInstancesFromDecompositionPool(decompositions, true);
         for (int i = 0; i < instances.numInstances(); i++) {
+            if(i% 100 == 0)
+            {
+                System.out.println("predicting instance " + i + " out of " + instances.size());
+            }
+
             predictedRuntimes.add(predictInstance(instances.instance(i), classifier));
         }
         ret = PredictedDecompositionPool.createPredictedDecompositionPool(decompositions, predictedRuntimes);
         return ret;
     }
 
-    public  PredictedDecompositionPool predictDecompositions(DecompositionPool decompositions, List<Classifier> classifiers) {
+    public  PredictedDecompositionPool predictDecompositions(DecompositionPool decompositions, List<Classifier> classifiers, Instances instances) {
         PredictedDecompositionPool ret = null;
 
         if (classifiers != null && decompositions != null) {
@@ -337,17 +349,16 @@ public class WekaClassifier implements IClassifier{
                 weights.add(1.0);
             }
 
-            ret = predictDecompositions(decompositions, classifiers, weights);
+            ret = predictDecompositions(decompositions, classifiers, weights, instances);
 
         }
 
         return ret;
     }
 
-    private  PredictedDecompositionPool predictDecompositions(DecompositionPool decompositions, List<Classifier> classifiers, List<Double> weights) {
+    private  PredictedDecompositionPool predictDecompositions(DecompositionPool decompositions, List<Classifier> classifiers, List<Double> weights, Instances instances) {
         PredictedDecompositionPool ret = null;
-        Instances instances =
-                new InstanceConverter().getInstancesFromDecompositionPool(decompositions, true);
+
         List<Double> predictedRuntimes = new ArrayList<>();
         for (int i = 0; i < instances.numInstances(); i++) {
             predictedRuntimes.add(predictInstance(instances.instance(i), classifiers, weights));

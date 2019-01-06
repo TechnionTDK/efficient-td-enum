@@ -44,7 +44,7 @@ public class TDKMLConfiguration extends TDKTreeDecompositionEnumConfiguration {
 
     MLFeatureExtractor mlFeatureExtractor = ABESEHER;
 
-    TransformationMode transformationMode = TransformationMode.NORMALIZE;
+    TransformationMode transformationMode = TransformationMode.NONE;
 
 
 

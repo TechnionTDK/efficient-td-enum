@@ -26,16 +26,16 @@
   {
     "enumerationType" : "SAVE_MINIMAL_TRIANGULATIONS",
     "enumerationPurpose" : "ML_PREDICT",
-    "time_limit": 60,
-    "inputPath": "/home/dvirdu/IdeaProjects/efficient-td-enum/dflat/test_instances",
-//    "inputPath": "/home/dvirdu/IdeaProjects/efficient-td-enum/csv_files/datasetFeatures_13-12-2018:04:21:281_prepared_results_standardized.csv",
+    "time_limit": 30,
+//    "inputPath": "/home/dvirdu/IdeaProjects/efficient-td-enum/dflat/test_instances",
+    "inputPath": "/home/dvirdu/IdeaProjects/efficient-td-enum/dflat/tmp",
 
 
-    "modelStorePath" : "/home/dvirdu/IdeaProjects/efficient-td-enum/models",
-    "modelLoadPath" : "/home/dvirdu/IdeaProjects/efficient-td-enum/models/DFLAT_3COL/17-12-2018:00:39:39",
+    "modelStorePath" : "/home/dvirdu/IdeaProjects/efficient-td-enum/models/tmp/nop",
+    "modelLoadPath" : "/home/dvirdu/IdeaProjects/efficient-td-enum/models/tmp/nop",
     "mlClassifierType" : "WEKA",
 
-    "mlModelType": "OMNI",
+    "mlModelType": "COMBINED",
 
     "mlModelInput": "CSV",
 
@@ -46,6 +46,7 @@
     "solverTimeLimit": 10805,
 
     "solverMemoryLimit" : 554432,
-    "tdLimitPerGraph": 40
+    "tdLimitPerGraph": 400,
+    "transformationMode": "NONE"
   }
 ]

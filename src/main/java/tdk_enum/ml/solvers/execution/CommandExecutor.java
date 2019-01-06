@@ -131,6 +131,7 @@ public class CommandExecutor {
                 StreamHandlerThread errorStreamHandler;
                 StreamHandlerThread outputStreamHandler;
                 do {
+
                     currentProcess = runtime.exec(cmd);
                     errorStreamHandler =
                             new StreamHandlerThread(currentProcess.getErrorStream(), errorFile);
@@ -157,7 +158,7 @@ public class CommandExecutor {
                             worker.join();
                         }
                         else {
-                            worker.join(timeout);
+                            worker.join(2*timeout);
                         }
 
                         ret = worker.getExitCode();
@@ -188,6 +189,7 @@ public class CommandExecutor {
 
                     outputLineCount =
                             outputStreamHandler.getCurrentLineCount();
+
                 }
                 while(errorLineCount==0);
 

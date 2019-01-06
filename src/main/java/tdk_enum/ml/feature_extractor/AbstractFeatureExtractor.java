@@ -32,8 +32,11 @@ public abstract class AbstractFeatureExtractor implements IFeatureExtractor {
         }
         try (PrintWriter output = new PrintWriter(new FileOutputStream(csv, true))) {
 
+            if(features.getUserTime()>=0)
+            {
+                output.println(features.toCSV());
+            }
 
-            output.println(features.toCSV());
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
