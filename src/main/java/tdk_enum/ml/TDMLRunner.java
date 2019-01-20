@@ -33,7 +33,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
-import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -151,6 +150,7 @@ public class TDMLRunner {
         File file;
         BenchmarkRun benchmarkRun;
         File graph;
+        DecompositionDetails details;
         FeatureExtractionResult featureExtractionResult;
 
         public TreeDecompositionMeta(ITreeDecomposition treeDecomposition, int id, String graphName, File graph)
@@ -238,87 +238,107 @@ public class TDMLRunner {
             this.graph = graph;
         }
 
-        public FeatureExtractionResult getFeatureExtractionResult() {
-            return featureExtractionResult;
-        }
+
 
         public void setFeatureExtractionResult(FeatureExtractionResult featureExtractionResult) {
-            this.featureExtractionResult = featureExtractionResult;
+            this.details = DecompositionDetails.getInstance(featureExtractionResult);
+//            this.featureExtractionResult = featureExtractionResult;
         }
+        public DecompositionDetails getDecompositionDetails()
+        {
+            return this.details;
+        }
+
+
     }
     public void trainByDataSet(List<String> inputs)
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy:HH:mm:ss");
-        Date date = new Date();
+        TDKMLConfiguration configuration = (TDKMLConfiguration) TDKEnumFactory.getConfiguration();
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy:HH:mm:ss");
+//        Date date = new Date();
 
-        File csv = new File("./csv_files/datasetFeatures_"+ dateFormat.format(date) + ".csv");
+        File csv = new File(configuration.getDatasetPath() + "/csv_files/datasetFeatures.csv");
         System.out.println("Starting enumeration and features extraction for input dataset");
         for (String filePath : inputs)
         {
-            InputFile inputFile = new InputFile(filePath);
-            System.out.println("Starting enumeration and features extraction for " + inputFile.getPath());
-            TDKEnumFactory.init(inputFile);
-            StoringParallelMinimalTriangulationsEnumerator enumerator = (StoringParallelMinimalTriangulationsEnumerator) new MinimalTriangulationsEnumeratorFactory().produce();
-            runTimeLimited(enumerator);
-            Set<IChordalGraph> chordalGraphs = enumerator.getTriangulations();
-            List<IChordalGraph> results;
-            switch (mlSortTD)
-            {
-                case FILL:
-                {
-                    System.out.println("Sorting TDs by fill");
-                    results = chordalGraphs.stream().
-                            sorted((iChordalGraph, t1) -> {return  iChordalGraph.getFillIn(TDKEnumFactory.getGraph()) -
-                                    t1.getFillIn(TDKEnumFactory.getGraph());}).
-                            limit(tdLimit).
-                            collect(Collectors.toCollection(ArrayList::new));
-                    break;
-                }
-                case WIDTH:
-                {
-                    System.out.println("Sorting TDs by width");
-                    results = chordalGraphs.stream().
-                            sorted((iChordalGraph, t1) -> {return  iChordalGraph.getTreeWidth() -
-                                    t1.getTreeWidth();}).
-                            limit(tdLimit).
-                            collect(Collectors.toCollection(ArrayList::new));
+            List<ITreeDecomposition> results = getTreeDecompositions(filePath);
 
-                    break;
-                }
-                case NO:
-                default:
-                    results = chordalGraphs.stream().limit(tdLimit).collect(Collectors.toCollection(ArrayList::new));
-                    break;
-            }
+
             Set<TreeDecompositionMeta> decompositionMetas = new HashSet<>();
 
             for(int i =0 ; i < results.size(); i++)
             {
                 decompositionMetas.add( new TreeDecompositionMeta(
-                        Converter.chordalGraphToNiceTreeDecomposition(results.get(i)), i, TDKEnumFactory.getInputFile().getName(), TDKEnumFactory.getInputFile().getFile()));
+                      results.get(i), i, TDKEnumFactory.getInputFile().getName(), TDKEnumFactory.getInputFile().getFile()));
             }
+            results.clear();
             ISolver solver = new SolverFactory().produce();
             IFeatureExtractor featureExtractor = new FeatureExtractorFactory().produce();
             decompositionMetas.parallelStream().forEach(treeDecompositionMeta -> {
                 treeDecompositionMeta.setCommandResult(solver.solve(TDKEnumFactory.getInputFile().getFile(), treeDecompositionMeta.getFile()));
                 treeDecompositionMeta.deleteFile();
-                treeDecompositionMeta.setFeatureExtractionResult( featureExtractor.getFeatures(
+                FeatureExtractionResult result = featureExtractor.getFeatures(
                         treeDecompositionMeta.id,
                         treeDecompositionMeta.treeDecomposition ,
                         TDKEnumFactory.getGraph(),
-                        treeDecompositionMeta.benchmarkRun ));
+                        treeDecompositionMeta.benchmarkRun );
+                treeDecompositionMeta.setFeatureExtractionResult(result);
             });
-            decompositionMetas.stream().forEach(treeDecompositionMeta -> featureExtractor.toCSV(csv, treeDecompositionMeta.featureExtractionResult));
-
+            decompositionMetas.stream().forEach(treeDecompositionMeta -> featureExtractor.toCSV(csv, treeDecompositionMeta.getDecompositionDetails()));
+            decompositionMetas.clear();
         }
 
         System.out.println("dataset raw features were written on " + csv.getAbsolutePath());
-        File refinedOutput = new File("./csv_files/datasetFeatures_"+ dateFormat.format(date) + ".csv");
+        File refinedOutput = new File("./csv_files/datasetFeatures.csv");
         String csvFile = featureExtractor.prepareCSV(csv.getAbsolutePath(), refinedOutput.getAbsolutePath());
 
 
         trainByCSV(csvFile);
 
+    }
+
+    private List<ITreeDecomposition> getTreeDecompositions(String filePath) {
+        InputFile inputFile = new InputFile(filePath);
+        System.out.println("Starting enumeration and features extraction for " + inputFile.getPath());
+        TDKEnumFactory.init(inputFile);
+
+        ITreeDecompositionEnumerator enumerator = createSingleThreadEnumerator(true);
+        List<ITreeDecomposition> results = new ArrayList<>();
+        while(enumerator.hasNext() && results.size()<tdLimit){
+            results.add(enumerator.next());
+        }
+        System.out.println("done ");
+
+
+//        switch (mlSortTD)
+//        {
+//            case FILL:
+//            {
+//                System.out.println("Sorting TDs by fill");
+//                results = chordalGraphs.stream().
+//                        sorted((iChordalGraph, t1) -> {return  iChordalGraph.getFillIn(TDKEnumFactory.getGraph()) -
+//                                t1.getFillIn(TDKEnumFactory.getGraph());}).
+//                        limit(tdLimit).
+//                        collect(Collectors.toCollection(ArrayList::new));
+//                break;
+//            }
+//            case WIDTH:
+//            {
+//                System.out.println("Sorting TDs by width");
+//                results = chordalGraphs.stream().
+//                        sorted((iChordalGraph, t1) -> {return  iChordalGraph.getTreeWidth() -
+//                                t1.getTreeWidth();}).
+//                        limit(tdLimit).
+//                        collect(Collectors.toCollection(ArrayList::new));
+//
+//                break;
+//            }
+//            case NO:
+//            default:
+//                results = chordalGraphs.stream().limit(tdLimit).collect(Collectors.toCollection(ArrayList::new));
+//                break;
+//        }
+        return results;
     }
 
     void runTimeLimited(IEnumerator enumerator)
@@ -358,7 +378,7 @@ public class TDMLRunner {
 
         TDKMLConfiguration configuration = (TDKMLConfiguration)TDKEnumFactory.getConfiguration();
         IClassifier classifier = new ClassifierFactory().produce();
-        String outputPath = configuration.getModelStorePath()+"/"+configuration.getMlProblemType()+"/"+dateFormat.format(date);
+        String outputPath = configuration.getDatasetPath()+"/models";
 
         classifier.trainModel(csvFile, outputPath, configuration.getMlModelType() );
 
@@ -443,7 +463,7 @@ public class TDMLRunner {
         {
             csvFile.getParentFile().mkdirs();
             try (PrintWriter writer = new PrintWriter(csvFile)) {
-                writer.println(CSVOperations.dataToCSV("file path", "mode","model",
+                writer.println(CSVOperations.dataToCSV("file path", "mode",  "enumeration_timeout","model", "model_overhead",
                         "first TD prediction", "first TD actual runtime",
                         "optimal TD prediction", "optimal TD actual runtime",
                         "preferred TD prediction", "preferred TD actual runtime",
@@ -456,7 +476,7 @@ public class TDMLRunner {
 
             for (EvaluationDetails evaluationDetails : evaluations)
             {
-                writer.println(CSVOperations.dataToCSV(filePath,mode, evaluationDetails.toCSV()));
+                writer.println(CSVOperations.dataToCSV(filePath,mode, TDKEnumFactory.getConfiguration().getTime_limit(),  evaluationDetails.toCSV()));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -472,6 +492,7 @@ public class TDMLRunner {
         EvaluationInput preferredDecomposition = null;
         EvaluationInput beneficialDecomposition = null;
         MLModelType mlModelType;
+        double overhead;
 
         public EvaluationInput getFirstDecomposition() {
             return firstDecomposition;
@@ -513,9 +534,18 @@ public class TDMLRunner {
             this.mlModelType = mlModelType;
         }
 
+        public double getOverhead() {
+            return overhead;
+        }
+
+        public void setOverhead(double overhead) {
+            this.overhead = overhead;
+        }
+
         public String toCSV()
         {
-            return CSVOperations.dataToCSV(mlModelType,
+            return CSVOperations.dataToCSV(mlModelType, overhead,
+
                     firstDecomposition.getPredictedValue(), firstDecomposition.getActualValue(),
                     optimalDecomposition.getPredictedValue(), optimalDecomposition.getActualValue(),
                     preferredDecomposition.getPredictedValue(), preferredDecomposition.getActualValue(),
@@ -524,70 +554,92 @@ public class TDMLRunner {
     }
 
     private List<EvaluationDetails> predict(List<ITreeDecomposition> treeDecompositions, InputFile inputFile) {
-        DecimalFormat format =
-                new DecimalFormat("0.000");
+//        DecimalFormat format =
+//                new DecimalFormat("0.000");
+//
+//        StringBuilder resultHeaderBuilder = new StringBuilder();
+//        StringBuilder resultStringBuilder = new StringBuilder();
+//
+//        long start =
+//                System.currentTimeMillis();
+//        List<DecompositionDetails> allDecompositionDetails = new ArrayList<>();
+//        IClassifier classifier = new ClassifierFactory().produce();
+//        TDKMLConfiguration configuration = (TDKMLConfiguration)TDKEnumFactory.getConfiguration();
+//        classifier.loadModels(configuration.getDatasetPath()+"/models");
+//
+//        IFeatureExtractor featureExtractor = new FeatureExtractorFactory().produce();
+//        for (int i = 0; i < treeDecompositions.size(); i++)
+//        {
+//            DecompositionDetails details = DecompositionDetails.getInstance(featureExtractor.getFeatures(i,treeDecompositions.get(i),TDKEnumFactory.getGraph() ));
+//            allDecompositionDetails.add(details);
+//        }
 
-        StringBuilder resultHeaderBuilder = new StringBuilder();
-        StringBuilder resultStringBuilder = new StringBuilder();
+//        DecompositionPool decompositionPool = DecompositionPool.createDecompositionPool(allDecompositionDetails, TDKEnumFactory.getInputFile().getFile());
+//        DecompositionPool transformedDecompositionPool = decompositionPool;
+//
+//        switch (configuration.getTransformationMode()) {
+//            case NORMALIZE: {
+//                transformedDecompositionPool = decompositionPool.normalize();
+//
+//                break;
+//            }
+//            case STANDARDIZE: {
+//                transformedDecompositionPool = decompositionPool.standardize();
+//
+//                break;
+//            }
+//            default: {
+//                break;
+//            }
+//        }
+//
+//        DecompositionPool normalizedDecompositionPool = decompositionPool.normalize();
+//        DecompositionPool standardizedDecompositionPool = decompositionPool.standardize();
+//
+//        double overhead =
+//                (double)(Math.max(System.currentTimeMillis() - start , 0.0)) / 1000;
+//        resultHeaderBuilder.append("PreparationOverhead,");
+//        resultStringBuilder.append(StringOperations.formatNumber(format, overhead));
+//        resultStringBuilder.append(",");
 
-        long start =
-                System.currentTimeMillis();
-        List<DecompositionDetails> allDecompositionDetails = new ArrayList<>();
-        IClassifier classifier = new ClassifierFactory().produce();
-        classifier.loadModels(modelLoadPath);
 
-        IFeatureExtractor featureExtractor = new FeatureExtractorFactory().produce();
-        for (int i = 0; i < treeDecompositions.size(); i++)
+//        List<SelectionTemplate> selectionTemplates = classifier.predictDecompositions(transformedDecompositionPool, modelLoadPath);
+
+
+        List<SelectionTemplate> selectionTemplates = classifier.predictDecompositions(treeDecompositions, modelLoadPath);
+        BenchmarkDetails benchmarkDetails = getPredictedTDBenchmarkDetails(selectionTemplates, treeDecompositions, inputFile);
+        Set<Integer> tdIDs = new HashSet<>();
+        for (SelectionTemplate selectionTemplate : selectionTemplates)
         {
-            DecompositionDetails details = DecompositionDetails.getInstance(featureExtractor.getFeatures(i,treeDecompositions.get(i),TDKEnumFactory.getGraph() ));
-            allDecompositionDetails.add(details);
+            tdIDs.add(selectionTemplate.getFirstId());
+            tdIDs.add(selectionTemplate.getBeneficialId());
+            tdIDs.add(selectionTemplate.getOptimalId());
+            tdIDs.add(selectionTemplate.getPreferredId());
         }
+        List<DecompositionDetails> allDecompositionDetails = new ArrayList<>();
+        IFeatureExtractor featureExtractor = new FeatureExtractorFactory().produce();
+        for (Integer tdId: tdIDs)
+        {
+            DecompositionDetails details = DecompositionDetails.getInstance(featureExtractor.getFeatures(tdId,treeDecompositions.get(tdId),TDKEnumFactory.getGraph() ));
+            allDecompositionDetails.add(details);
+
+        }
+
+
 
         DecompositionPool decompositionPool = DecompositionPool.createDecompositionPool(allDecompositionDetails, TDKEnumFactory.getInputFile().getFile());
-        DecompositionPool transformedDecompositionPool = decompositionPool;
-        TDKMLConfiguration configuration = (TDKMLConfiguration)TDKEnumFactory.getConfiguration();
-
-        switch (configuration.getTransformationMode()) {
-            case NORMALIZE: {
-                transformedDecompositionPool = decompositionPool.normalize();
-
-                break;
-            }
-            case STANDARDIZE: {
-                transformedDecompositionPool = decompositionPool.standardize();
-
-                break;
-            }
-            default: {
-                break;
-            }
-        }
-
-        DecompositionPool normalizedDecompositionPool = decompositionPool.normalize();
-        DecompositionPool standardizedDecompositionPool = decompositionPool.standardize();
-
-        double overhead =
-                (double)(Math.max(System.currentTimeMillis() - start , 0.0)) / 1000;
-        resultHeaderBuilder.append("PreparationOverhead,");
-        resultStringBuilder.append(StringOperations.formatNumber(format, overhead));
-        resultStringBuilder.append(",");
-
-
-        List<SelectionTemplate> selectionTemplates = classifier.predictDecompositions(transformedDecompositionPool, modelLoadPath);
-
-        BenchmarkDetails benchmarkDetails = getPredictedTDBenchmarkDetails(selectionTemplates, treeDecompositions, inputFile);
 
         List<EvaluatedDecompositionDetails> details =
                 getEvaluatedDecompositionDetails(benchmarkDetails, decompositionPool);
-
-        List<EvaluatedDecompositionDetails> normalizedDetails =
-                getEvaluatedDecompositionDetails(benchmarkDetails, normalizedDecompositionPool);
-
-        List<EvaluatedDecompositionDetails> transformedDetails =
-                getEvaluatedDecompositionDetails(benchmarkDetails, transformedDecompositionPool);
-
-        List<EvaluatedDecompositionDetails> standardizedDetails =
-                getEvaluatedDecompositionDetails(benchmarkDetails, standardizedDecompositionPool);
+//
+//        List<EvaluatedDecompositionDetails> normalizedDetails =
+//                getEvaluatedDecompositionDetails(benchmarkDetails, normalizedDecompositionPool);
+//
+//        List<EvaluatedDecompositionDetails> transformedDetails =
+//                getEvaluatedDecompositionDetails(benchmarkDetails, transformedDecompositionPool);
+//
+//        List<EvaluatedDecompositionDetails> standardizedDetails =
+//                getEvaluatedDecompositionDetails(benchmarkDetails, standardizedDecompositionPool);
 
 
 
@@ -603,31 +655,35 @@ public class TDMLRunner {
                 String headerPrefix = selectionTemplate.getMlModelType().name();
 
 
-
-                resultHeaderBuilder.append(headerPrefix);
-                resultHeaderBuilder.append("SelectionOverhead,");
-                resultStringBuilder.append(StringOperations.formatNumber(format, selectionTemplate.getSelectionOverhead()));
-                resultStringBuilder.append(",");
+//
+//                resultHeaderBuilder.append(headerPrefix);
+//                resultHeaderBuilder.append("SelectionOverhead,");
+//                resultStringBuilder.append(StringOperations.formatNumber(format, selectionTemplate.getSelectionOverhead()));
+//                resultStringBuilder.append(",");
 
                 //List<EvaluationInput> evaluationInput = new ArrayList<>();
-                firstDecomposition = transformedDetails.stream().filter(
+
+                firstDecomposition = details.stream().filter(
                         evaluatedDecompositionDetails -> evaluatedDecompositionDetails.getTdId()==selectionTemplate.getFirstId()).
                         findFirst().get();
-                optimalDecomposition = transformedDetails.stream().filter(
+                optimalDecomposition = details.stream().filter(
                         evaluatedDecompositionDetails -> evaluatedDecompositionDetails.getTdId()==selectionTemplate.getOptimalId()).
                         findFirst().get();
-                preferredDecomposition = transformedDetails.stream().filter(
+                preferredDecomposition = details.stream().filter(
                         evaluatedDecompositionDetails -> evaluatedDecompositionDetails.getTdId()==selectionTemplate.getPreferredId()).
                         findFirst().get();
-                beneficialDecomposition = transformedDetails.stream().filter(
+                beneficialDecomposition = details.stream().filter(
                         evaluatedDecompositionDetails -> evaluatedDecompositionDetails.getTdId()==selectionTemplate.getBeneficialId()).
                         findFirst().get();
+
+                
                 EvaluationDetails evaluationDetails = new EvaluationDetails();
                 evaluationDetails.setMlModelType( selectionTemplate.getMlModelType());
                 evaluationDetails.setFirstDecomposition(new EvaluationInput(firstDecomposition.getActualRuntime(), selectionTemplate.getFirstPredictedRuntime()));
                 evaluationDetails.setOptimalDecomposition(new EvaluationInput(optimalDecomposition.getActualRuntime(), selectionTemplate.getOptimalPredictedRuntime()));
                 evaluationDetails.setPreferredDecomposition(new EvaluationInput(preferredDecomposition.getActualRuntime(), selectionTemplate.getPreferredPredictedRuntime()));
                 evaluationDetails.setBeneficialDecomposition(new EvaluationInput(beneficialDecomposition.getActualRuntime(), selectionTemplate.getBeneficialPredictedRuntime()));
+                evaluationDetails.setOverhead(selectionTemplate.getSelectionOverhead());
                 evaluation.add(evaluationDetails);
 
 //                for (EvaluatedDecompositionDetails decomposition : transformedDetails) {

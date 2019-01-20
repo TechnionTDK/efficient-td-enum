@@ -33,7 +33,7 @@ public class DecompositionDetails {
         double ret = Double.NaN;
 
         if (features != null && features.length == getFeatureCount()) {
-            ret = features[features.length - 1];
+            ret = features[0];
         }
 
         return ret;
@@ -90,10 +90,21 @@ public class DecompositionDetails {
         System.arraycopy(features, 0, ret, 0, ret.length);
 
         if (resetRuntime) {
-            ret[ret.length - 1] = Double.NaN;
+            ret[0] = Double.NaN;
         }
 
         return ret;
+    }
+
+    public String toCSVHeaders()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Instance");
+        for (String feature : getFeatureNames())
+        {
+            sb.append(",").append(feature);
+        }
+        return sb.toString();
     }
 
     public String toCSV() {
@@ -109,24 +120,24 @@ public class DecompositionDetails {
 
         int featureCount = getFeatureCount();
 
-        sb.append("\"");
+        
         if (instance != null) {
             sb.append(instance);
         }
         else {
             sb.append("<UNKNOWN>");
         }
-        sb.append("\"");
-
-        sb.append(",");
-        sb.append(tdId);
+//        sb.append("\"");
+//
+//        sb.append(",");
+//        sb.append(tdId);
         sb.append(",");
 
         for (int i = 0; i < featureCount; i++) {
             double value =
                     features[i];
 
-            if (i == featureCount - 1) {
+            if (i == 0) {
                 value = actualRuntime;
             }
 
@@ -503,6 +514,7 @@ public class DecompositionDetails {
         ret.add("CummulativeDepthWeightedForgottenVertexNeighborCount");
         ret.add("CummulativeRootDistanceWeightedForgottenVertexNeighborCount");
 
+
         return ret;
 
 
@@ -783,6 +795,7 @@ public class DecompositionDetails {
                     case "CummulativeRootDistanceWeightedForgottenVertexNeighborCount":
 
 
+
                     {
                         ret = updateAtributeValues(ret, featureNames.indexOf(featureName),summary.getAverage() );
                         //   ret[featureNames.indexOf(featureName)] = summary.getAverage();
@@ -796,7 +809,7 @@ public class DecompositionDetails {
             }
         }
 
-        ret = updateAtributeValues(ret, featureNames.indexOf("UsetTime"), result.getUserTime());
+        ret = updateAtributeValues(ret, featureNames.indexOf("UserTime"), result.getUserTime());
 //        ret[ret.length - 1] = getUserTime();
 
         return ret;

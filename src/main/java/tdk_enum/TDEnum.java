@@ -82,7 +82,7 @@ public class TDEnum {
         }
 
         if (args.length <2 && !mlConfigurations.stream().allMatch(tdkEnumConfiguration ->
-                ((TDKMLConfiguration)tdkEnumConfiguration).getInputPath()!=""))
+                ((TDKMLConfiguration)tdkEnumConfiguration).getDatasetPath()!=""))
         {
             System.out.println("Please provide valid graph files or graphs folder for ML experiments either by command line or the configuration file");
             System.out.println("command line is : java -jar {jar_name}.jar {path_to_json_config_file} {path_to_input_file_or_folder}");
@@ -160,7 +160,7 @@ public class TDEnum {
                if(((TDKMLConfiguration) configuration).getMlModelInput()==FILES)
                {
                    List<String> inputs = new ArrayList<>();
-                   getAllInputFiles(new File(((TDKMLConfiguration) configuration).getInputPath()), inputs);
+                   getAllInputFiles(new File(((TDKMLConfiguration) configuration).getDatasetPath()+"/train"), inputs);
                    tdmlRunner.trainByDataSet(inputs);
 
 //                   for (String input: inputs)
@@ -177,7 +177,7 @@ public class TDEnum {
                }
                 if(((TDKMLConfiguration) configuration).getMlModelInput()==CSV)
                 {
-                    String input = ((TDKMLConfiguration) configuration).getInputPath();
+                    String input = ((TDKMLConfiguration) configuration).getDatasetPath()+"/csv_files/datasetFeatures_cleaned.csv";
                     tdmlRunner.trainByCSV(input);
                 }
 
@@ -185,7 +185,7 @@ public class TDEnum {
             else
             {
                 List<String> inputs = new ArrayList<>();
-                getAllInputFiles(new File(((TDKMLConfiguration) configuration).getInputPath()), inputs);
+                getAllInputFiles(new File(((TDKMLConfiguration) configuration).getDatasetPath()), inputs);
                 tdmlRunner.classify(inputs);
             }
 

@@ -79,4 +79,9 @@ public class ParallelCache<T>  implements ICache<T> {
         cache.clear();
 
     }
+
+    @Override
+    public void close() {
+
+    }
 }

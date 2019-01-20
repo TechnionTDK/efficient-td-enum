@@ -25,6 +25,7 @@ public class ParallelMaximalIndependentSetsEnumerator<T> extends ImprovedJvCachi
     {
         this.mainThread = Thread.currentThread();
         super.executeAlgorithm();
+        jvCache.close();
     }
 
     @Override

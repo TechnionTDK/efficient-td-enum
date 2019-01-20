@@ -2,6 +2,7 @@ package tdk_enum.ml.feature_extractor;
 
 import tdk_enum.graph.graphs.IGraph;
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
+import tdk_enum.ml.classifiers.common.DecompositionDetails;
 import tdk_enum.ml.feature_extractor.abseher.feature.BenchmarkRun;
 import tdk_enum.ml.feature_extractor.abseher.feature.FeatureExtractionResult;
 
@@ -18,4 +19,6 @@ public interface IFeatureExtractor {
     void toCSV (File csv, Map<String, Double> flatFeatures);
 
     String prepareCSV(String rawCSV, String output);
+
+    void toCSV(File csv, DecompositionDetails decompositionDetails);
 }

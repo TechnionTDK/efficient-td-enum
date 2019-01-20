@@ -19,7 +19,7 @@ public class TDKMLConfiguration extends TDKTreeDecompositionEnumConfiguration {
         separatorsGraphType = SeparatorsGraphType.DEMON;
     }
 
-    String inputPath = "";
+    String datasetPath = "";
 
     String modelStorePath = "";
 
@@ -48,12 +48,12 @@ public class TDKMLConfiguration extends TDKTreeDecompositionEnumConfiguration {
 
 
 
-    public String getInputPath() {
-        return inputPath;
+    public String getDatasetPath() {
+        return datasetPath;
     }
 
-    public void setInputPath(String inputPath) {
-        this.inputPath = inputPath;
+    public void setDatasetPath(String datasetPath) {
+        this.datasetPath = datasetPath;
     }
 
     public String getModelStorePath() {

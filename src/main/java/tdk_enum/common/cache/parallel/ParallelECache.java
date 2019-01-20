@@ -2,9 +2,11 @@ package tdk_enum.common.cache.parallel;
 
 import org.ehcache.Cache;
 import org.ehcache.CacheManager;
+import org.ehcache.UserManagedCache;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.builders.UserManagedCacheBuilder;
 import org.ehcache.config.units.MemoryUnit;
 import org.jetbrains.annotations.NotNull;
 import tdk_enum.common.cache.ICache;
@@ -16,13 +18,16 @@ import java.util.Iterator;
 public class ParallelECache<T> implements ICache<T> {
 
 
-    CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build(true);
-    Cache<Object, Boolean> cache = cacheManager.createCache("cache",
-            CacheConfigurationBuilder.newCacheConfigurationBuilder(
-                Object.class, Boolean.class,
-                    ResourcePoolsBuilder.newResourcePoolsBuilder().heap(
-                            (long)(Runtime.getRuntime().availableProcessors()*0.5), MemoryUnit.GB)
-            ));
+//    CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build(true);
+//    Cache<Object, Boolean> cache = cacheManager.createCache("cache",
+//            CacheConfigurationBuilder.newCacheConfigurationBuilder(
+//                Object.class, Boolean.class,
+//                    ResourcePoolsBuilder.newResourcePoolsBuilder().heap(
+//                            (long)(Runtime.getRuntime().availableProcessors()*0.5), MemoryUnit.GB)
+//            ));
+    UserManagedCache<Object, Boolean> cache = UserManagedCacheBuilder.newUserManagedCacheBuilder(
+            Object.class, Boolean.class).withResourcePools( ResourcePoolsBuilder.newResourcePoolsBuilder().heap(
+            (long)(Runtime.getRuntime().availableProcessors()*0.5), MemoryUnit.GB)).build(true);
 
 
 
@@ -99,10 +104,19 @@ public class ParallelECache<T> implements ICache<T> {
         cache.clear();
     }
 
-
     @Override
-    protected void finalize() throws Throwable {
-        cacheManager.close();
+    public void close()
+    {
+        System.out.print("cache closing, moving from state " + cache.getStatus() );
+        cache.close();
+        System.out.println( " to state " + cache.getStatus());
     }
+
+
+//    @Override
+//    protected void finalize() throws Throwable {
+////        cacheManager.close();
+//        cache.close();
+//    }
 }
 

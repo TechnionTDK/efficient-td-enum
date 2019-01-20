@@ -14,6 +14,30 @@ public class PredictedDecompositionPool extends DecompositionPool {
         this.predictedRuntimes = predictedRuntimes;
     }
 
+    public PredictedDecompositionPool()
+    {
+        super();
+        this.predictedRuntimes = new ArrayList<>();
+    }
+
+    public void addPrediction(DecompositionDetails decompositionDetails, double runtime)
+    {
+        if(decompositions.size()<=1)
+        {
+            decompositions.add(decompositionDetails);
+            predictedRuntimes.add(runtime);
+        }
+        else {
+            if(runtime < predictedRuntimes.get(1))
+            {
+                decompositions.set(1, decompositionDetails);
+                predictedRuntimes.set(1, runtime);
+            }
+        }
+
+
+    }
+
     @Override
     public PredictedDecompositionDetails accessDecomposition(int index) {
         PredictedDecompositionDetails ret = null;

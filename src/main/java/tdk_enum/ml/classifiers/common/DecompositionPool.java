@@ -12,7 +12,7 @@ public class DecompositionPool {
 
     private File instanceFile = null;
 
-    private List<DecompositionDetails> decompositions = null;
+    protected List<DecompositionDetails> decompositions = null;
 
     private DecompositionPool(File instanceFile, List<DecompositionDetails> decompositions) {
         this.instanceFile = instanceFile;
@@ -24,6 +24,11 @@ public class DecompositionPool {
         this.instanceFile = template.instanceFile;
 
         this.decompositions = new ArrayList<>(template.decompositions);
+    }
+
+    public DecompositionPool()
+    {
+        this.decompositions = new ArrayList<>();
     }
 
     public int getSize() {

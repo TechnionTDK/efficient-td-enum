@@ -207,6 +207,8 @@ public class NestedMaximalIndependentSetsEnumerator<T> extends AbstractNestetEnu
 //            }
 //        }
 
+        jvCache.close();
+
 
 
 

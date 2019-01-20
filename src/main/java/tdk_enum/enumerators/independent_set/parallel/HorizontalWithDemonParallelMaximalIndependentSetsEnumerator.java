@@ -54,6 +54,7 @@ public class HorizontalWithDemonParallelMaximalIndependentSetsEnumerator<T> exte
         }
 
         f.cancel(true);
+        jvCache.close();
 
 
     }

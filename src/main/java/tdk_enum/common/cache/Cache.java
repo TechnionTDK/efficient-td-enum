@@ -4,4 +4,8 @@ import java.util.HashSet;
 
 
 public class Cache<T> extends HashSet<T> implements ICache<T> {
+    @Override
+    public void close() {
+
+    }
 }

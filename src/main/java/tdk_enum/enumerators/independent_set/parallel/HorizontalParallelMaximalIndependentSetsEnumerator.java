@@ -31,6 +31,7 @@ public class HorizontalParallelMaximalIndependentSetsEnumerator<T> extends Paral
             }
 
         }
+        jvCache.close();
 
     }
 

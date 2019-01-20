@@ -5,7 +5,6 @@ import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.factories.ml.classifier_factory.ClassifierFactory;
 import tdk_enum.factories.ml.feature_extractor_factory.FeatureExtractorFactory;
 import tdk_enum.factories.ml.solver_factory.SolverFactory;
-import tdk_enum.factories.enumeration.tree_decomposition_enumerator_factory.TreeDecompositionEnumeratorFactory;
 import tdk_enum.ml.TDMLRunner;
 
 public class TDMLRunnerFactory implements ITDMLRunnerFactory {
@@ -23,7 +22,7 @@ public class TDMLRunnerFactory implements ITDMLRunnerFactory {
         tdmlRunner.setClassifier(new ClassifierFactory().produce());
 
         tdmlRunner.setMlModelInput(configuration.getMlModelInput());
-        tdmlRunner.setInputPath(configuration.getInputPath());
+        tdmlRunner.setInputPath(configuration.getDatasetPath());
         tdmlRunner.setModelStorePath(configuration.getModelStorePath());
         tdmlRunner.setModelLoadPath(configuration.getModelLoadPath());
 
