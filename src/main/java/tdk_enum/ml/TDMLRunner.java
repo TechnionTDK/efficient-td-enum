@@ -289,11 +289,11 @@ public class TDMLRunner {
         }
 
         System.out.println("dataset raw features were written on " + csv.getAbsolutePath());
-        File refinedOutput = new File("./csv_files/datasetFeatures.csv");
-        String csvFile = featureExtractor.prepareCSV(csv.getAbsolutePath(), refinedOutput.getAbsolutePath());
+//        File refinedOutput = new File(csv.getAbsolutePath());
+//        String csvFile = featureExtractor.prepareCSV(csv.getAbsolutePath(), refinedOutput.getAbsolutePath());
 
 
-        trainByCSV(csvFile);
+        trainByCSV(csv.getAbsolutePath());
 
     }
 
@@ -458,16 +458,16 @@ public class TDMLRunner {
 
     private void printPredictionsToCSV(List<EvaluationDetails> evaluations, String mode, String filePath) {
 
-        File csvFile = new File(modelLoadPath + "/models evaluation.csv");
+        TDKMLConfiguration configuration = (TDKMLConfiguration) TDKEnumFactory.getConfiguration();
+        File csvFile = new File(configuration.getDatasetPath() + "/models/models evaluation.csv");
         if(!csvFile.exists())
         {
             csvFile.getParentFile().mkdirs();
             try (PrintWriter writer = new PrintWriter(csvFile)) {
                 writer.println(CSVOperations.dataToCSV("file path", "mode",  "enumeration_timeout","model", "model_overhead",
                         "first TD prediction", "first TD actual runtime",
-                        "optimal TD prediction", "optimal TD actual runtime",
-                        "preferred TD prediction", "preferred TD actual runtime",
-                        "beneficial TD prediction", "beneficial TD actual runtime"));
+                        "optimal TD prediction", "optimal TD actual runtime"
+                      ));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -547,9 +547,9 @@ public class TDMLRunner {
             return CSVOperations.dataToCSV(mlModelType, overhead,
 
                     firstDecomposition.getPredictedValue(), firstDecomposition.getActualValue(),
-                    optimalDecomposition.getPredictedValue(), optimalDecomposition.getActualValue(),
-                    preferredDecomposition.getPredictedValue(), preferredDecomposition.getActualValue(),
-                    beneficialDecomposition.getPredictedValue(), beneficialDecomposition.getActualValue());
+                    optimalDecomposition.getPredictedValue(), optimalDecomposition.getActualValue());
+//                    preferredDecomposition.getPredictedValue(), preferredDecomposition.getActualValue(),
+//                    beneficialDecomposition.getPredictedValue(), beneficialDecomposition.getActualValue());
         }
     }
 
@@ -605,8 +605,8 @@ public class TDMLRunner {
 
 //        List<SelectionTemplate> selectionTemplates = classifier.predictDecompositions(transformedDecompositionPool, modelLoadPath);
 
-
-        List<SelectionTemplate> selectionTemplates = classifier.predictDecompositions(treeDecompositions, modelLoadPath);
+        TDKMLConfiguration configuration = (TDKMLConfiguration)TDKEnumFactory.getConfiguration();
+        List<SelectionTemplate> selectionTemplates = classifier.predictDecompositions(treeDecompositions, configuration.getDatasetPath()+"/models");
         BenchmarkDetails benchmarkDetails = getPredictedTDBenchmarkDetails(selectionTemplates, treeDecompositions, inputFile);
         Set<Integer> tdIDs = new HashSet<>();
         for (SelectionTemplate selectionTemplate : selectionTemplates)

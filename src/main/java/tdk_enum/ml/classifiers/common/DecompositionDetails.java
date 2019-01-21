@@ -99,7 +99,7 @@ public class DecompositionDetails {
     public String toCSVHeaders()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("Instance");
+//        sb.append("Instance");
         for (String feature : getFeatureNames())
         {
             sb.append(",").append(feature);
@@ -121,17 +121,17 @@ public class DecompositionDetails {
         int featureCount = getFeatureCount();
 
         
-        if (instance != null) {
-            sb.append(instance);
-        }
-        else {
-            sb.append("<UNKNOWN>");
-        }
+//        if (instance != null) {
+//            sb.append(instance);
+//        }
+//        else {
+//            sb.append("<UNKNOWN>");
+//        }
 //        sb.append("\"");
 //
 //        sb.append(",");
 //        sb.append(tdId);
-        sb.append(",");
+//        sb.append(",");
 
         for (int i = 0; i < featureCount; i++) {
             double value =

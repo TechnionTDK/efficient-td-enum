@@ -145,7 +145,7 @@ public abstract class AbstractFeatureExtractor implements IFeatureExtractor {
 
         String command = "Rscript ./dflat/preparation.r " +output;
         new CommandExecutor().runScript(command);
-        String outputFile = output.replace(".csv", "")+"_cleaned.csv";
+        String outputFile = output.replace(".csv", "")+"_results_cleaned.csv";
         System.out.println("dataset prepared features were written on " + outputFile);
         return outputFile;
 

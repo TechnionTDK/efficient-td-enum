@@ -27,12 +27,8 @@
     "enumerationType" : "SAVE_MINIMAL_TRIANGULATIONS",
     "enumerationPurpose" : "ML_TRAIN_MODEL",
     "time_limit": 30,
-    //"inputPath": "/home/dvirdu/IdeaProjects/efficient-td-enum/csv_files/tmp_res_results_cleaned.csv",
     "datasetPath": "/home/dvirdu/IdeaProjects/efficient-td-enum/datasets/3col/1",
 
-
-    "modelStorePath" : "/home/dvirdu/IdeaProjects/efficient-td-enum/models/tmp/nop2",
-    "modelLoadPath" : "/home/dvirdu/IdeaProjects/efficient-td-enum/models/tmp/nop2",
     "mlClassifierType" : "WEKA",
 
     "mlModelType": "COMBINED",

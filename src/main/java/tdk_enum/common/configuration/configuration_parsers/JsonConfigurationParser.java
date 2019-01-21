@@ -50,6 +50,7 @@ public class JsonConfigurationParser extends AbstractConfigurationParser {
                     case SAVE_MINIMAL_TRIANGULATIONS:
                     {
                         configurations.add(gson.fromJson(jsonElement, TDKMLConfiguration.class));
+                        System.out.println(jsonObject.toString());
                         break;
                     }
 

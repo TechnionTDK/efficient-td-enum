@@ -102,7 +102,7 @@ public class WekaClassifier implements IClassifier{
             return new DenseInstance(1, values);
         }
 
-        private ArrayList<Attribute> getAttributeVector() {
+        public  ArrayList<Attribute> getAttributeVector() {
             ArrayList<Attribute> ret = new ArrayList<>();
 //            FastVector ret = new FastVector();
 
@@ -137,7 +137,7 @@ public class WekaClassifier implements IClassifier{
         classifierMap.put(MLModelType.SMOREG, new SMOreg());
         classifierMap.put(MLModelType.IBK, new IBk());
         classifierMap.put(MLModelType.KSTAR, new KStar());
-        classifierMap.put(MLModelType.LWL, new LWL());
+//        classifierMap.put(MLModelType.LWL, new LWL());
         classifierMap.put(MLModelType.ADDITIVE_REGRESSION, new AdditiveRegression());
         classifierMap.put(MLModelType.BAGGING, new Bagging());
         classifierMap.put(MLModelType.CV_PARAMETER_SELECTION, new CVParameterSelection());
@@ -300,26 +300,31 @@ public class WekaClassifier implements IClassifier{
 
         IFeatureExtractor featureExtractor = new FeatureExtractorFactory().produce();
         InstanceConverter converter = new InstanceConverter();
+        Instances instances = new Instances("Instances", converter.getAttributeVector(), 0);
+        instances.setClassIndex(0);
         for (int i = 0; i < decompositions.size(); i++) {
             DecompositionDetails details = DecompositionDetails.getInstance(featureExtractor.getFeatures(i,decompositions.get(i), TDKEnumFactory.getGraph() ));
             Instance instance = converter.getInstance(details, true);
+            instances.add(instance);
+            instance.setDataset(instances);
             if(i% 100 == 0)
             {
                 System.out.println("predicting instance " + i + " out of " + decompositions.size());
 
-                for (Double value : details.getRelevantAttributeValues())
-                {
-                    System.out.print(value + ",");
-                }
-                System.out.println();
-                //        System.out.println(decompositions.accessDecomposition(i).toCSV());
-                for (Double value : instance.toDoubleArray())
-                {
-                    System.out.print(value + ",");
-                }
-                System.out.println();
+//                for (Double value : details.getRelevantAttributeValues())
+//                {
+//                    System.out.print(value + ",");
+//                }
+//                System.out.println();
+//                //        System.out.println(decompositions.accessDecomposition(i).toCSV());
+//                for (Double value : instance.toDoubleArray())
+//                {
+//                    System.out.print(value + ",");
+//                }
+//                System.out.println();
             }
             ret.addPrediction(details, predictInstance(instance, classifier));
+            instances.remove(instance);
 
 
         }

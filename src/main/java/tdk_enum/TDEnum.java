@@ -185,7 +185,7 @@ public class TDEnum {
             else
             {
                 List<String> inputs = new ArrayList<>();
-                getAllInputFiles(new File(((TDKMLConfiguration) configuration).getDatasetPath()), inputs);
+                getAllInputFiles(new File(((TDKMLConfiguration) configuration).getDatasetPath()+"/test"), inputs);
                 tdmlRunner.classify(inputs);
             }
 
