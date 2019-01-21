@@ -100,9 +100,18 @@ public class DecompositionDetails {
     {
         StringBuilder sb = new StringBuilder();
 //        sb.append("Instance");
-        for (String feature : getFeatureNames())
+        List<String> features = getFeatureNames();
+        for (String feature : features)
         {
-            sb.append(",").append(feature);
+            if(features.indexOf(feature)==0)
+            {
+                sb.append(feature);
+            }
+            else
+            {
+                sb.append(",").append(feature);
+            }
+
         }
         return sb.toString();
     }

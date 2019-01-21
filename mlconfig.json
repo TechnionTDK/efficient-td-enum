@@ -42,7 +42,7 @@
     "solverTimeLimit": 10805,
 
     "solverMemoryLimit" : 554432,
-    "tdLimitPerGraph": 40,
+    "tdLimitPerGraph": 10,
     "transformationMode": "NONE"
   }
 ]
