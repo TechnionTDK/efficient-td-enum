@@ -440,7 +440,7 @@ public class TDMLRunner {
 
         System.out.println("Vaniila trees: " + vanillaTrees.size());
         List<EvaluationDetails> vanillaDetails = predict(vanillaTrees, inputFile);
-        printPredictionsToCSV(vanillaDetails, "vanilla", inputFile.getPath());
+        printPredictionsToCSV(vanillaDetails, "vanilla", inputFile.getPath(),vanillaTrees.size());
     }
 
     private void predictReal(InputFile inputFile)
@@ -452,11 +452,11 @@ public class TDMLRunner {
         List<ITreeDecomposition> treeDecompositions = chordalGraphs.stream().map(chordalGraph ->{ chordalGraphs.remove(chordalGraph); return Converter.chordalGraphToNiceTreeDecomposition(chordalGraph); } ).collect(Collectors.toCollection(ArrayList::new));
         System.out.println(treeDecompositions.size() + " TD where produced");
         List<EvaluationDetails> real = predict(treeDecompositions, inputFile);
-        printPredictionsToCSV(real, "real", inputFile.getPath());
+        printPredictionsToCSV(real, "real", inputFile.getPath(),treeDecompositions.size());
 
     }
 
-    private void printPredictionsToCSV(List<EvaluationDetails> evaluations, String mode, String filePath) {
+    private void printPredictionsToCSV(List<EvaluationDetails> evaluations, String mode, String filePath, int results) {
 
         TDKMLConfiguration configuration = (TDKMLConfiguration) TDKEnumFactory.getConfiguration();
         File csvFile = new File(configuration.getDatasetPath() + "/models/models evaluation.csv");
@@ -464,7 +464,7 @@ public class TDMLRunner {
         {
             csvFile.getParentFile().mkdirs();
             try (PrintWriter writer = new PrintWriter(csvFile)) {
-                writer.println(CSVOperations.dataToCSV("file path", "mode",  "enumeration_timeout","model", "model_overhead",
+                writer.println(CSVOperations.dataToCSV("file path", "mode",  "enumeration_timeout","results","model", "model_overhead",
                         "first TD prediction", "first TD actual runtime",
                         "optimal TD prediction", "optimal TD actual runtime"
                       ));
@@ -476,7 +476,7 @@ public class TDMLRunner {
 
             for (EvaluationDetails evaluationDetails : evaluations)
             {
-                writer.println(CSVOperations.dataToCSV(filePath,mode, TDKEnumFactory.getConfiguration().getTime_limit(),  evaluationDetails.toCSV()));
+                writer.println(CSVOperations.dataToCSV(filePath,mode, TDKEnumFactory.getConfiguration().getTime_limit(), results, evaluationDetails.toCSV()));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

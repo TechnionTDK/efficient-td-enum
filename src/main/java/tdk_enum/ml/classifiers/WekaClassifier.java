@@ -136,7 +136,7 @@ public class WekaClassifier implements IClassifier{
         classifierMap.put(MLModelType.PLS_CLASSIFIER, new PLSClassifier());
         classifierMap.put(MLModelType.SMOREG, new SMOreg());
         classifierMap.put(MLModelType.IBK, new IBk());
-        classifierMap.put(MLModelType.KSTAR, new KStar());
+//        classifierMap.put(MLModelType.KSTAR, new KStar());
 //        classifierMap.put(MLModelType.LWL, new LWL());
         classifierMap.put(MLModelType.ADDITIVE_REGRESSION, new AdditiveRegression());
         classifierMap.put(MLModelType.BAGGING, new Bagging());
