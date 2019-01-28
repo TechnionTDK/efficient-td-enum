@@ -25,7 +25,7 @@
 
   {
     "enumerationType" : "SAVE_MINIMAL_TRIANGULATIONS",
-    "enumerationPurpose" : "ML_TRAIN_MODEL",
+    "enumerationPurpose" : "ML_PREDICT",
     "time_limit": 30,
     "datasetPath": "/home/dvirdu/IdeaProjects/efficient-td-enum/datasets/3col/1",
 

@@ -28,6 +28,7 @@ import weka.core.converters.CSVLoader;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class WekaClassifier implements IClassifier{
 
@@ -139,7 +140,7 @@ public class WekaClassifier implements IClassifier{
 //        classifierMap.put(MLModelType.KSTAR, new KStar());
 //        classifierMap.put(MLModelType.LWL, new LWL());
         classifierMap.put(MLModelType.ADDITIVE_REGRESSION, new AdditiveRegression());
-        classifierMap.put(MLModelType.BAGGING, new Bagging());
+//        classifierMap.put(MLModelType.BAGGING, new Bagging());
         classifierMap.put(MLModelType.CV_PARAMETER_SELECTION, new CVParameterSelection());
         classifierMap.put(MLModelType.M5RULES, new M5Rules());
         classifierMap.put(MLModelType.M5P, new M5P());
@@ -418,34 +419,41 @@ public class WekaClassifier implements IClassifier{
 
 
     private PredictedDecompositionPool predictDecompositions(Classifier classifier, DecompositionPool decompositions, Instances instances) {
-        PredictedDecompositionPool ret = null;
-        List<Double> predictedRuntimes = new ArrayList<>();
+        PredictedDecompositionPool ret = new PredictedDecompositionPool();
+//        List<Double> predictedRuntimes = new ArrayList<>();
 
-        Enumeration<Attribute> attributes = instances.enumerateAttributes();
+//        Enumeration<Attribute> attributes = instances.enumerateAttributes();
 //        while (attributes.hasMoreElements())
 //        {
 //            System.out.print(attributes.nextElement().name() + ", ");
 //        }
-        for (int i = 0; i < instances.numInstances(); i++) {
-            if(i% 100 == 0)
-            {
-                System.out.println("predicting instance " + i + " out of " + instances.size());
-                for (Double value : decompositions.accessDecomposition(i).getRelevantAttributeValues())
-                {
-                    System.out.print(value + ",");
-                }
-                System.out.println();
-                //        System.out.println(decompositions.accessDecomposition(i).toCSV());
-                for (Double value : instances.instance(i).toDoubleArray())
-                {
-                    System.out.print(value + ",");
-                }
-                System.out.println();
-            }
+        List<Double> ratings = instances.parallelStream().map(instance -> predictInstance(instance, classifier)).collect(Collectors.toList());
+        double min = ratings.parallelStream().min(Double::compareTo).get();
+        int best = ratings.indexOf(min);
 
-            predictedRuntimes.add(predictInstance(instances.instance(i), classifier));
-        }
-        ret = PredictedDecompositionPool.createPredictedDecompositionPool(decompositions, predictedRuntimes);
+        ret.addPrediction(decompositions.accessDecomposition(0),ratings.get(0));
+        ret.addPrediction(decompositions.accessDecomposition(best), ratings.get(best));
+
+//        for (int i = 0; i < instances.numInstances(); i++) {
+//            if(i% 100 == 0)
+//            {
+//                System.out.println("predicting instance " + i + " out of " + instances.size());
+//                for (Double value : decompositions.accessDecomposition(i).getRelevantAttributeValues())
+//                {
+//                    System.out.print(value + ",");
+//                }
+//                System.out.println();
+//                //        System.out.println(decompositions.accessDecomposition(i).toCSV());
+//                for (Double value : instances.instance(i).toDoubleArray())
+//                {
+//                    System.out.print(value + ",");
+//                }
+//                System.out.println();
+//            }
+//
+//            predictedRuntimes.add(predictInstance(instances.instance(i), classifier));
+//        }
+//        ret = PredictedDecompositionPool.createPredictedDecompositionPool(decompositions, predictedRuntimes);
         return ret;
     }
 

@@ -606,7 +606,17 @@ public class TDMLRunner {
 //        List<SelectionTemplate> selectionTemplates = classifier.predictDecompositions(transformedDecompositionPool, modelLoadPath);
 
         TDKMLConfiguration configuration = (TDKMLConfiguration)TDKEnumFactory.getConfiguration();
-        List<SelectionTemplate> selectionTemplates = classifier.predictDecompositions(treeDecompositions, configuration.getDatasetPath()+"/models");
+        List<DecompositionDetails> allDecompositionDetails = new ArrayList<>();
+        IFeatureExtractor featureExtractor = new FeatureExtractorFactory().produce();
+        for (int i = 0; i < treeDecompositions.size(); i++)
+        {
+            DecompositionDetails details = DecompositionDetails.getInstance(featureExtractor.getFeatures(i,treeDecompositions.get(i),TDKEnumFactory.getGraph() ));
+            allDecompositionDetails.add(details);
+        }
+
+        DecompositionPool decompositionPool = DecompositionPool.createDecompositionPool(allDecompositionDetails, TDKEnumFactory.getInputFile().getFile());
+        List<SelectionTemplate> selectionTemplates = classifier.predictDecompositions(decompositionPool, configuration.getDatasetPath()+"/models");
+//        List<SelectionTemplate> selectionTemplates = classifier.predictDecompositions(treeDecompositions, configuration.getDatasetPath()+"/models");
         BenchmarkDetails benchmarkDetails = getPredictedTDBenchmarkDetails(selectionTemplates, treeDecompositions, inputFile);
         Set<Integer> tdIDs = new HashSet<>();
         for (SelectionTemplate selectionTemplate : selectionTemplates)
@@ -616,21 +626,21 @@ public class TDMLRunner {
             tdIDs.add(selectionTemplate.getOptimalId());
             tdIDs.add(selectionTemplate.getPreferredId());
         }
-        List<DecompositionDetails> allDecompositionDetails = new ArrayList<>();
-        IFeatureExtractor featureExtractor = new FeatureExtractorFactory().produce();
+        List<DecompositionDetails> benchmarkedDecompositionDetails = new ArrayList<>();
+
         for (Integer tdId: tdIDs)
         {
             DecompositionDetails details = DecompositionDetails.getInstance(featureExtractor.getFeatures(tdId,treeDecompositions.get(tdId),TDKEnumFactory.getGraph() ));
-            allDecompositionDetails.add(details);
+            benchmarkedDecompositionDetails.add(details);
 
         }
 
 
 
-        DecompositionPool decompositionPool = DecompositionPool.createDecompositionPool(allDecompositionDetails, TDKEnumFactory.getInputFile().getFile());
+        DecompositionPool benchmarkedDecompositionPool = DecompositionPool.createDecompositionPool(benchmarkedDecompositionDetails, TDKEnumFactory.getInputFile().getFile());
 
         List<EvaluatedDecompositionDetails> details =
-                getEvaluatedDecompositionDetails(benchmarkDetails, decompositionPool);
+                getEvaluatedDecompositionDetails(benchmarkDetails, benchmarkedDecompositionPool);
 //
 //        List<EvaluatedDecompositionDetails> normalizedDetails =
 //                getEvaluatedDecompositionDetails(benchmarkDetails, normalizedDecompositionPool);

@@ -107,6 +107,7 @@ public class ParallelECache<T> implements ICache<T> {
     @Override
     public void close()
     {
+        cache.clear();
         System.out.print("cache closing, moving from state " + cache.getStatus() );
         cache.close();
         System.out.println( " to state " + cache.getStatus());

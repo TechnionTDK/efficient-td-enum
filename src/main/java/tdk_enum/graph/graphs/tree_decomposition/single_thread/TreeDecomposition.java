@@ -69,7 +69,8 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
 
         if (parent != null) {
             List<DecompositionNode> children =
-                    parent.getChildrenList();
+//                    parent.getChildrenList();
+            parent.accessChildrenList();
 
             parent.setIndex(bags.indexOf(parent));
             parent.setDepth(currentDepth);
@@ -112,7 +113,7 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
                 ret = currentDepth;
             }
             else {
-                List<DecompositionNode> children = parent.getChildrenList();
+                List<DecompositionNode> children = parent.accessChildrenList();
 
                 if (children != null) {
                     for (int i = 0; i < children.size(); i++) {
