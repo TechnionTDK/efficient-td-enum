@@ -128,7 +128,7 @@ public class WekaClassifier implements IClassifier{
 
     public WekaClassifier()
     {
-        classifierMap.put(MLModelType.GAUSSIAN_PROCESSES, new GaussianProcesses());
+//        classifierMap.put(MLModelType.GAUSSIAN_PROCESSES, new GaussianProcesses());
         classifierMap.put(MLModelType.ISOTONIC_REGRESSION, new IsotonicRegression());
         classifierMap.put(MLModelType.LEAST_MED_SQ, new LeastMedSq());
         classifierMap.put(MLModelType.LINEAR_REGRESSION, new LinearRegression());
