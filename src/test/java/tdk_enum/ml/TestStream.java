@@ -11,18 +11,19 @@ import java.util.stream.IntStream;
 public class TestStream {
 
     @Test
-    public void test()
-    {
+    public void test() {
         System.out.println(Runtime.getRuntime().availableProcessors());
-        List<Integer>  list = new ArrayList<>();
-        for(int i =100; i< 10000; i+=100)
-        {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 100; i < 10000; i += 100) {
             list.add(i);
         }
         System.out.println(list);
 
-        List<Double> l = list.parallelStream().map(integer -> (double)integer/3).collect(Collectors.toList());
+        List<Double> l = list.parallelStream().map(integer -> (double) integer / 3).collect(Collectors.toList());
         System.out.println(l);
+
+        List<Integer> bla = IntStream.range(0, 1000).parallel().mapToObj(i -> i + 5).collect(Collectors.toList());
+        System.out.print(bla);
     }
 
 

@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class WekaClassifier implements IClassifier{
 
@@ -427,7 +428,8 @@ public class WekaClassifier implements IClassifier{
 //        {
 //            System.out.print(attributes.nextElement().name() + ", ");
 //        }
-        List<Double> ratings = instances.parallelStream().map(instance -> predictInstance(instance, classifier)).collect(Collectors.toList());
+//        List<Double> ratings = instances.parallelStream().map(instance -> predictInstance(instance, classifier)).collect(Collectors.toList());
+        List<Double> ratings = IntStream.range(0, instances.size()).parallel().mapToObj(i -> predictInstance(instances.instance(i), classifier)).collect(Collectors.toList());
         double min = ratings.parallelStream().min(Double::compareTo).get();
         int best = ratings.indexOf(min);
 

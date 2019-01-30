@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class TDMLRunner {
 
@@ -398,6 +399,7 @@ public class TDMLRunner {
             TDKEnumFactory.init(inputFile);
 
             predictVanilla(inputFile);
+            predictRandom(inputFile);
             predictReal(inputFile);
 //            ITreeDecompositionEnumerator singleThreadEnumerator = creatSingleThreadEnumerator();
 //            ITreeDecompositionEnumerator randomEnumerator = createSingleThreadRandomEnumerator();
@@ -424,6 +426,22 @@ public class TDMLRunner {
 
 
 
+    }
+
+    private void predictRandom(InputFile inputFile) {
+        ITreeDecompositionEnumerator randomEnumerator = createSingleThreadRandomEnumerator();
+        List<ITreeDecomposition> randomTrees = new ArrayList<>();
+        long timeLimit = TDKEnumFactory.getConfiguration().getTime_limit();
+        long start =   System.currentTimeMillis();
+        while (randomEnumerator.hasNext() && System.currentTimeMillis() - start < timeLimit*1000)
+
+        {
+            randomTrees.add(randomEnumerator.next());
+        }
+
+        System.out.println("Vanilla trees: " + randomTrees.size());
+        List<EvaluationDetails> vanillaDetails = predict(randomTrees, inputFile);
+        printPredictionsToCSV(vanillaDetails, "random", inputFile.getPath(),randomTrees.size());
     }
 
     private void predictVanilla(InputFile inputFile)
@@ -464,7 +482,7 @@ public class TDMLRunner {
         {
             csvFile.getParentFile().mkdirs();
             try (PrintWriter writer = new PrintWriter(csvFile)) {
-                writer.println(CSVOperations.dataToCSV("file path", "mode",  "enumeration_timeout","results","model", "model_overhead",
+                writer.println(CSVOperations.dataToCSV("file path", "mode",  "enumeration_timeout","results", "features extraction overhead","model", "model_overhead",
                         "first TD prediction", "first TD actual runtime",
                         "optimal TD prediction", "optimal TD actual runtime"
                       ));
@@ -492,7 +510,8 @@ public class TDMLRunner {
         EvaluationInput preferredDecomposition = null;
         EvaluationInput beneficialDecomposition = null;
         MLModelType mlModelType;
-        double overhead;
+        double modelOverhead;
+        double extractionOverhead;
 
         public EvaluationInput getFirstDecomposition() {
             return firstDecomposition;
@@ -534,17 +553,25 @@ public class TDMLRunner {
             this.mlModelType = mlModelType;
         }
 
-        public double getOverhead() {
-            return overhead;
+        public double getModelOverhead() {
+            return modelOverhead;
         }
 
-        public void setOverhead(double overhead) {
-            this.overhead = overhead;
+        public void setModelOverhead(double overhead) {
+            this.modelOverhead = overhead;
+        }
+
+        public double getExtractionOverhead() {
+            return extractionOverhead;
+        }
+
+        public void setExtractionOverhead(double extractionOverhead) {
+            this.extractionOverhead = extractionOverhead;
         }
 
         public String toCSV()
         {
-            return CSVOperations.dataToCSV(mlModelType, overhead,
+            return CSVOperations.dataToCSV(extractionOverhead, mlModelType, modelOverhead,
 
                     firstDecomposition.getPredictedValue(), firstDecomposition.getActualValue(),
                     optimalDecomposition.getPredictedValue(), optimalDecomposition.getActualValue());
@@ -596,25 +623,30 @@ public class TDMLRunner {
 //        DecompositionPool normalizedDecompositionPool = decompositionPool.normalize();
 //        DecompositionPool standardizedDecompositionPool = decompositionPool.standardize();
 //
-//        double overhead =
+//        double modelOverhead =
 //                (double)(Math.max(System.currentTimeMillis() - start , 0.0)) / 1000;
 //        resultHeaderBuilder.append("PreparationOverhead,");
-//        resultStringBuilder.append(StringOperations.formatNumber(format, overhead));
+//        resultStringBuilder.append(StringOperations.formatNumber(format, modelOverhead));
 //        resultStringBuilder.append(",");
 
 
 //        List<SelectionTemplate> selectionTemplates = classifier.predictDecompositions(transformedDecompositionPool, modelLoadPath);
 
         TDKMLConfiguration configuration = (TDKMLConfiguration)TDKEnumFactory.getConfiguration();
+        long start = System.currentTimeMillis();
         List<DecompositionDetails> allDecompositionDetails = new ArrayList<>();
         IFeatureExtractor featureExtractor = new FeatureExtractorFactory().produce();
-        for (int i = 0; i < treeDecompositions.size(); i++)
-        {
-            DecompositionDetails details = DecompositionDetails.getInstance(featureExtractor.getFeatures(i,treeDecompositions.get(i),TDKEnumFactory.getGraph() ));
-            allDecompositionDetails.add(details);
-        }
+        allDecompositionDetails = IntStream.range(0,treeDecompositions.size()).parallel().mapToObj(i -> DecompositionDetails.getInstance(featureExtractor.getFeatures(i,treeDecompositions.get(i),TDKEnumFactory.getGraph() ))).collect(Collectors.toList());
+
+//        for (int i = 0; i < treeDecompositions.size(); i++)
+//        {
+//            DecompositionDetails details = DecompositionDetails.getInstance(featureExtractor.getFeatures(i,treeDecompositions.get(i),TDKEnumFactory.getGraph() ));
+//            allDecompositionDetails.add(details);
+//        }
 
         DecompositionPool decompositionPool = DecompositionPool.createDecompositionPool(allDecompositionDetails, TDKEnumFactory.getInputFile().getFile());
+        double featuresExtractionOverhead =
+                (double)(Math.max(System.currentTimeMillis() - start , 0.0)) / 1000;
         List<SelectionTemplate> selectionTemplates = classifier.predictDecompositions(decompositionPool, configuration.getDatasetPath()+"/models");
 //        List<SelectionTemplate> selectionTemplates = classifier.predictDecompositions(treeDecompositions, configuration.getDatasetPath()+"/models");
         BenchmarkDetails benchmarkDetails = getPredictedTDBenchmarkDetails(selectionTemplates, treeDecompositions, inputFile);
@@ -693,7 +725,8 @@ public class TDMLRunner {
                 evaluationDetails.setOptimalDecomposition(new EvaluationInput(optimalDecomposition.getActualRuntime(), selectionTemplate.getOptimalPredictedRuntime()));
                 evaluationDetails.setPreferredDecomposition(new EvaluationInput(preferredDecomposition.getActualRuntime(), selectionTemplate.getPreferredPredictedRuntime()));
                 evaluationDetails.setBeneficialDecomposition(new EvaluationInput(beneficialDecomposition.getActualRuntime(), selectionTemplate.getBeneficialPredictedRuntime()));
-                evaluationDetails.setOverhead(selectionTemplate.getSelectionOverhead());
+                evaluationDetails.setModelOverhead(selectionTemplate.getSelectionOverhead());
+                evaluationDetails.setExtractionOverhead(featuresExtractionOverhead);
                 evaluation.add(evaluationDetails);
 
 //                for (EvaluatedDecompositionDetails decomposition : transformedDetails) {
