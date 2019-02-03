@@ -5,6 +5,7 @@ import tdk_enum.enumerators.separators.IMinimalSeparatorsEnumerator;
 import tdk_enum.enumerators.separators.parallel.HorizontalMinimalSepratorsEnumerator;
 import tdk_enum.enumerators.separators.parallel.NestedMinimalSeperatorsEnumerator;
 import tdk_enum.enumerators.separators.parallel.ParallelMinimalSeparatorsEnumerator;
+import tdk_enum.enumerators.separators.single_thread.CachedMinimalSeparatorsEnumerator;
 import tdk_enum.enumerators.separators.single_thread.MinimalSeparatorsEnumerator;
 import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.factories.enumeration.separator_scorer_factory.SeparatorScorerFactory;
@@ -34,8 +35,20 @@ public class MinimalSeperatorsEnumeratorFactory implements IMinimalSeparatorsEnu
 
     private IMinimalSeparatorsEnumerator produceSingleThreadEnumerator() {
 
+        TDKSeperatorsEnumConfiguration configuration = (TDKSeperatorsEnumConfiguration) TDKEnumFactory.getConfiguration();
+        IMinimalSeparatorsEnumerator enumerator = null;
+        switch (configuration.getSingleThreadSeperatorsEnumeratorType()){
+            case VANILLA:{
+                enumerator = new MinimalSeparatorsEnumerator();
+                break;
+            }
+            case CACHED:{
+                enumerator = new CachedMinimalSeparatorsEnumerator();
+                break;
+            }
+        }
 
-        IMinimalSeparatorsEnumerator enumerator = new MinimalSeparatorsEnumerator();
+
         enumerator.setGraph(TDKEnumFactory.getGraph());
         enumerator.setScorer( new SeparatorScorerFactory().produce());
         enumerator.setQueue(new QueueSet<>());

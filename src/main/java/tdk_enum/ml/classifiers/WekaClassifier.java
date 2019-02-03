@@ -421,7 +421,7 @@ public class WekaClassifier implements IClassifier{
 
     private PredictedDecompositionPool predictDecompositions(Classifier classifier, DecompositionPool decompositions, Instances instances) {
         PredictedDecompositionPool ret = new PredictedDecompositionPool();
-//        List<Double> predictedRuntimes = new ArrayList<>();
+        List<Double> predictedRuntimes = new ArrayList<>();
 
 //        Enumeration<Attribute> attributes = instances.enumerateAttributes();
 //        while (attributes.hasMoreElements())
@@ -429,14 +429,14 @@ public class WekaClassifier implements IClassifier{
 //            System.out.print(attributes.nextElement().name() + ", ");
 //        }
 //        List<Double> ratings = instances.parallelStream().map(instance -> predictInstance(instance, classifier)).collect(Collectors.toList());
-        List<Double> ratings = IntStream.range(0, instances.size()).parallel().mapToObj(i -> predictInstance(instances.instance(i), classifier)).collect(Collectors.toList());
-        double min = ratings.parallelStream().min(Double::compareTo).get();
-        int best = ratings.indexOf(min);
+//        List<Double> ratings = IntStream.range(0, instances.size()).mapToDouble(i -> predictInstance(instances.instance(i), classifier)).boxed().collect(Collectors.toList());
+//        double min = ratings.parallelStream().min(Double::compareTo).get();
+//        int best = ratings.indexOf(min);
+//
+//        ret.addPrediction(decompositions.accessDecomposition(0),ratings.get(0));
+//        ret.addPrediction(decompositions.accessDecomposition(best), ratings.get(best));
 
-        ret.addPrediction(decompositions.accessDecomposition(0),ratings.get(0));
-        ret.addPrediction(decompositions.accessDecomposition(best), ratings.get(best));
-
-//        for (int i = 0; i < instances.numInstances(); i++) {
+        for (int i = 0; i < instances.numInstances(); i++) {
 //            if(i% 100 == 0)
 //            {
 //                System.out.println("predicting instance " + i + " out of " + instances.size());
@@ -452,10 +452,10 @@ public class WekaClassifier implements IClassifier{
 //                }
 //                System.out.println();
 //            }
-//
-//            predictedRuntimes.add(predictInstance(instances.instance(i), classifier));
-//        }
-//        ret = PredictedDecompositionPool.createPredictedDecompositionPool(decompositions, predictedRuntimes);
+
+            predictedRuntimes.add(predictInstance(instances.instance(i), classifier));
+        }
+        ret = PredictedDecompositionPool.createPredictedDecompositionPool(decompositions, predictedRuntimes);
         return ret;
     }
 
