@@ -1,0 +1,2 @@
+Field,Type,Graph,Nodes,Edges,Finished,Enumeration Type,Running Mode,Enumerator Type,Thread Number,Time,Algorithm,Separators generated,Results,First Width,Min Width,Max Width,Best Width Time,Best Width Count,Good width Count,First Fill,Min Fill,Max Fill,Best Fill Time,Best Fill Count,Good Fill Count,First ExpBags,Min ExpBags,Max ExpBags,Best ExpBags Time
+dflat,test_instances,instance_n24_p0.10_003,24,46,NO,MINIMAL_TRIANGULATIONS,PARALLEL,HORIZONTAL,4,100.001,mcs,15,68057,8,6,9,20299.256,749,34571,69,36,77,20299.256,9,271,3696,800,4904,20299.256

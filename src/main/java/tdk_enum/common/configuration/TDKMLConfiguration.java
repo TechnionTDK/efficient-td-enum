@@ -14,7 +14,7 @@ public class TDKMLConfiguration extends TDKTreeDecompositionEnumConfiguration {
     public TDKMLConfiguration()
     {
         parallelMISEnumeratorType = ParallelMISEnumeratorType.NESTED;
-        enumerationType = EnumerationType.SAVE_MINIMAL_TRIANGULATIONS;
+        enumerationType = EnumerationType.SAVE_NICE_TD;
         runningMode = RunningMode.PARALLEL;
         separatorsGraphType = SeparatorsGraphType.DEMON;
     }
@@ -45,6 +45,16 @@ public class TDKMLConfiguration extends TDKTreeDecompositionEnumConfiguration {
     MLFeatureExtractor mlFeatureExtractor = ABESEHER;
 
     TransformationMode transformationMode = TransformationMode.NONE;
+
+    public int getPredictionSolverMinTime() {
+        return predictionSolverMinTime;
+    }
+
+    public void setPredictionSolverMinTime(int predictionSolverMinTime) {
+        this.predictionSolverMinTime = predictionSolverMinTime;
+    }
+
+    int predictionSolverMinTime = 30;
 
 
 

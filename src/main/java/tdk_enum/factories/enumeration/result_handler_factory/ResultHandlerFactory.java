@@ -10,7 +10,7 @@ public class ResultHandlerFactory implements  IResultHandlerFactory {
         TDKEnumConfiguration configuration = TDKEnumFactory.getConfiguration();
         switch (configuration.getEnumerationType())
         {
-            case MINIMAL_TRIANGULATIONS: case SAVE_MINIMAL_TRIANGULATIONS:
+            case MINIMAL_TRIANGULATIONS: case SAVE_NICE_TD:
                 return inject( new MinimalTriangulationResultHandlerFactory().produce());
             case SEPARATORS:
                 return inject( new MinimalSeperatorsResultHandlerFactory().produce());

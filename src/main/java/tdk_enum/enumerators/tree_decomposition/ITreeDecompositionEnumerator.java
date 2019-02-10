@@ -16,4 +16,6 @@ public interface ITreeDecompositionEnumerator extends IResultPrinter<IChordalGra
     void setMinimalTriangulationsEnumerator(IMinimalTriangulationsEnumerator triangulationsEnumerator);
 
     int getNumberOfMinimalSeperatorsGenerated();
+
+    Set<ITreeDecomposition> getDecompositions();
 }

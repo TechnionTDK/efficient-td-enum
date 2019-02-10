@@ -34,19 +34,29 @@ public class MinimalSeperatorsEnumeratorFactory implements IMinimalSeparatorsEnu
     }
 
     private IMinimalSeparatorsEnumerator produceSingleThreadEnumerator() {
-
-        TDKSeperatorsEnumConfiguration configuration = (TDKSeperatorsEnumConfiguration) TDKEnumFactory.getConfiguration();
         IMinimalSeparatorsEnumerator enumerator = null;
-        switch (configuration.getSingleThreadSeperatorsEnumeratorType()){
-            case VANILLA:{
-                enumerator = new MinimalSeparatorsEnumerator();
-                break;
+        if(TDKEnumFactory.getConfiguration().getClass().equals(TDKSeperatorsEnumConfiguration.class))
+        {
+            TDKSeperatorsEnumConfiguration configuration = (TDKSeperatorsEnumConfiguration) TDKEnumFactory.getConfiguration();
+
+            switch (configuration.getSingleThreadSeperatorsEnumeratorType()){
+                case VANILLA:{
+                    enumerator = new MinimalSeparatorsEnumerator();
+                    break;
+                }
+                case CACHED:{
+                    enumerator = new CachedMinimalSeparatorsEnumerator();
+                    break;
+                }
             }
-            case CACHED:{
-                enumerator = new CachedMinimalSeparatorsEnumerator();
-                break;
-            }
+
         }
+        else
+        {
+            enumerator = new MinimalSeparatorsEnumerator();
+        }
+
+
 
 
         enumerator.setGraph(TDKEnumFactory.getGraph());

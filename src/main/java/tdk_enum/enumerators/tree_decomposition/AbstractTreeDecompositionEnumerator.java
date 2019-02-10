@@ -8,6 +8,8 @@ import tdk_enum.graph.graphs.IGraph;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
 
+import java.util.Set;
+
 public abstract class AbstractTreeDecompositionEnumerator extends AbstractConverterEnumerator<Node,ITreeDecomposition,IGraph> implements ITreeDecompositionEnumerator {
 
     protected IMinimalTriangulationsEnumerator minimalTriangulationsEnumerator;
@@ -25,6 +27,12 @@ public abstract class AbstractTreeDecompositionEnumerator extends AbstractConver
     public int getNumberOfMinimalSeperatorsGenerated()
     {
         return minimalTriangulationsEnumerator.getNumberOfMinimalSeperatorsGenerated();
+    }
+
+
+    @Override
+    public Set<ITreeDecomposition> getDecompositions(){
+        return null;
     }
 
 

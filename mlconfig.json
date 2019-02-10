@@ -1,6 +1,6 @@
 [
 //  {
-//    "enumerationType" : "SAVE_MINIMAL_TRIANGULATIONS",
+//    "enumerationType" : "SAVE_NICE_TD",
 //    "enumerationPurpose" : "ML_TRAIN_MODEL",
 //    "time_limit": 60,
 //    "inputPath": "/home/dvirdu/IdeaProjects/efficient-td-enum/dflat/test_instances",
@@ -24,9 +24,9 @@
 //  }
 
   {
-    "enumerationType" : "SAVE_MINIMAL_TRIANGULATIONS",
+    "enumerationType" : "SAVE_NICE_TD",
     "enumerationPurpose" : "ML_PREDICT",
-    "time_limit": 30,
+    "time_limit": 3,
     "datasetPath": "/home/dvirdu/IdeaProjects/efficient-td-enum/datasets/3col/1",
 
     "mlClassifierType" : "WEKA",
@@ -43,6 +43,7 @@
 
     "solverMemoryLimit" : 554432,
     "tdLimitPerGraph": 10,
-    "transformationMode": "NONE"
+    "transformationMode": "NONE",
+    "predictionSolverMinTime": 3
   }
 ]

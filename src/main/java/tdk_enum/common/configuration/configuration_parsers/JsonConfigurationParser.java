@@ -3,7 +3,6 @@ package tdk_enum.common.configuration.configuration_parsers;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import tdk_enum.common.configuration.*;
-import tdk_enum.common.configuration.config_types.EnumerationPurpose;
 import tdk_enum.common.configuration.config_types.EnumerationType;
 
 import java.io.FileNotFoundException;
@@ -47,7 +46,7 @@ public class JsonConfigurationParser extends AbstractConfigurationParser {
                         break;
 
                     }
-                    case SAVE_MINIMAL_TRIANGULATIONS:
+                    case SAVE_NICE_TD:
                     {
                         configurations.add(gson.fromJson(jsonElement, TDKMLConfiguration.class));
                         System.out.println(jsonObject.toString());

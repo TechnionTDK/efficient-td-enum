@@ -1,0 +1,3 @@
+Field,Type,Graph,Nodes,Edges,Finished,Enumeration Type,Running Mode,Enumerator Type,Thread Number,Time,Algorithm,Separators generated,Results,First Width,Min Width,Max Width,Best Width Time,Best Width Count,Good width Count,First Fill,Min Fill,Max Fill,Best Fill Time,Best Fill Count,Good Fill Count,First ExpBags,Min ExpBags,Max ExpBags,Best ExpBags Time
+dflat,test_instances,instance_n24_p0.10_003,24,46,NO,NICE_TD,SINGLE_THREAD,IMPROVED_JV_CACHE,4,100.002,mcs,13,22766,8,3,9,19523.68,7906,22637,6,-46,32,19523.68,11867,21015,7228,16,10952,19523.68
+dflat,test_instances,instance_n24_p0.10_003,24,46,NO,NICE_TD,PARALLEL,IMPROVED_JV_CACHE,4,100.001,mcs,15,56873,8,3,9,19648.981,18468,4127,6,-46,33,19648.981,2,87,7228,16,10952,19648.981

@@ -28,7 +28,7 @@ public class EnumeratorFactory implements  IEnumeratorFactory {
                 return produceTreeDecompositionEnumerator();
             case SEPARATORS:
                 return produceMinimalSeparatorsEnumerator();
-            case MINIMAL_TRIANGULATIONS: case SAVE_MINIMAL_TRIANGULATIONS:
+            case MINIMAL_TRIANGULATIONS: case SAVE_NICE_TD:
                 return produceMinimalTriangluationsEnumerator();
 
             default:

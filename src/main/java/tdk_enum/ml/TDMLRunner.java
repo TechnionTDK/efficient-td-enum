@@ -13,12 +13,14 @@ import tdk_enum.enumerators.triangulation.parallel.StoringParallelMinimalTriangu
 import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.factories.enumeration.minimal_triangulations_enumerator_factory.MinimalTriangulationsEnumeratorFactory;
 import tdk_enum.factories.enumeration.tree_decomposition_enumerator_factory.NiceTreeDecompositionEnumeratorFactory;
+import tdk_enum.factories.enumeration.tree_decomposition_enumerator_factory.TreeDecompositionEnumeratorFactory;
 import tdk_enum.factories.ml.classifier_factory.ClassifierFactory;
 import tdk_enum.factories.ml.feature_extractor_factory.FeatureExtractorFactory;
 import tdk_enum.factories.ml.solver_factory.SolverFactory;
 import tdk_enum.graph.converters.Converter;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
+import tdk_enum.graph.graphs.tree_decomposition.single_thread.TreeDecomposition;
 import tdk_enum.ml.classifiers.IClassifier;
 import tdk_enum.ml.classifiers.common.*;
 import tdk_enum.ml.feature_extractor.IFeatureExtractor;
@@ -398,9 +400,12 @@ public class TDMLRunner {
             System.out.println("Starting prediction for " + inputFile.getPath());
             TDKEnumFactory.init(inputFile);
 
-            predictVanilla(inputFile);
-            predictRandom(inputFile);
-            predictReal(inputFile);
+            if(predictVanilla(inputFile))
+            {
+                predictRandom(inputFile);
+                predictReal(inputFile);
+            }
+
 //            ITreeDecompositionEnumerator singleThreadEnumerator = creatSingleThreadEnumerator();
 //            ITreeDecompositionEnumerator randomEnumerator = createSingleThreadRandomEnumerator();
 
@@ -439,16 +444,24 @@ public class TDMLRunner {
             randomTrees.add(randomEnumerator.next());
         }
 
-        System.out.println("Vanilla trees: " + randomTrees.size());
+        System.out.println("Random trees: " + randomTrees.size());
         List<EvaluationDetails> vanillaDetails = predict(randomTrees, inputFile);
         printPredictionsToCSV(vanillaDetails, "random", inputFile.getPath(),randomTrees.size());
+        List<ITreeDecomposition> first70 = new ArrayList<>();
+        for (int i = 0; i < 70; i++)
+        {
+            first70.add(randomTrees.get(i));
+        }
+        List<EvaluationDetails> vanilla70Details = predict(first70, inputFile);
+        printPredictionsToCSV(vanillaDetails, "random70", inputFile.getPath(),first70.size());
     }
 
-    private void predictVanilla(InputFile inputFile)
+    private boolean predictVanilla(InputFile inputFile)
     {
         ITreeDecompositionEnumerator vanillaEnumerator = createVanillaEnumerator();
         List<ITreeDecomposition> vanillaTrees = new ArrayList<>();
-        long timeLimit = TDKEnumFactory.getConfiguration().getTime_limit();
+        TDKMLConfiguration configuration = (TDKMLConfiguration) TDKEnumFactory.getConfiguration();
+        long timeLimit = configuration.getTime_limit();
         long start =   System.currentTimeMillis();
         while (vanillaEnumerator.hasNext() && System.currentTimeMillis() - start < timeLimit*1000)
 
@@ -456,18 +469,42 @@ public class TDMLRunner {
             vanillaTrees.add(vanillaEnumerator.next());
         }
 
-        System.out.println("Vaniila trees: " + vanillaTrees.size());
+        TreeDecompositionMeta meta = new TreeDecompositionMeta(
+                vanillaTrees.get(0), 0, TDKEnumFactory.getInputFile().getName(), TDKEnumFactory.getInputFile().getFile());
+        CommandResult result = solver.solve(TDKEnumFactory.getInputFile().getFile(), meta.getFile());
+
+        if(result.getTotalDuration_UserTime()<1000*configuration.getPredictionSolverMinTime())
+        {
+            System.out.println("First vanilla TD ran less then 30 sec");
+            return false;
+        }
+
+        System.out.println("Vanilla trees: " + vanillaTrees.size());
         List<EvaluationDetails> vanillaDetails = predict(vanillaTrees, inputFile);
         printPredictionsToCSV(vanillaDetails, "vanilla", inputFile.getPath(),vanillaTrees.size());
+
+        List<ITreeDecomposition> first70 = new ArrayList<>();
+        for (int i = 0; i < 70; i++)
+        {
+            first70.add(vanillaTrees.get(i));
+        }
+        List<EvaluationDetails> vanilla70Details = predict(first70, inputFile);
+        printPredictionsToCSV(vanillaDetails, "vanilla70", inputFile.getPath(),first70.size());
+
+        return true;
     }
 
     private void predictReal(InputFile inputFile)
     {
-        StoringParallelMinimalTriangulationsEnumerator enumerator = (StoringParallelMinimalTriangulationsEnumerator) new MinimalTriangulationsEnumeratorFactory().produce();
+        ITreeDecompositionEnumerator enumerator = new TreeDecompositionEnumeratorFactory().produce();
         runTimeLimited(enumerator);
-        Set<IChordalGraph> chordalGraphs = enumerator.getTriangulations();
-        System.out.println(chordalGraphs.size() + " chordal graphs where produced");
-        List<ITreeDecomposition> treeDecompositions = chordalGraphs.stream().map(chordalGraph ->{ chordalGraphs.remove(chordalGraph); return Converter.chordalGraphToNiceTreeDecomposition(chordalGraph); } ).collect(Collectors.toCollection(ArrayList::new));
+        List<ITreeDecomposition> treeDecompositions = new ArrayList<>(enumerator.getDecompositions());
+
+//        StoringParallelMinimalTriangulationsEnumerator enumerator = (StoringParallelMinimalTriangulationsEnumerator) new MinimalTriangulationsEnumeratorFactory().produce();
+//        runTimeLimited(enumerator);
+//        Set<IChordalGraph> chordalGraphs = enumerator.getTriangulations();
+//
+//        List<ITreeDecomposition> treeDecompositions = chordalGraphs.stream().map(chordalGraph ->{ chordalGraphs.remove(chordalGraph); return Converter.chordalGraphToNiceTreeDecomposition(chordalGraph); } ).collect(Collectors.toCollection(ArrayList::new));
         System.out.println(treeDecompositions.size() + " TD where produced");
         List<EvaluationDetails> real = predict(treeDecompositions, inputFile);
         printPredictionsToCSV(real, "real", inputFile.getPath(),treeDecompositions.size());
@@ -512,6 +549,7 @@ public class TDMLRunner {
         MLModelType mlModelType;
         double modelOverhead;
         double extractionOverhead;
+
 
         public EvaluationInput getFirstDecomposition() {
             return firstDecomposition;
@@ -1019,7 +1057,17 @@ public class TDMLRunner {
     }
 
     private ITreeDecompositionEnumerator createSingleThreadRandomEnumerator() {
-        return createSingleThreadEnumerator(true);
+        TDKEnumConfiguration configuration = TDKEnumFactory.getConfiguration();
+        TDKTreeDecompositionEnumConfiguration  decompositionEnumConfiguration = new TDKTreeDecompositionEnumConfiguration();
+        decompositionEnumConfiguration.setEnumerationType(EnumerationType.NICE_TD);
+        decompositionEnumConfiguration.setMinimalTriangulatorType(MinimalTriangulatorType.RANDOM);
+        decompositionEnumConfiguration.setRunningMode(RunningMode.SINGLE_THREAD);
+        decompositionEnumConfiguration.setSeparatorsGraphType(SeparatorsGraphType.CACHED);
+        decompositionEnumConfiguration.setSingleThreadMISEnumeratorType(SingleThreadMISEnumeratorType.IMPROVED_JV_CACHE);
+        TDKEnumFactory.setConfiguration(decompositionEnumConfiguration);
+        ITreeDecompositionEnumerator enumerator = new NiceTreeDecompositionEnumeratorFactory().produce();
+        TDKEnumFactory.setConfiguration(configuration);
+        return enumerator;
 
     }
 

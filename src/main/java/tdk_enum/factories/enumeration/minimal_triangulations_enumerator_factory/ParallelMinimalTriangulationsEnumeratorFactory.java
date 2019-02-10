@@ -16,13 +16,7 @@ public class ParallelMinimalTriangulationsEnumeratorFactory implements IMinimalT
     public IMinimalTriangulationsEnumerator produce()
     {
         TDKChordalGraphEnumConfiguration configuration = (TDKChordalGraphEnumConfiguration) TDKEnumFactory.getConfiguration();
-        switch (configuration.getEnumerationType())
-        {
-            case SAVE_MINIMAL_TRIANGULATIONS:
-                return (inject (new StoringParallelMinimalTriangulationsEnumerator()));
-                default:
-                    return inject(new ParallelMinimalTriangulationsEnumerator());
-        }
+        return inject(new ParallelMinimalTriangulationsEnumerator());
 
 
 
