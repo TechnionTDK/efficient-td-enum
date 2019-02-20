@@ -471,11 +471,14 @@ public class TDMLRunner {
 
         TreeDecompositionMeta meta = new TreeDecompositionMeta(
                 vanillaTrees.get(0), 0, TDKEnumFactory.getInputFile().getName(), TDKEnumFactory.getInputFile().getFile());
+        solver.setTimeLimit(1000*configuration.getPredictionSolverMinTime()+5);
         CommandResult result = solver.solve(TDKEnumFactory.getInputFile().getFile(), meta.getFile());
+        solver.setTimeLimit(configuration.getSolverTimeLimit());
+        meta.deleteFile();
 
         if(result.getTotalDuration_UserTime()<1000*configuration.getPredictionSolverMinTime())
         {
-            System.out.println("First vanilla TD ran less then 30 sec");
+            System.out.println("First vanilla TD ran less then "+ configuration.getPredictionSolverMinTime()+" sec");
             return false;
         }
 

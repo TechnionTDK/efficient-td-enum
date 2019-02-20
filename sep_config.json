@@ -4,6 +4,14 @@
     enumerationType : "SEPARATORS",
     runningMode : "SINGLE_THREAD",
     enumerationPurpose : "STANDALONE",
+    "singleThreadSeperatorsEnumeratorType": "VANILLA",
+    time_limit : 100
+  },
+  {
+    enumerationType : "SEPARATORS",
+    runningMode : "SINGLE_THREAD",
+    enumerationPurpose : "STANDALONE",
+    "singleThreadSeperatorsEnumeratorType": "CACHED",
     time_limit : 100
   },
 

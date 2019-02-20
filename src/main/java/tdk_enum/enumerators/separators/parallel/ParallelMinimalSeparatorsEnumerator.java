@@ -1,5 +1,6 @@
 package tdk_enum.enumerators.separators.parallel;
 
+import tdk_enum.enumerators.separators.single_thread.CachedMinimalSeparatorsEnumerator;
 import tdk_enum.graph.data_structures.MinimalSeparator;
 import tdk_enum.graph.data_structures.Node;
 import tdk_enum.graph.data_structures.NodeSet;
@@ -10,7 +11,7 @@ import tdk_enum.enumerators.separators.single_thread.MinimalSeparatorsEnumerator
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ParallelMinimalSeparatorsEnumerator extends MinimalSeparatorsEnumerator {
+public class ParallelMinimalSeparatorsEnumerator extends CachedMinimalSeparatorsEnumerator {
 
     protected Thread mainThread;
 //    IGraph graph;

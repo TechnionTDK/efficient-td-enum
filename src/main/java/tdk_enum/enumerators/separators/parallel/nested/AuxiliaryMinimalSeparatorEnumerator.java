@@ -1,8 +1,9 @@
 package tdk_enum.enumerators.separators.parallel.nested;
 
+import tdk_enum.enumerators.separators.single_thread.CachedMinimalSeparatorsEnumerator;
 import tdk_enum.enumerators.separators.single_thread.MinimalSeparatorsEnumerator;
 
-public class AuxiliaryMinimalSeparatorEnumerator extends MinimalSeparatorsEnumerator{
+public class AuxiliaryMinimalSeparatorEnumerator extends CachedMinimalSeparatorsEnumerator {
     @Override
     public void executeAlgorithm()
     {

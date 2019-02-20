@@ -15,10 +15,10 @@ public class CachedMinimalSeparatorsEnumerator extends  MinimalSeparatorsEnumera
     @Override
     protected void tryGenerateNewResult(Node node, MinimalSeparator result)
     {
-        if (result.contains(node))
-        {
-            return;
-        }
+//        if (result.contains(node))
+//        {
+//            return;
+//        }
         Set<Node> xNeighborsAndS = graph.getNeighbors(node);
         xNeighborsAndS.addAll(result);
         if (intermediateCache.contains(xNeighborsAndS)){

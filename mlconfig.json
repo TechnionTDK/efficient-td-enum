@@ -44,6 +44,6 @@
     "solverMemoryLimit" : 554432,
     "tdLimitPerGraph": 10,
     "transformationMode": "NONE",
-    "predictionSolverMinTime": 3
+    "predictionSolverMinTime": 30
   }
 ]
