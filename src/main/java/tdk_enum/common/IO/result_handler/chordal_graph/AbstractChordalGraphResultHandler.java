@@ -102,20 +102,20 @@ public abstract class AbstractChordalGraphResultHandler extends AbstractResultHa
                 firstWidth,
                 minWidth,
                 maxWidth,
-                minWidthResult.getTime(),
+                minWidthResult!= null? minWidthResult.getTime() : 0,
                 minWidthCount,
                 goodWidthCount,
                 firstFill,
                 minFill,
                 maxFill,
-                minFillResult.getTime(),
+                minFillResult!=null ?minFillResult.getTime(): 0,
                 minFillCount,
                 goodFillCount,
-                ((ChordalGraphResultInformation)firstResult).getExpBagSize(),
+                firstResult!=null ? ((ChordalGraphResultInformation)firstResult).getExpBagSize() : 0,
 
                 minBagExpSize,
                 maxBagExpSize,
-                minBagExpSizeResult.getTime());
+                minBagExpSizeResult!=null ? minBagExpSizeResult.getTime() : 0);
         summaryOutput.println(summary);
         summaryOutput.close();
     }

@@ -23,7 +23,9 @@ public class TreeDecompositionEnumerator extends AbstractTreeDecompositionEnumer
 
     @Override
     public ITreeDecomposition next() {
-        return Converter.chordalGraphToProperTreeDecomposition(minimalTriangulationsEnumerator.next());
+        ITreeDecomposition treeDecomposition = Converter.chordalGraphToProperTreeDecomposition(minimalTriangulationsEnumerator.next());
+        resultPrinter.print(treeDecomposition);
+        return(treeDecomposition);
     }
 
     @Override

@@ -1,10 +1,13 @@
 [
 
   {
-    enumerationType : "MINIMAL_TRIANGULATIONS",
-    runningMode : "PARALLEL",
+    enumerationType : "PROPER_TD",
+    runningMode : "SINGLE_THREAD",
     enumerationPurpose : "STANDALONE",
-    time_limit : 100
+    singleThreadMISEnumeratorType:"IMPROVED_JV_CACHE",
+    time_limit : 2,
+    separatorsGraphType: "CACHED",
+    whenToPrint: "ALWAYS"
   }
 //  {
 //    enumerationType : "NICE_TD",

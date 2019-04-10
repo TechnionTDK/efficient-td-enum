@@ -112,14 +112,21 @@ public class ChordalGraph extends Graph implements IChordalGraph
     }
 
     @Override
-    public int getTreeWidth()
-    {
-        Set<NodeSet> maximalCliques = getMaximalCliques();
-        int maxSize = 0;
+    public int getTreeWidth() {
 
-        for (NodeSet set : maximalCliques)
+
+        int maxSize = 0;
+        try {
+
+            Set<NodeSet> maximalCliques = getMaximalCliques();
+            for (NodeSet set : maximalCliques) {
+                maxSize = maxSize < set.size() ? set.size() : maxSize;
+            }
+        }
+
+        catch (Exception e)
         {
-            maxSize = maxSize < set.size() ? set.size() : maxSize;
+            e.printStackTrace();
         }
 
         return maxSize - 1;

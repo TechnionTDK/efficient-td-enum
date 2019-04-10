@@ -31,11 +31,11 @@ public class SingleThreadTreeDecompositionResultHandler extends AbstractTreeDeco
             minBagExpSize = maxBagExpSize = currentResult.getExpBagSize();
             goodWidthCount = minWidthCount = 1;
             goodFillCount = minFillCount = 1;
-            if(whenToPrint != NEVER)
-            {
-                firstResult.printCsvHeaderByTime(detailedOutput);
-                print = true;
-            }
+//            if(whenToPrint != NEVER)
+//            {
+//                firstResult.printCsvHeaderByTime(detailedOutput);
+//                print = true;
+//            }
 
         }
         else

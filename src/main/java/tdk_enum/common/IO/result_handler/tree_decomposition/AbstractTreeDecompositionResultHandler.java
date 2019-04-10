@@ -8,10 +8,7 @@ import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -151,6 +148,24 @@ public abstract class AbstractTreeDecompositionResultHandler extends AbstractRes
         sb.append(inputFile.getName()).append(File.separator);
         sb.append(index).append(".gml");
         GraphMLPrinter.treeDecompositionToGraphMLFile(decomposition, sb.toString() );
+        sb = new StringBuilder();
+        sb.append("Tree Decomposition").append(File.separator);
+        sb.append(inputFile.getField()).append(File.separator);
+        sb.append(inputFile.getType()).append(File.separator);
+        sb.append(inputFile.getName()).append(File.separator);
+        sb.append(index).append(".gr");
+        File file = new File(sb.toString());
+
+        file.getParentFile().mkdirs();
+        try {
+            file.createNewFile();
+            Writer writer = new BufferedWriter(new FileWriter(file));
+            writer.write(decomposition.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 

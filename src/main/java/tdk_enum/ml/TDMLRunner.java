@@ -402,6 +402,7 @@ public class TDMLRunner {
 
             if(predictVanilla(inputFile))
             {
+                predictFullRandom(inputFile);
                 predictRandom(inputFile);
                 predictReal(inputFile);
             }
@@ -433,6 +434,36 @@ public class TDMLRunner {
 
     }
 
+    private void predictFullRandom(InputFile inputFile) {
+        ITreeDecompositionEnumerator randomEnumerator = createGeigerRandomEnumerator();
+        List<ITreeDecomposition> randomTrees = new ArrayList<>();
+        long timeLimit = TDKEnumFactory.getConfiguration().getTime_limit();
+        long start =   System.currentTimeMillis();
+        while (randomEnumerator.hasNext() && System.currentTimeMillis() - start < timeLimit*1000)
+
+        {
+            randomTrees.add(randomEnumerator.next());
+        }
+
+        System.out.println("Fully Random trees: " + randomTrees.size());
+        List<EvaluationDetails> vanillaDetails = predict(randomTrees, inputFile);
+        printPredictionsToCSV(vanillaDetails, "full random (geiger)", inputFile.getPath(),randomTrees.size());
+    }
+
+    private ITreeDecompositionEnumerator createGeigerRandomEnumerator() {
+        TDKEnumConfiguration configuration = TDKEnumFactory.getConfiguration();
+        TDKTreeDecompositionEnumConfiguration  decompositionEnumConfiguration = new TDKTreeDecompositionEnumConfiguration();
+        decompositionEnumConfiguration.setEnumerationType(EnumerationType.NICE_TD);
+        decompositionEnumConfiguration.setMinimalTriangulatorType(MinimalTriangulatorType.RANDOM);
+        decompositionEnumConfiguration.setRunningMode(RunningMode.SINGLE_THREAD);
+        decompositionEnumConfiguration.setSeparatorsGraphType(SeparatorsGraphType.CACHED);
+        decompositionEnumConfiguration.setSingleThreadMISEnumeratorType(SingleThreadMISEnumeratorType.RANDOM);
+        TDKEnumFactory.setConfiguration(decompositionEnumConfiguration);
+        ITreeDecompositionEnumerator enumerator = new NiceTreeDecompositionEnumeratorFactory().produce();
+        TDKEnumFactory.setConfiguration(configuration);
+        return enumerator;
+    }
+
     private void predictRandom(InputFile inputFile) {
         ITreeDecompositionEnumerator randomEnumerator = createSingleThreadRandomEnumerator();
         List<ITreeDecomposition> randomTrees = new ArrayList<>();
@@ -447,13 +478,13 @@ public class TDMLRunner {
         System.out.println("Random trees: " + randomTrees.size());
         List<EvaluationDetails> vanillaDetails = predict(randomTrees, inputFile);
         printPredictionsToCSV(vanillaDetails, "random", inputFile.getPath(),randomTrees.size());
-        List<ITreeDecomposition> first70 = new ArrayList<>();
-        for (int i = 0; i < 70; i++)
-        {
-            first70.add(randomTrees.get(i));
-        }
-        List<EvaluationDetails> vanilla70Details = predict(first70, inputFile);
-        printPredictionsToCSV(vanillaDetails, "random70", inputFile.getPath(),first70.size());
+//        List<ITreeDecomposition> first70 = new ArrayList<>();
+//        for (int i = 0; i < 70; i++)
+//        {
+//            first70.add(randomTrees.get(i));
+//        }
+//        List<EvaluationDetails> vanilla70Details = predict(first70, inputFile);
+//        printPredictionsToCSV(vanillaDetails, "random70", inputFile.getPath(),first70.size());
     }
 
     private boolean predictVanilla(InputFile inputFile)
@@ -486,13 +517,13 @@ public class TDMLRunner {
         List<EvaluationDetails> vanillaDetails = predict(vanillaTrees, inputFile);
         printPredictionsToCSV(vanillaDetails, "vanilla", inputFile.getPath(),vanillaTrees.size());
 
-        List<ITreeDecomposition> first70 = new ArrayList<>();
-        for (int i = 0; i < 70; i++)
-        {
-            first70.add(vanillaTrees.get(i));
-        }
-        List<EvaluationDetails> vanilla70Details = predict(first70, inputFile);
-        printPredictionsToCSV(vanillaDetails, "vanilla70", inputFile.getPath(),first70.size());
+//        List<ITreeDecomposition> first70 = new ArrayList<>();
+//        for (int i = 0; i < 70; i++)
+//        {
+//            first70.add(vanillaTrees.get(i));
+//        }
+//        List<EvaluationDetails> vanilla70Details = predict(first70, inputFile);
+//        printPredictionsToCSV(vanillaDetails, "vanilla70", inputFile.getPath(),first70.size());
 
         return true;
     }

@@ -93,7 +93,15 @@ public class DemonSeparatorGraph extends ConcurrentSeparatorsGraph implements Ru
 
     boolean timeLimitReached()
     {
-        return Thread.currentThread().isInterrupted();
+        if(Thread.currentThread().isInterrupted()){
+            synchronized (batchLock)
+            {
+                hasNext = false;
+                batchLock.notifyAll();
+            }
+            return true;
+        }
+        return false;
     }
 
     public void stop()

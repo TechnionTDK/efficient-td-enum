@@ -1,70 +1,73 @@
 [
 
-  {
-    enumerationType : "MINIMAL_TRIANGULATIONS",
-    runningMode : "SINGLE_THREAD",
-    enumerationPurpose : "STANDALONE",
-    singleThreadMISEnumeratorType:"VANILLA",
-    time_limit : 100,
-    separatorsGraphType: "VANILLA"
-  },
-
-  {
-    enumerationType : "MINIMAL_TRIANGULATIONS",
-    runningMode : "SINGLE_THREAD",
-    enumerationPurpose : "STANDALONE",
-    singleThreadMISEnumeratorType:"IMPROVED_JV_CACHE",
-    time_limit : 100,
-    separatorsGraphType: "CACHED"
-  },
-
-  {
-    enumerationType : "MINIMAL_TRIANGULATIONS",
-    runningMode : "SINGLE_THREAD",
-    enumerationPurpose : "STANDALONE",
-    singleThreadMISEnumeratorType:"NOT_COMPLETE",
-    time_limit : 100,
-    separatorsGraphType: "CACHED"
-  },
-
-  {
-    enumerationType: "MINIMAL_TRIANGULATIONS",
-    runningMode: "PARALLEL",
-    parallelMISEnumeratorType: "BASElINE",
-    separatorsGraphType: "PARALLEL",
-    enumerationPurpose: "STANDALONE",
-    time_limit: 100
-
-  },
-
-  {
-    enumerationType: "MINIMAL_TRIANGULATIONS",
-    runningMode: "PARALLEL",
-    parallelMISEnumeratorType: "HORIZONTAL",
-    separatorsGraphType: "PARALLEL",
-    enumerationPurpose: "STANDALONE",
-    time_limit: 100
-
-  },
+//  {
+//    enumerationType : "MINIMAL_TRIANGULATIONS",
+//    runningMode : "SINGLE_THREAD",
+//    enumerationPurpose : "STANDALONE",
+//    singleThreadMISEnumeratorType:"VANILLA",
+//    time_limit : 100,
+//    separatorsGraphType: "VANILLA"
+//  },
+//
+//  {
+//    enumerationType : "MINIMAL_TRIANGULATIONS",
+//    runningMode : "SINGLE_THREAD",
+//    enumerationPurpose : "STANDALONE",
+//    singleThreadMISEnumeratorType:"IMPROVED_JV_CACHE",
+//    time_limit : 100,
+//    separatorsGraphType: "CACHED"
+//  },
+//
+//  {
+//    enumerationType : "MINIMAL_TRIANGULATIONS",
+//    runningMode : "SINGLE_THREAD",
+//    enumerationPurpose : "STANDALONE",
+//    singleThreadMISEnumeratorType:"NOT_COMPLETE",
+//    time_limit : 100,
+//    separatorsGraphType: "CACHED"
+//  },
+//
+//  {
+//    enumerationType: "MINIMAL_TRIANGULATIONS",
+//    runningMode: "PARALLEL",
+//    parallelMISEnumeratorType: "BASElINE",
+//    separatorsGraphType: "PARALLEL",
+//    enumerationPurpose: "STANDALONE",
+//    time_limit: 100
+//
+//  },
+//
+//  {
+//    enumerationType: "MINIMAL_TRIANGULATIONS",
+//    runningMode: "PARALLEL",
+//    parallelMISEnumeratorType: "HORIZONTAL",
+//    separatorsGraphType: "PARALLEL",
+//    enumerationPurpose: "STANDALONE",
+//    time_limit: 100
+//
+//  },
   {
     enumerationType: "MINIMAL_TRIANGULATIONS",
     runningMode: "PARALLEL",
     parallelMISEnumeratorType: "HORIZONTAL_DEMON",
     separatorsGraphType: "DEMON",
     enumerationPurpose: "STANDALONE",
-    time_limit: 100
-
-  },
-
-  {
-    enumerationType: "MINIMAL_TRIANGULATIONS",
-    runningMode: "PARALLEL",
-    parallelMISEnumeratorType: "NESTED",
-    separatorsGraphType: "DEMON",
-    enumerationPurpose: "STANDALONE",
-    time_limit: 100
+    time_limit: 10,
+    "triangulationAlgorithm": "LB_TRIANG"
 
   }
+//,
+//
+//  {
+//    enumerationType: "MINIMAL_TRIANGULATIONS",
+//    runningMode: "PARALLEL",
+//    parallelMISEnumeratorType: "NESTED",
+//    separatorsGraphType: "DEMON",
+//    enumerationPurpose: "STANDALONE",
+//    time_limit: 30,
+//    "triangulationAlgorithm": "LB_TRIANG"
+//
+//  }
 
 
 ]

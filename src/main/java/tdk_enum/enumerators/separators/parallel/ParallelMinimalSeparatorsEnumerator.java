@@ -6,7 +6,6 @@ import tdk_enum.graph.data_structures.Node;
 import tdk_enum.graph.data_structures.NodeSet;
 import tdk_enum.graph.graphs.IGraph;
 import tdk_enum.graph.data_structures.weighted_queue.parallel.ConcurrentQueueSet;
-import tdk_enum.enumerators.separators.single_thread.MinimalSeparatorsEnumerator;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,6 +24,7 @@ public class ParallelMinimalSeparatorsEnumerator extends CachedMinimalSeparators
         super();
         Q = new ConcurrentQueueSet<>();
         P = ConcurrentHashMap.newKeySet();
+        componentsCache = ConcurrentHashMap.newKeySet();
     }
 
     public ParallelMinimalSeparatorsEnumerator(IGraph graph) {

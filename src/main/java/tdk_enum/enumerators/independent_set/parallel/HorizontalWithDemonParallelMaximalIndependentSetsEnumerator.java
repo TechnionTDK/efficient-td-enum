@@ -19,6 +19,7 @@ public class HorizontalWithDemonParallelMaximalIndependentSetsEnumerator<T> exte
         if (mainThread.isInterrupted())
         {
             f.cancel(true);
+            executor.shutdownNow();
 
             return  true;
         }
@@ -53,7 +54,12 @@ public class HorizontalWithDemonParallelMaximalIndependentSetsEnumerator<T> exte
 
         }
 
-        f.cancel(true);
+        if(!f.isCancelled())
+        {
+            f.cancel(true);
+        }
+
+        executor.shutdownNow();
         jvCache.close();
 
 

@@ -13,6 +13,10 @@ public class AuxiliaryMinimalSeparatorEnumerator extends CachedMinimalSeparators
             {
                 notifyWorking();
                 currentEnumResult = Q.poll();
+                if(currentEnumResult == null)
+                {
+                    break;
+                }
                 P.add(currentEnumResult);
                 changeVIfNeeded();
                 iteratingNodePhase();

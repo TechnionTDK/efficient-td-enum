@@ -296,6 +296,7 @@ public class TDEnum {
                 f.cancel(true);
             }
         }
+        executorService.shutdownNow();
 
 
 

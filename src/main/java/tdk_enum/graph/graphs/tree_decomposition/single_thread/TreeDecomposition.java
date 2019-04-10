@@ -663,6 +663,8 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
         {
             sb.append(bag).append(System.lineSeparator());
         }
+
+        sb.append("r ").append(root.id).append(System.lineSeparator());
         for(DecompositionNode bag :bags)
         {
             if(bag.accessChildrenList().size() != 0)

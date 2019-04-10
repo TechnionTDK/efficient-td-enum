@@ -67,16 +67,16 @@ public class ParallelChordalGraphResultHandler extends SingleThreadChordalGraphR
         resultsFound = atomiceResultsFound.intValue();
         minWidth = widthMap.keySet().stream().min(Comparator.naturalOrder()).orElse(0);
         maxWidth = widthMap.keySet().stream().max(Comparator.naturalOrder()).orElse(0);
-        minWidthCount = widthMap.get(minWidth);
-        firstWidth =((ChordalGraphResultInformation)firstResult).getWidth();
-        goodWidthCount = widthMap.get(((ChordalGraphResultInformation)firstResult).getWidth());
+        minWidthCount = widthMap.getOrDefault(minWidth, 0);
+        firstWidth = firstResult!= null ?((ChordalGraphResultInformation)firstResult).getWidth() :0;
+        goodWidthCount = widthMap.getOrDefault(firstWidth,0);
 
 
         minFill = fillMap.keySet().stream().min(Comparator.naturalOrder()).orElse(0);
         maxFill = fillMap.keySet().stream().max(Comparator.naturalOrder()).orElse(0);
-        minFillCount = fillMap.get(maxFill);
-        firstFill = ((ChordalGraphResultInformation)firstResult).getFill();
-        goodFillCount = fillMap.get(((ChordalGraphResultInformation)firstResult).getFill());
+        minFillCount = fillMap.getOrDefault(minFill, 0);
+        firstFill = firstResult!=null ?((ChordalGraphResultInformation)firstResult).getFill() :0;
+        goodFillCount = fillMap.getOrDefault(firstFill,0);
 
         minBagExpSize = expBagMap.keySet().stream().min(Comparator.naturalOrder()).orElse((long)0);
         maxBagExpSize = expBagMap.keySet().stream().max(Comparator.naturalOrder()).orElse((long)0);

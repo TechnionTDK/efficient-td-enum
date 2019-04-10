@@ -13,10 +13,13 @@ import tdk_enum.enumerators.separators.parallel.nested.BusyWaitMinimalSeperatorE
 import tdk_enum.enumerators.separators.scorer.ISeparatorScorer;
 
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
 public class NestedMinimalSeperatorsEnumerator extends AbstractNestetEnumerator <Node, MinimalSeparator,IGraph>  implements IMinimalSeparatorsEnumerator {
 
+
+    Set<NodeSet> componentCache = ConcurrentHashMap.newKeySet();
 
     protected ISeparatorScorer scorer;
     @Override
@@ -62,6 +65,7 @@ public class NestedMinimalSeperatorsEnumerator extends AbstractNestetEnumerator 
         enumerator.setResultPrinter(resultPrinter);
 
         enumerator.setGraph(graph);
+        enumerator.setComponentsCache(componentCache);
 
         return enumerator;
     }
