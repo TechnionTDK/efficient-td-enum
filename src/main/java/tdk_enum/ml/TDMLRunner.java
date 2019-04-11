@@ -18,6 +18,8 @@ import tdk_enum.factories.ml.classifier_factory.ClassifierFactory;
 import tdk_enum.factories.ml.feature_extractor_factory.FeatureExtractorFactory;
 import tdk_enum.factories.ml.solver_factory.SolverFactory;
 import tdk_enum.graph.converters.Converter;
+import tdk_enum.graph.graphs.IMLGraph;
+import tdk_enum.graph.graphs.MLGraph;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
 import tdk_enum.graph.graphs.tree_decomposition.single_thread.TreeDecomposition;
@@ -276,6 +278,7 @@ public class TDMLRunner {
             }
             results.clear();
             ISolver solver = new SolverFactory().produce();
+
             IFeatureExtractor featureExtractor = new FeatureExtractorFactory().produce();
             decompositionMetas.parallelStream().forEach(treeDecompositionMeta -> {
                 treeDecompositionMeta.setCommandResult(solver.solve(TDKEnumFactory.getInputFile().getFile(), treeDecompositionMeta.getFile()));
@@ -283,7 +286,7 @@ public class TDMLRunner {
                 FeatureExtractionResult result = featureExtractor.getFeatures(
                         treeDecompositionMeta.id,
                         treeDecompositionMeta.treeDecomposition ,
-                        TDKEnumFactory.getGraph(),
+                        TDKEnumFactory.getMlGraph(),
                         treeDecompositionMeta.benchmarkRun );
                 treeDecompositionMeta.setFeatureExtractionResult(result);
             });
@@ -446,8 +449,17 @@ public class TDMLRunner {
         }
 
         System.out.println("Fully Random trees: " + randomTrees.size());
-        List<EvaluationDetails> vanillaDetails = predict(randomTrees, inputFile);
-        printPredictionsToCSV(vanillaDetails, "full random (geiger)", inputFile.getPath(),randomTrees.size());
+        List<EvaluationDetails> rendomDetails = predict(randomTrees, inputFile);
+        printPredictionsToCSV(rendomDetails, "full random (geiger)", inputFile.getPath(),randomTrees.size());
+        List<ITreeDecomposition> first70 = new ArrayList<>();
+        int max = randomTrees.size()>=70? 70 : randomTrees.size();
+        for (int i = 0; i <max; i++)
+        {
+
+            first70.add(randomTrees.get(i));
+        }
+        List<EvaluationDetails> random70Details = predict(first70, inputFile);
+        printPredictionsToCSV(random70Details, "full random (geiger) 70", inputFile.getPath(),first70.size());
     }
 
     private ITreeDecompositionEnumerator createGeigerRandomEnumerator() {
@@ -478,6 +490,15 @@ public class TDMLRunner {
         System.out.println("Random trees: " + randomTrees.size());
         List<EvaluationDetails> vanillaDetails = predict(randomTrees, inputFile);
         printPredictionsToCSV(vanillaDetails, "random", inputFile.getPath(),randomTrees.size());
+        List<ITreeDecomposition> first70 = new ArrayList<>();
+        int max = randomTrees.size()>=70? 70 : randomTrees.size();
+        for (int i = 0; i <max; i++)
+        {
+
+            first70.add(randomTrees.get(i));
+        }
+        List<EvaluationDetails> random70Details = predict(first70, inputFile);
+        printPredictionsToCSV(random70Details, "random 70", inputFile.getPath(),first70.size());
 //        List<ITreeDecomposition> first70 = new ArrayList<>();
 //        for (int i = 0; i < 70; i++)
 //        {
@@ -708,7 +729,8 @@ public class TDMLRunner {
         long start = System.currentTimeMillis();
         List<DecompositionDetails> allDecompositionDetails = new ArrayList<>();
         IFeatureExtractor featureExtractor = new FeatureExtractorFactory().produce();
-        allDecompositionDetails = IntStream.range(0,treeDecompositions.size()).parallel().mapToObj(i -> DecompositionDetails.getInstance(featureExtractor.getFeatures(i,treeDecompositions.get(i),TDKEnumFactory.getGraph() ))).collect(Collectors.toList());
+
+        allDecompositionDetails = IntStream.range(0,treeDecompositions.size()).parallel().mapToObj(i -> DecompositionDetails.getInstance(featureExtractor.getFeatures(i,treeDecompositions.get(i), TDKEnumFactory.getMlGraph() ))).collect(Collectors.toList());
 
 //        for (int i = 0; i < treeDecompositions.size(); i++)
 //        {
@@ -734,7 +756,7 @@ public class TDMLRunner {
 
         for (Integer tdId: tdIDs)
         {
-            DecompositionDetails details = DecompositionDetails.getInstance(featureExtractor.getFeatures(tdId,treeDecompositions.get(tdId),TDKEnumFactory.getGraph() ));
+            DecompositionDetails details = DecompositionDetails.getInstance(featureExtractor.getFeatures(tdId,treeDecompositions.get(tdId),TDKEnumFactory.getMlGraph()));
             benchmarkedDecompositionDetails.add(details);
 
         }

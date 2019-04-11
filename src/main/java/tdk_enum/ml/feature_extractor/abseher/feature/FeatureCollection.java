@@ -1,6 +1,6 @@
 package tdk_enum.ml.feature_extractor.abseher.feature;
 
-import tdk_enum.graph.graphs.IGraph;
+import tdk_enum.graph.graphs.IMLGraph;
 import tdk_enum.graph.graphs.tree_decomposition.ITreeDecomposition;
 import tdk_enum.ml.feature_extractor.abseher.feature.graph.GraphFeature;
 import tdk_enum.ml.feature_extractor.abseher.feature.graph.internal.ComponentSizeFeature;
@@ -37,7 +37,7 @@ public class FeatureCollection {
     }
 
     public FeatureExtractionResult getEvaluationResult(int tdID,
-                                                       IGraph instance,
+                                                       IMLGraph instance,
                                                        ITreeDecomposition decomposition) {
         FeatureExtractionResult ret = null;
 
@@ -72,7 +72,7 @@ public class FeatureCollection {
     }
 
     public FeatureExtractionResult getEvaluationResult(int tdID,
-                                                       IGraph instance,
+                                                       IMLGraph instance,
                                                        double userTime,
                                                        double systemTime,
                                                        double wallClockTime,
@@ -120,11 +120,11 @@ public class FeatureCollection {
         return ret;
     }
 
-    public void printEvaluationResult(IGraph instance, ITreeDecomposition td) {
+    public void printEvaluationResult(IMLGraph instance, ITreeDecomposition td) {
         printEvaluationResult(instance, td, 0);
     }
 
-    public void printEvaluationResult(IGraph instance, ITreeDecomposition td, int indentationWidth) {
+    public void printEvaluationResult(IMLGraph instance, ITreeDecomposition td, int indentationWidth) {
         if (td != null) {
             for (int i = 0; i < features.size(); i++) {
                 Feature feature = features.get(i);

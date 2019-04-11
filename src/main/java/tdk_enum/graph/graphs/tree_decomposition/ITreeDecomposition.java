@@ -9,6 +9,8 @@ import java.util.List;
 public interface ITreeDecomposition  extends IChordalGraph{
 
 
+    void update();
+
     int getMaximumDepth();
 
     int getMaximumDepth(DecompositionNode parent);

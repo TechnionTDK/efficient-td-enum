@@ -1,6 +1,7 @@
 package tdk_enum.ml.feature_extractor.abseher.feature;
 
 import tdk_enum.graph.graphs.IGraph;
+import tdk_enum.graph.graphs.IMLGraph;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.Map;
 public class FeatureExtractionResult {
 
     private int tdID = 0;
-    private IGraph instance = null;
+    private IMLGraph instance = null;
 
     private double userTime = -1;
     private double systemTime = -1;
@@ -29,7 +30,7 @@ public class FeatureExtractionResult {
     private List<FeatureMeasurement> measurements = null;
 
     public FeatureExtractionResult(int tdID,
-                                   IGraph instance) {
+                                   IMLGraph instance) {
         this.measurements = new ArrayList<>();
 
         this.tdID = tdID;
@@ -46,7 +47,7 @@ public class FeatureExtractionResult {
     }
 
     public FeatureExtractionResult(int tdID,
-                                   IGraph instance,
+                                   IMLGraph instance,
                                    double userTime,
                                    double systemTime,
                                    double wallClockTime,

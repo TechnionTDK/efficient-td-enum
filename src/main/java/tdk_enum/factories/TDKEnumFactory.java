@@ -19,6 +19,8 @@ import tdk_enum.factories.enumeration.set_scorer_factory.ISetScorerFactory;
 import tdk_enum.factories.enumeration.sets_extender_factory.ISetsExtenderFactory;
 import tdk_enum.factories.enumeration.weighted_queue_factory.IWeightedQueueFactory;
 import tdk_enum.graph.graphs.IGraph;
+import tdk_enum.graph.graphs.IMLGraph;
+import tdk_enum.graph.graphs.MLGraph;
 
 public class TDKEnumFactory {
 
@@ -47,6 +49,12 @@ public class TDKEnumFactory {
 
 
     static IGraph graph;
+
+    public static IMLGraph getMlGraph() {
+        return mlGraph;
+    }
+
+    static IMLGraph mlGraph;
 
    // static Properties properties;
 
@@ -129,7 +137,7 @@ public class TDKEnumFactory {
     {
         TDKEnumFactory.inputFile = inputFile;
         IGraph graph = GraphReader.read(inputFile.getPath());
-        graph.setOriginalPath(inputFile.getPath());
+
         init(graph);
 
     }
@@ -140,8 +148,13 @@ public class TDKEnumFactory {
         {
             TDKEnumFactory.inputFile = new InputFile("");
         }
-
         TDKEnumFactory.graph = graph;
+        TDKEnumFactory.mlGraph = new MLGraph(graph);
+        TDKEnumFactory.mlGraph.update();
+        TDKEnumFactory.mlGraph.setOriginalPath(inputFile.getPath());
+
+
+
 
 
 

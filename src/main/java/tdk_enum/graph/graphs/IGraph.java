@@ -13,8 +13,7 @@ import java.util.Set;
  * Created by dvir.dukhan on 7/5/2017.
  */
 //public interface IGraph <Node extends Integer>{
-public interface IGraph
-{
+public interface IGraph {
 
 
     void addEdge(Node u, Node v);
@@ -36,7 +35,7 @@ public interface IGraph
 
     Set<Node> getNeighbors(Node v);
 
-//    NodeSet accessNeighbors(Node v);
+    //    NodeSet accessNeighbors(Node v);
     Set<Node> accessNeighbors(Node v);
 
 //    NodeSet accessNeighbors(int v);
@@ -67,35 +66,4 @@ public interface IGraph
     Set<Set<Node>> getEdgesDelta(NodeSet nodes);
 
 
-    int getVertexIndex(String vertexName);
-
-    void addHyperEdge(HyperEdge hyperEdge);
-
-    boolean isVertex(int id);
-
-    boolean isVertex(String id);
-
-    boolean isConnected();
-
-    boolean isConnected(int vertex1, int vertex2);
-    boolean isConnected(Node vertex1, Node vertex2);
-
-    List<Node> getReachableVertices(int vertex);
-
-    List<Node> accessReachableVertices(int vertex);
-
-    List<Node> getNeighbors(int vertex, DecompositionNode node);
-    List<Node> getNeighbors(Node vertex, DecompositionNode node);
-
-    int getEccentricity(int vertex);
-
-    int getEccentricity(Node vertex);
-
-    int getEccentricity(String vertex);
-
-    void update();
-
-    String getOriginalPath();
-
-    void setOriginalPath(String originalPath);
 }

@@ -1,6 +1,6 @@
 package tdk_enum.ml.feature_extractor.abseher.feature.graph.internal;
 
-import tdk_enum.graph.graphs.IGraph;
+import tdk_enum.graph.graphs.IMLGraph;
 import tdk_enum.ml.feature_extractor.abseher.feature.FeatureMeasurement;
 import tdk_enum.ml.feature_extractor.abseher.feature.StatisticsSummary;
 import tdk_enum.ml.feature_extractor.abseher.feature.graph.GraphFeature;
@@ -15,7 +15,7 @@ public class GraphSizeFeature extends GraphFeature {
     }
 
     @Override
-    public FeatureMeasurement extractMeasurement(IGraph instance) {
+    public FeatureMeasurement extractMeasurement(IMLGraph instance) {
         StatisticsSummary ret = null;
 
         if (instance != null) {

@@ -44,7 +44,7 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
 
         update();
     }
-
+    @Override
     public void update() {
 
         this.items = new NodeSet();
@@ -58,7 +58,6 @@ public class TreeDecomposition extends ChordalGraph implements ITreeDecompositio
 //        numberOfNodes = vertices.size();
 
         update(root, 0);
-        super.update();
         updateNeeded = false;
 
     }

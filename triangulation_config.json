@@ -5,11 +5,12 @@
 //    runningMode : "SINGLE_THREAD",
 //    enumerationPurpose : "STANDALONE",
 //    singleThreadMISEnumeratorType:"VANILLA",
-//    time_limit : 100,
-//    separatorsGraphType: "VANILLA"
-//  },
-//
-//  {
+//    time_limit :100,
+//    separatorsGraphType: "VANILLA",
+//    "triangulationAlgorithm": "LB_TRIANG"
+//  }
+//,
+// {
 //    enumerationType : "MINIMAL_TRIANGULATIONS",
 //    runningMode : "SINGLE_THREAD",
 //    enumerationPurpose : "STANDALONE",
@@ -46,28 +47,28 @@
 //    time_limit: 100
 //
 //  },
-  {
-    enumerationType: "MINIMAL_TRIANGULATIONS",
-    runningMode: "PARALLEL",
-    parallelMISEnumeratorType: "HORIZONTAL_DEMON",
-    separatorsGraphType: "DEMON",
-    enumerationPurpose: "STANDALONE",
-    time_limit: 10,
-    "triangulationAlgorithm": "LB_TRIANG"
-
-  }
-//,
-//
 //  {
 //    enumerationType: "MINIMAL_TRIANGULATIONS",
 //    runningMode: "PARALLEL",
-//    parallelMISEnumeratorType: "NESTED",
+//    parallelMISEnumeratorType: "HORIZONTAL_DEMON",
 //    separatorsGraphType: "DEMON",
 //    enumerationPurpose: "STANDALONE",
-//    time_limit: 30,
-//    "triangulationAlgorithm": "LB_TRIANG"
+//    time_limit: 100,
+//    triangulationAlgorithm: "LB_TRIANG"
 //
 //  }
+//,
+//
+  {
+    enumerationType: "MINIMAL_TRIANGULATIONS",
+    runningMode: "PARALLEL",
+    parallelMISEnumeratorType: "NESTED",
+    separatorsGraphType: "DEMON",
+    enumerationPurpose: "STANDALONE",
+    time_limit: 100,
+    "triangulationAlgorithm": "LB_TRIANG"
+
+  }
 
 
 ]

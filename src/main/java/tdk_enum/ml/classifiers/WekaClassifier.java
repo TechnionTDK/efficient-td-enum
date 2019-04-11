@@ -305,7 +305,7 @@ public class WekaClassifier implements IClassifier{
         Instances instances = new Instances("Instances", converter.getAttributeVector(), 0);
         instances.setClassIndex(0);
         for (int i = 0; i < decompositions.size(); i++) {
-            DecompositionDetails details = DecompositionDetails.getInstance(featureExtractor.getFeatures(i,decompositions.get(i), TDKEnumFactory.getGraph() ));
+            DecompositionDetails details = DecompositionDetails.getInstance(featureExtractor.getFeatures(i,decompositions.get(i), TDKEnumFactory.getMlGraph() ));
             Instance instance = converter.getInstance(details, true);
             instances.add(instance);
             instance.setDataset(instances);
