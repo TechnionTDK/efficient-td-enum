@@ -146,11 +146,11 @@ public class NestedMaximalIndependentSetsEnumerator<T> extends AbstractNestetEnu
     @Override
     public void executeAlgorithm() {
 
-        doFirstStep();
+
         f = demon.submit((DemonSeparatorGraph)graph);
         demon.shutdown();
 
-
+        doFirstStep();
         try {
             futures = enumerators.invokeAll(callables);
         } catch (InterruptedException e) {

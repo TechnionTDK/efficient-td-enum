@@ -130,21 +130,21 @@ public class WekaClassifier implements IClassifier{
     public WekaClassifier()
     {
 //        classifierMap.put(MLModelType.GAUSSIAN_PROCESSES, new GaussianProcesses());
-        classifierMap.put(MLModelType.ISOTONIC_REGRESSION, new IsotonicRegression());
+//        classifierMap.put(MLModelType.ISOTONIC_REGRESSION, new IsotonicRegression());
         classifierMap.put(MLModelType.LEAST_MED_SQ, new LeastMedSq());
         classifierMap.put(MLModelType.LINEAR_REGRESSION, new LinearRegression());
-        classifierMap.put(MLModelType.MULTILAYER_PERCEPTRON, new MultilayerPerceptron());
-        classifierMap.put(MLModelType.PACE_REGRESSION, new PaceRegression());
-        classifierMap.put(MLModelType.PLS_CLASSIFIER, new PLSClassifier());
-        classifierMap.put(MLModelType.SMOREG, new SMOreg());
-        classifierMap.put(MLModelType.IBK, new IBk());
+//        classifierMap.put(MLModelType.MULTILAYER_PERCEPTRON, new MultilayerPerceptron());
+//        classifierMap.put(MLModelType.PACE_REGRESSION, new PaceRegression());
+//        classifierMap.put(MLModelType.PLS_CLASSIFIER, new PLSClassifier());
+//        classifierMap.put(MLModelType.SMOREG, new SMOreg());
+//        classifierMap.put(MLModelType.IBK, new IBk());
 //        classifierMap.put(MLModelType.KSTAR, new KStar());
 //        classifierMap.put(MLModelType.LWL, new LWL());
-        classifierMap.put(MLModelType.ADDITIVE_REGRESSION, new AdditiveRegression());
+//        classifierMap.put(MLModelType.ADDITIVE_REGRESSION, new AdditiveRegression());
 //        classifierMap.put(MLModelType.BAGGING, new Bagging());
-        classifierMap.put(MLModelType.CV_PARAMETER_SELECTION, new CVParameterSelection());
-        classifierMap.put(MLModelType.M5RULES, new M5Rules());
-        classifierMap.put(MLModelType.M5P, new M5P());
+//        classifierMap.put(MLModelType.CV_PARAMETER_SELECTION, new CVParameterSelection());
+//        classifierMap.put(MLModelType.M5RULES, new M5Rules());
+//        classifierMap.put(MLModelType.M5P, new M5P());
 
     }
 

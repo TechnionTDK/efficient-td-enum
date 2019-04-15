@@ -1,0 +1,12 @@
+[  {
+  enumerationType : "MINIMAL_TRIANGULATIONS",
+  runningMode : "SINGLE_THREAD",
+  enumerationPurpose : "STANDALONE",
+  singleThreadMISEnumeratorType:"IMPROVED_K_EXTEND",
+  k: 3,
+  time_limit : 60,
+  separatorsGraphType: "CACHED",
+  fileName:"random",
+  minimalTriangulatorType: "RANDOM",
+  "triangulationAlgorithm": "LB_TRIANG"
+}]

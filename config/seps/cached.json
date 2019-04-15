@@ -1,0 +1,7 @@
+[  {
+  enumerationType : "SEPARATORS",
+  runningMode : "SINGLE_THREAD",
+  enumerationPurpose : "STANDALONE",
+  "singleThreadSeperatorsEnumeratorType": "CACHED",
+  time_limit : 60
+}]

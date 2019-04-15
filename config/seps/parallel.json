@@ -1,0 +1,8 @@
+[  {
+  enumerationType : "SEPARATORS",
+  runningMode : "PARALLEL",
+  enumerationPurpose : "STANDALONE",
+  parallelSeperatorsEnumeratorType: "VANILLA",
+  time_limit : 60
+
+}]
