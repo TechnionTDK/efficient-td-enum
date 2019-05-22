@@ -20,7 +20,7 @@ public class SetsExtenderFactory implements ISetsExtenderFactory {
     public IIndependentSetExtender produce() {
 
         if(Utils.getFieldValue(TDKEnumFactory.getConfiguration(), "setsExtenderType", VANILLA).equals(LOGGABLE))
-        //if (SetsExtenderType.valueOf(TDKEnumFactory.getProperties().getProperty("setExt", VANILLA.name())).equals(LOGGABLE))
+        //if (SetsExtenderType.valueOf(TDKEnumFactory.getProperties().getProperty("setExt", CKK.name())).equals(LOGGABLE))
         {
             return produceLoggableIndependentSetExtender();
         }

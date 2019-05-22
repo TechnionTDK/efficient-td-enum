@@ -1,0 +1,9 @@
+[{
+  enumerationType: "MINIMAL_TRIANGULATIONS",
+  runningMode: "PARALLEL",
+  parallelMISEnumeratorType: "QUEUE_POLLING_CKK",
+  separatorsGraphType: "DEMON",
+  enumerationPurpose: "STANDALONE",
+  time_limit: 60,
+  "triangulationAlgorithm": "LB_TRIANG"
+}]

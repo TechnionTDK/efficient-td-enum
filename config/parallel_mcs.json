@@ -1,8 +1,0 @@
-[{
-      enumerationType: "MINIMAL_TRIANGULATIONS",
-      runningMode: "PARALLEL",
-      parallelMISEnumeratorType: "HORIZONTAL_DEMON",
-      separatorsGraphType: "DEMON",
-      enumerationPurpose: "STANDALONE",
-      time_limit: 60
-}]

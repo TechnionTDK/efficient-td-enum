@@ -4,9 +4,9 @@
 //    enumerationType : "MINIMAL_TRIANGULATIONS",
 //    runningMode : "SINGLE_THREAD",
 //    enumerationPurpose : "STANDALONE",
-//    singleThreadMISEnumeratorType:"VANILLA",
+//    singleThreadMISEnumeratorType:"CKK",
 //    time_limit :100,
-//    separatorsGraphType: "VANILLA",
+//    separatorsGraphType: "CKK",
 //    "triangulationAlgorithm": "LB_TRIANG"
 //  }
 //,
@@ -14,7 +14,7 @@
 //    enumerationType : "MINIMAL_TRIANGULATIONS",
 //    runningMode : "SINGLE_THREAD",
 //    enumerationPurpose : "STANDALONE",
-//    singleThreadMISEnumeratorType:"IMPROVED_JV_CACHE",
+//    singleThreadMISEnumeratorType:"OPTIMIZED_CKK",
 //    time_limit : 100,
 //    separatorsGraphType: "CACHED"
 //  },
@@ -50,7 +50,7 @@
 //  {
 //    enumerationType: "MINIMAL_TRIANGULATIONS",
 //    runningMode: "PARALLEL",
-//    parallelMISEnumeratorType: "HORIZONTAL_DEMON",
+//    parallelMISEnumeratorType: "DOUBLE_BUFFER_CKK",
 //    separatorsGraphType: "DEMON",
 //    enumerationPurpose: "STANDALONE",
 //    time_limit: 100,

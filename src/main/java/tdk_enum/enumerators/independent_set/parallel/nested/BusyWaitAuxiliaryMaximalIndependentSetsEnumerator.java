@@ -93,7 +93,7 @@ public class BusyWaitAuxiliaryMaximalIndependentSetsEnumerator<T> extends Auxili
                 finishConditionFunction = new Function<Void, Boolean>() {
                     @Override
                     public Boolean apply(Void aVoid) {
-                        if(capacity <=  P.size() + Q.size())
+                        if(capacity <=   Q.size())
                         {
                             return true;
 

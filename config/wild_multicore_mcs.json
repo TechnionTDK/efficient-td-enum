@@ -1,0 +1,41 @@
+[
+  {
+  enumerationType: "MINIMAL_TRIANGULATIONS",
+  runningMode: "PARALLEL",
+  parallelMISEnumeratorType: "NESTED",
+  separatorsGraphType: "DEMON",
+  enumerationPurpose: "STANDALONE",
+  time_limit: 60,
+  "threadNumber": 4
+},
+
+  {
+    enumerationType: "MINIMAL_TRIANGULATIONS",
+    runningMode: "PARALLEL",
+    parallelMISEnumeratorType: "NESTED",
+    separatorsGraphType: "DEMON",
+    enumerationPurpose: "STANDALONE",
+    time_limit: 60,
+    "threadNumber": 8
+  },
+
+  {
+    enumerationType: "MINIMAL_TRIANGULATIONS",
+    runningMode: "PARALLEL",
+    parallelMISEnumeratorType: "NESTED",
+    separatorsGraphType: "DEMON",
+    enumerationPurpose: "STANDALONE",
+    time_limit: 60,
+    "threadNumber": 16
+  },
+  {
+    enumerationType: "MINIMAL_TRIANGULATIONS",
+    runningMode: "PARALLEL",
+    parallelMISEnumeratorType: "NESTED",
+    separatorsGraphType: "DEMON",
+    enumerationPurpose: "STANDALONE",
+    time_limit: 60,
+    "threadNumber": 32
+  }
+
+]

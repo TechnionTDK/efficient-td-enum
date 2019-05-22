@@ -6,6 +6,7 @@ import tdk_enum.common.configuration.config_types.TaskManagerType;
 import tdk_enum.enumerators.common.AbstractEnumerator;
 import tdk_enum.enumerators.common.IEnumerator;
 import tdk_enum.enumerators.generators.IGenerator;
+import tdk_enum.graph.data_structures.weighted_queue.parallel.ConcurrentQueueSet;
 import tdk_enum.graph.graphs.succinct_graphs.separator_graph.parallel.DemonSeparatorGraph;
 
 import java.util.*;
@@ -106,14 +107,20 @@ public abstract class AbstractNestetEnumerator <NodeType, EnumType, GraphType> e
         for (IEnumerator enumerator : enumeratorList) {
             enumerator.setQueue(q);
         }
+        if (q instanceof ConcurrentQueueSet){
+            setExtendedCollection((ConcurrentQueueSet)q);
+        }
     }
 
     @Override
     public void setExtendedCollection(Set<EnumType> p) {
-        super.setExtendedCollection(p);
-        for (IEnumerator enumerator : enumeratorList) {
-            enumerator.setExtendedCollection(p);
+        if (p instanceof ConcurrentQueueSet ){
+            super.setExtendedCollection(p);
+            for (IEnumerator enumerator : enumeratorList) {
+                enumerator.setExtendedCollection(p);
+            }
         }
+
     }
 
     @Override

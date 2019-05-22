@@ -17,7 +17,7 @@ import tdk_enum.factories.enumeration.weighted_queue_factory.WeightedQueueFactor
 
 import java.util.HashSet;
 
-import static tdk_enum.common.configuration.config_types.SingleThreadMISEnumeratorType.IMPROVED_JV_CACHE;
+import static tdk_enum.common.configuration.config_types.SingleThreadMISEnumeratorType.OPTIMIZED_CKK;
 
 public class SingleThreadMaximalIndependentSetsEnumeratorFactory implements IMaximalIndependentSetsEnumeratorFactory {
     @Override
@@ -25,12 +25,12 @@ public class SingleThreadMaximalIndependentSetsEnumeratorFactory implements IMax
 
 
         SingleThreadMISEnumeratorType enumeratorType = (SingleThreadMISEnumeratorType)
-                Utils.getFieldValue(TDKEnumFactory.getConfiguration(), "singleThreadMISEnumeratorType", IMPROVED_JV_CACHE);
+                Utils.getFieldValue(TDKEnumFactory.getConfiguration(), "singleThreadMISEnumeratorType", OPTIMIZED_CKK);
 //        SingleThreadMISEnumeratorType enumeratorType = SingleThreadMISEnumeratorType.valueOf(
 //                TDKEnumFactory.getProperties().getProperty("misEnumerator"));
         switch (enumeratorType)
         {
-            case VANILLA:
+            case CKK:
             {
                 System.out.println("producing baseline MIS enumerator");
                 return produceVanillaEnumerator();
@@ -51,7 +51,7 @@ public class SingleThreadMaximalIndependentSetsEnumeratorFactory implements IMax
                 System.out.println("producing improved loggable MIS enumerator");
                 return produceImprovedLoggableEnumerator();
             }
-            case IMPROVED_JV_CACHE:
+            case OPTIMIZED_CKK:
             {
                 System.out.println("producing improved MIS enumerator with jv caching");
                 return produceImprovedJvCachingEnumerator();

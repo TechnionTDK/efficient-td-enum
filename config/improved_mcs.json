@@ -1,8 +1,0 @@
-[{
-      enumerationType : "MINIMAL_TRIANGULATIONS",
-      runningMode : "SINGLE_THREAD",
-      enumerationPurpose : "STANDALONE",
-      singleThreadMISEnumeratorType:"IMPROVED_JV_CACHE",
-  "time_limit": 60,
-      separatorsGraphType: "CACHED"
-}]

@@ -10,7 +10,7 @@ import static tdk_enum.common.configuration.config_types.TriangulationScoringCri
 
 public class TDKChordalGraphEnumConfiguration extends TDKEnumConfiguration {
 
-    protected SingleThreadMISEnumeratorType singleThreadMISEnumeratorType = SingleThreadMISEnumeratorType.IMPROVED_JV_CACHE;
+    protected SingleThreadMISEnumeratorType singleThreadMISEnumeratorType = SingleThreadMISEnumeratorType.OPTIMIZED_CKK;
 
     protected ParallelMISEnumeratorType parallelMISEnumeratorType = ParallelMISEnumeratorType.HORIZONTAL;
 

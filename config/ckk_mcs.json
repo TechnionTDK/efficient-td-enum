@@ -1,0 +1,10 @@
+[{
+
+      enumerationType : "MINIMAL_TRIANGULATIONS",
+      runningMode : "SINGLE_THREAD",
+      enumerationPurpose : "STANDALONE",
+      singleThreadMISEnumeratorType:"CKK",
+      time_limit :60,
+      separatorsGraphType: "VANILLA"
+
+}]

@@ -23,7 +23,7 @@ public class ConcurrentQueueSet<T> implements IWeightedQueue<T>{
 
     @Override
     public boolean isEmpty() {
-        return  queueSet.isEmpty();
+        return  queueQueue.isEmpty();
     }
 
     @Override
@@ -65,7 +65,8 @@ public class ConcurrentQueueSet<T> implements IWeightedQueue<T>{
     public boolean remove(Object o) {
         if(o != null && queueQueue.remove(o))
         {
-            return queueSet.remove(o);
+//            return queueSet.remove(o);
+            return true;
         }
         return false;
 
@@ -125,11 +126,11 @@ public class ConcurrentQueueSet<T> implements IWeightedQueue<T>{
     public T poll() {
         T t = queueQueue.poll();
 
-        if(t !=null)
-        {
-
-            queueSet.remove(t);
-        }
+//        if(t !=null)
+//        {
+//
+//            queueSet.remove(t);
+//        }
 
         return  t;
 

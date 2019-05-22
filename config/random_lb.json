@@ -2,10 +2,10 @@
   enumerationType : "MINIMAL_TRIANGULATIONS",
   runningMode : "SINGLE_THREAD",
   enumerationPurpose : "STANDALONE",
-  singleThreadMISEnumeratorType:"IMPROVED_JV_CACHE",
-  time_limit : 60,
+  singleThreadMISEnumeratorType:"RANDOM",
+  time_limit : 100,
   separatorsGraphType: "CACHED",
+  fileName:"random",
   minimalTriangulatorType: "RANDOM",
-  "triangulationAlgorithm": "LB_TRIANG"
-
+  triangulationAlgorithm: "LB_TRIANG"
 }]

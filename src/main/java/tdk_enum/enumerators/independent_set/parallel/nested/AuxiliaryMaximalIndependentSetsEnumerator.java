@@ -31,7 +31,7 @@ public abstract class AuxiliaryMaximalIndependentSetsEnumerator<T>  extends Impr
                     {
                         break;
                     }
-                    P.add(currentEnumResult);
+//                    P.add(currentEnumResult);
                     localResults.add(currentEnumResult);
                     changeVIfNeeded();
                     iteratingNodePhase();
@@ -122,6 +122,16 @@ public abstract class AuxiliaryMaximalIndependentSetsEnumerator<T>  extends Impr
 
 
 
+    @Override
+    protected void newResultFound(Set<T> c)
+    {
+        if (Q.add(c))
+        {
+            //assume Q checks before insertion
+            //  currentEnumResult = c;
+            resultPrinter.print(c);
+        }
+    }
 
 
 }

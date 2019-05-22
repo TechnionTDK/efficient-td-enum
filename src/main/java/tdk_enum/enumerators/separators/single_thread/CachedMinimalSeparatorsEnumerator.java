@@ -42,7 +42,9 @@ public class CachedMinimalSeparatorsEnumerator extends  MinimalSeparatorsEnumera
 //        intermediateCache.add(xNeighborsAndS);
         for (NodeSet nodeSet : graph.getComponents(xNeighborsAndS))
         {
-
+            if(finishCondition()){
+                break;
+            }
 
             if(componentsCache.contains(nodeSet)){
 

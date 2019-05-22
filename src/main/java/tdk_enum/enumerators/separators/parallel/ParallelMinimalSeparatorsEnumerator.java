@@ -56,6 +56,12 @@ public class ParallelMinimalSeparatorsEnumerator extends CachedMinimalSeparators
     }
 
     @Override
+    protected boolean finishCondition() {
+        return mainThread.isInterrupted();
+    }
+
+
+    @Override
     protected void doFirstStep()
     {
         graph.accessVertices().parallelStream().forEach(v -> {

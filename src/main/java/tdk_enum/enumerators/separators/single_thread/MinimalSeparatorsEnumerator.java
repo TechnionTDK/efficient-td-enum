@@ -170,6 +170,9 @@ public class MinimalSeparatorsEnumerator extends AbstractMinimalSeparatorsEnumer
         xNeighborsAndS.addAll(result);
         for (NodeSet nodeSet : graph.getComponents(xNeighborsAndS))
         {
+            if (finishCondition()){
+                break;
+            }
             newResultFound(new MinimalSeparator(graph.getNeighbors(nodeSet)));
         }
     }

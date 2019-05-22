@@ -2,14 +2,14 @@
 //    enumerationType : "SEPARATORS",
 //    runningMode : "SINGLE_THREAD",
 //    enumerationPurpose : "STANDALONE",
-//    parallelSeperatorsEnumeratorType: "NESTED",
+//    parallelSeperatorsEnumeratorType: "QUEUE_POLLING_CKK",
 //    time_limit : 100
 //  },
 //  {
 //    enumerationType : "SEPARATORS",
 //    runningMode : "PARALLEL",
 //    enumerationPurpose : "BENCHMARK_COMPARE",
-//    parallelSeperatorsEnumeratorType: "NESTED",
+//    parallelSeperatorsEnumeratorType: "QUEUE_POLLING_CKK",
 //    benchMarkBaseId: 1
 //  },
 //
@@ -22,7 +22,7 @@
 //  {
 //    enumerationType : "MINIMAL_TRIANGULATIONS",
 //    runningMode : "PARALLEL",
-//    parallelMISEnumeratorType : "NESTED",
+//    parallelMISEnumeratorType : "QUEUE_POLLING_CKK",
 //    separatorsGraphType : "DEMON",
 //    enumerationPurpose : "BENCHMARK_COMPARE",
 //    time_limit : 100,

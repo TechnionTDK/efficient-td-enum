@@ -13,7 +13,7 @@ public class TDKMLConfiguration extends TDKTreeDecompositionEnumConfiguration {
 
     public TDKMLConfiguration()
     {
-        parallelMISEnumeratorType = ParallelMISEnumeratorType.NESTED;
+        parallelMISEnumeratorType = ParallelMISEnumeratorType.QUEUE_POLLING_CKK;
         enumerationType = EnumerationType.SAVE_NICE_TD;
         runningMode = RunningMode.PARALLEL;
         separatorsGraphType = SeparatorsGraphType.DEMON;

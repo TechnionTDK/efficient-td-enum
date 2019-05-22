@@ -51,7 +51,7 @@ public class ParallelMaximalIndependentSetsEnumeratorFactory implements IMaximal
                 return inject(new HorizontalParallelMaximalIndependentSetsEnumerator());
 
             }
-            case HORIZONTAL_DEMON:
+            case DOUBLE_BUFFER_CKK:
             {
                 return inject(new HorizontalWithDemonParallelMaximalIndependentSetsEnumerator());
 
@@ -65,7 +65,7 @@ public class ParallelMaximalIndependentSetsEnumeratorFactory implements IMaximal
             {
                 return inject(new HorizontalThreadPoolMaximalIndependentSetsEnumerator());
             }
-            case NESTED:
+            case QUEUE_POLLING_CKK:
             {
                 NestedMaximalIndependentSetsEnumerator nestedMaximalIndependentSetsEnumerator = new NestedMaximalIndependentSetsEnumerator();
 
@@ -106,13 +106,13 @@ public class ParallelMaximalIndependentSetsEnumeratorFactory implements IMaximal
                 return inject(capacityHorizontalMaximalIndependentSetsEnumerator);
 
             }
-            case HORIZONTAL_DEMON: {
+            case DOUBLE_BUFFER_CKK: {
                 CapacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator capacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator = new CapacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator();
                 capacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator.setCapacity(TDKEnumFactory.getBenchMarkResults());
                 return inject(capacityHorizontalWithDemonParallelMaximalIndependentSetsEnumerator);
 
             }
-            case NESTED:
+            case QUEUE_POLLING_CKK:
             {
                 CapacityNestedMaximalIndependentSetsEnumerator capacityNestedMaximalIndependentSetsEnumerator = new CapacityNestedMaximalIndependentSetsEnumerator();
                 capacityNestedMaximalIndependentSetsEnumerator.setCapacity(TDKEnumFactory.getBenchMarkResults());
