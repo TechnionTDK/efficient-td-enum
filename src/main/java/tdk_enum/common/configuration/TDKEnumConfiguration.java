@@ -27,6 +27,8 @@ public abstract class TDKEnumConfiguration {
 
     protected WhenToPrint whenToPrint = NEVER;
 
+    protected OutputType outputType = OutputType.CSV;
+
     protected String fileName = "";
 
     protected Integer threadNumber = Runtime.getRuntime().availableProcessors();
@@ -102,5 +104,13 @@ public abstract class TDKEnumConfiguration {
 
     public void setThreadNumder(Integer threadNumder) {
         this.threadNumber = threadNumder;
+    }
+
+    public OutputType getOutputType() {
+        return outputType;
+    }
+
+    public void setOutputType(OutputType outputType) {
+        this.outputType = outputType;
     }
 }

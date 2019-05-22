@@ -93,6 +93,7 @@
     <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka:leastMedSquared:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka:isotonicRegression:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka:partialLeastSquares:1.0.5" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:3.10.2" level="project" />
   </component>
   <component name="POM File Configuration" pomFile="" />
 </module>

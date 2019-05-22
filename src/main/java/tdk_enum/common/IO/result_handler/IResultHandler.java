@@ -2,6 +2,7 @@ package tdk_enum.common.IO.result_handler;
 
 import tdk_enum.common.IO.InputFile;
 import tdk_enum.common.configuration.config_types.EnumerationType;
+import tdk_enum.common.configuration.config_types.OutputType;
 import tdk_enum.common.configuration.config_types.RunningMode;
 import tdk_enum.common.configuration.config_types.WhenToPrint;
 import tdk_enum.common.IO.result_printer.IResultPrinter;
@@ -64,6 +65,8 @@ public interface IResultHandler<EnumType> extends IResultPrinter<EnumType>{
     void printSummaryTable();
 
     void setInputFile(InputFile inputFile);
+
+    void setOutputType(OutputType outputType);
 
 
 }

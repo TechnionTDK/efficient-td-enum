@@ -1,6 +1,9 @@
 package tdk_enum.common.IO.result_handler.chordal_graph;
 
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import tdk_enum.common.IO.result_handler.AbstractResultHandler;
+import tdk_enum.common.configuration.config_types.OutputType;
 import tdk_enum.factories.TDKEnumFactory;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 
@@ -69,23 +72,26 @@ public abstract class AbstractChordalGraphResultHandler extends AbstractResultHa
     @Override
     public void createSummaryFile()
     {
-        File summaryFile = new File("chordal graphs summary"+ (fileNameAddition.equals("") ? "" : ("_"+fileNameAddition) )+".csv");
-        summaryOutput = null;
-        if (!summaryFile.exists()) {
-            try {
-                summaryOutput = new PrintWriter(summaryFile);
-                printSummaryHeader();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                summaryOutput = new PrintWriter(new FileOutputStream(summaryFile, true));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+        if (outputType == OutputType.CSV){
+            File summaryFile = new File("chordal graphs summary"+ (fileNameAddition.equals("") ? "" : ("_"+fileNameAddition) )+".csv");
+            summaryOutput = null;
+            if (!summaryFile.exists()) {
+                try {
+                    summaryOutput = new PrintWriter(summaryFile);
+                    printSummaryHeader();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    summaryOutput = new PrintWriter(new FileOutputStream(summaryFile, true));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
 
+            }
         }
+
 
     }
 
@@ -93,7 +99,23 @@ public abstract class AbstractChordalGraphResultHandler extends AbstractResultHa
     @Override
     public void printSummaryTable()
     {
+        switch (outputType){
+            case CSV:{
+                printCSV();
+                break;
+            }
+            case MONGODB:{
+                printMongoDB();
+                break;
+            }
+        }
 
+
+
+    }
+
+    protected  void printCSV()
+    {
         String summary = dataToCSV(
                 super.getDataToCSV(),
                 algorithm,
@@ -118,6 +140,12 @@ public abstract class AbstractChordalGraphResultHandler extends AbstractResultHa
                 minBagExpSizeResult!=null ? minBagExpSizeResult.getTime() : 0);
         summaryOutput.println(summary);
         summaryOutput.close();
+
+    }
+
+    protected void  printMongoDB(){
+        MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
+
     }
 
     @Override

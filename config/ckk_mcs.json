@@ -5,6 +5,6 @@
       enumerationPurpose : "STANDALONE",
       singleThreadMISEnumeratorType:"CKK",
       time_limit :60,
-      separatorsGraphType: "VANILLA"
-
+      separatorsGraphType: "VANILLA",
+      "outputType": "MONGODB"
 }]

@@ -3,6 +3,7 @@ package tdk_enum.common.IO.result_handler;
 import tdk_enum.common.IO.InputFile;
 import tdk_enum.common.IO.result_handler.chordal_graph.ChordalGraphResultInformation;
 import tdk_enum.common.configuration.config_types.EnumerationType;
+import tdk_enum.common.configuration.config_types.OutputType;
 import tdk_enum.common.configuration.config_types.RunningMode;
 import tdk_enum.common.configuration.config_types.WhenToPrint;
 import tdk_enum.factories.TDKEnumFactory;
@@ -46,6 +47,9 @@ public abstract class AbstractResultHandler<EnumType> implements IResultHandler<
     protected  Integer threadNumber;
 
     protected InputFile inputFile;
+
+    protected OutputType outputType;
+
 
     @Override
     public Integer getThreadNumber() {
@@ -203,6 +207,11 @@ public abstract class AbstractResultHandler<EnumType> implements IResultHandler<
     public void setInputFile(InputFile inputFile)
     {
         this.inputFile = inputFile;
+    }
+
+    @Override
+    public void setOutputType(OutputType outputType){
+        this.outputType = outputType;
     }
 
     protected String summaryHeaderSpecificFields =  "";

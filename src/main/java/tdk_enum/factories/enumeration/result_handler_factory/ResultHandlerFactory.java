@@ -35,6 +35,7 @@ public class ResultHandlerFactory implements  IResultHandlerFactory {
         resultHandler.setThreadNumber(TDKEnumFactory.getConfiguration().getThreadNumder());
         resultHandler.setInputFile(TDKEnumFactory.getInputFile());
         resultHandler.setWhenToPrint(TDKEnumFactory.getConfiguration().getWhenToPrint());
+        resultHandler.setOutputType(TDKEnumFactory.getConfiguration().getOutputType());
 
         return resultHandler;
     }
