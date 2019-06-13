@@ -1,9 +1,8 @@
 # Default ignored files
-/.idea/shelf/
-/.idea/workspace.xml
-/.idea/misc.xml
+.idea/
 ./models
 ./csv_files
+./target/
 
 *.csv
 *.json
