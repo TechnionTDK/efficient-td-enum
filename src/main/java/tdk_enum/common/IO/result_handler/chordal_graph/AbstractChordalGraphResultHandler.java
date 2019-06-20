@@ -2,15 +2,41 @@ package tdk_enum.common.IO.result_handler.chordal_graph;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.ServerAddress;
+
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCollection;
+
+import com.mongodb.connection.Stream;
+import org.bson.Document;
+import com.mongodb.Block;
+
+import com.mongodb.client.MongoCursor;
+import static com.mongodb.client.model.Filters.*;
+import com.mongodb.client.result.DeleteResult;
+import static com.mongodb.client.model.Updates.*;
+import com.mongodb.client.result.UpdateResult;
+
+import java.util.*;
+
+
+import java.time.LocalDate;
+
 import tdk_enum.common.IO.result_handler.AbstractResultHandler;
 import tdk_enum.common.configuration.config_types.OutputType;
 import tdk_enum.factories.TDKEnumFactory;
+import tdk_enum.graph.graphs.IGraph;
 import tdk_enum.graph.graphs.chordal_graph.IChordalGraph;
 
+import javax.print.Doc;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static tdk_enum.common.IO.CSVOperations.dataToCSV;
 
@@ -37,8 +63,8 @@ public abstract class AbstractChordalGraphResultHandler extends AbstractResultHa
     protected int goodFillCount = 0;
 
     protected String summaryHeaderSpecificFields =  dataToCSV("Algorithm", "Separators generated","Results","First Width","Min Width","Max Width",
-                                                                          "Best Width Time","Best Width Count","Good width Count","First Fill","Min Fill","Max Fill","Best Fill Time",
-                                                                          "Best Fill Count","Good Fill Count","First ExpBags","Min ExpBags","Max ExpBags","Best ExpBags Time");
+            "Best Width Time","Best Width Count","Good width Count","First Fill","Min Fill","Max Fill","Best Fill Time",
+            "Best Fill Count","Good Fill Count","First ExpBags","Min ExpBags","Max ExpBags","Best ExpBags Time");
 
     @Override
     public void setAlgorithm(String algorithm) {
@@ -144,8 +170,74 @@ public abstract class AbstractChordalGraphResultHandler extends AbstractResultHa
     }
 
     protected void  printMongoDB(){
-        MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
+        MongoClientURI connectionString = new MongoClientURI("mongodb://localhost:27017");
+        MongoClient mongoClient = new MongoClient(connectionString);
+        MongoDatabase database = mongoClient.getDatabase("datasets");
+        String collection_name = new StringBuilder().append(TDKEnumFactory.getGraphField()).append(".").
+                append(TDKEnumFactory.getGraphType()).toString();
+        String graph_name = new StringBuilder().append(TDKEnumFactory.getGraphName()).toString() + ".uai";
+        MongoCollection<Document> collection = database.getCollection(collection_name);
 
+        if(collection == null){
+            // TODO is this the right behavior?
+            database.createCollection(collection_name);
+            collection = database.getCollection(collection_name);
+        }
+
+        Document result_log_doc = new Document("TimeOfExecution", LocalDate.now())
+                .append("CalculationTime", endTime)
+                .append("Separators" , separators)
+                .append("Triangulations" , resultsFound)
+                .append("FirstWidth" , firstWidth)
+                .append("MinWidth" , minWidth)
+                .append("MaxWidth" , maxWidth)
+                .append("BestWidthTime" , minWidthResult.getTime())
+                .append("BestWidthCount" , minWidthCount)
+                .append("GoodWidthCount" , goodWidthCount)
+                .append("FirstFill" , firstFill)
+                .append("MinFill" , minFill)
+                .append("MaxFill" , maxFill)
+                .append("BestFillTime" , minFillResult.getTime())
+                .append("BestFillCount" , minFillCount)
+                .append("GoodFillCount" , goodFillCount)
+                .append("FirstExpBags" , firstResult!=null ? ((ChordalGraphResultInformation)firstResult).getExpBagSize() : 0)
+                .append("MinExpBags" , minBagExpSize)
+                .append("MaxExpBags" , maxBagExpSize)
+                .append("BestExpBagsTime" , minBagExpSizeResult.getTime())
+                .append("MSCalculationTime" , "00:00:00")
+                .append("TimeErrors" , "")
+                .append("CountErrors" , 0)
+                .append("PMCs" , -1);
+
+        // note: assuming here that there is AT MOST one document for each graph name.
+        Document doc_to_update = collection.find(eq("GraphName", graph_name)).first();
+
+        if(doc_to_update == null){
+            // didn't find the graph in the collection, so add a new one
+            IGraph graph = TDKEnumFactory.getGraph();
+            Document graph_doc = new Document("GraphName", graph_name)
+                    .append("Nodes", ((IGraph) graph).getNumberOfNodes())
+                    .append("Edges", graph.getNumberOfEdges())
+                    .append("Logs",
+                            Arrays.asList(
+                                    new Document("AlgorithmName", algorithm)
+                                            .append("Results", Arrays.asList(result_log_doc))
+                            ));
+            collection.insertOne(graph_doc);
+            return;
+        }
+        ArrayList<Document> logs = new ArrayList<Document>();
+        logs = doc_to_update.get("Logs", logs.getClass());
+        // this replaces the last result with the new one
+        ArrayList<Document> new_logs = logs.stream()
+                .filter(document -> !document.get("AlgorithmName").equals(algorithm))
+                .collect(Collectors.toCollection(ArrayList::new));
+        new_logs.add(new Document("AlgorithmName", algorithm)
+                .append("Results", Arrays.asList(result_log_doc)));
+        //update the document
+        Document updated_doc_value = new Document("Logs", new_logs);
+        Document update_doc_set = new Document("$set", updated_doc_value);
+        collection.updateOne(eq("GraphName", graph_name), update_doc_set);
     }
 
     @Override

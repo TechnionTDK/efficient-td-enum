@@ -2,7 +2,7 @@
 .idea/
 ./models
 ./csv_files
-./target/
+target/
 
 *.csv
 *.json
