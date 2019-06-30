@@ -7,6 +7,7 @@ import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
 
+import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.connection.Stream;
 import org.bson.Document;
 import com.mongodb.Block;
@@ -170,12 +171,14 @@ public abstract class AbstractChordalGraphResultHandler extends AbstractResultHa
     }
 
     protected void  printMongoDB(){
+        System.out.println("adding to the database!");
         MongoClientURI connectionString = new MongoClientURI("mongodb://localhost:27017");
         MongoClient mongoClient = new MongoClient(connectionString);
         MongoDatabase database = mongoClient.getDatabase("datasets");
         String collection_name = new StringBuilder().append(TDKEnumFactory.getGraphField()).append(".").
                 append(TDKEnumFactory.getGraphType()).toString();
-        String graph_name = new StringBuilder().append(TDKEnumFactory.getGraphName()).toString() + ".uai";
+        // String graph_name = new StringBuilder().append(TDKEnumFactory.getGraphName()).toString() + ".uai";
+        String graph_name = new StringBuilder().append(TDKEnumFactory.getGraphName()).toString();
         MongoCollection<Document> collection = database.getCollection(collection_name);
 
         if(collection == null){
@@ -220,19 +223,23 @@ public abstract class AbstractChordalGraphResultHandler extends AbstractResultHa
                     .append("Edges", graph.getNumberOfEdges())
                     .append("Logs",
                             Arrays.asList(
-                                    new Document("AlgorithmName", algorithm)
+                                    new Document("AlgorithmName", enumeratorType + "_" + algorithm)
                                             .append("Results", Arrays.asList(result_log_doc))
                             ));
-            collection.insertOne(graph_doc);
+            // upsert is for updating if already existing, otherwise create a new one.
+            // in case multiple processess try to insert the same graph
+            UpdateOptions options = new UpdateOptions().upsert(true);
+            Document update_doc_set = new Document("$set", graph_doc);
+            collection.updateOne(eq("GraphName", graph_name), update_doc_set, options);
             return;
         }
         ArrayList<Document> logs = new ArrayList<Document>();
         logs = doc_to_update.get("Logs", logs.getClass());
         // this replaces the last result with the new one
         ArrayList<Document> new_logs = logs.stream()
-                .filter(document -> !document.get("AlgorithmName").equals(algorithm))
+                .filter(document -> !document.get("AlgorithmName").equals(enumeratorType + "_" + algorithm))
                 .collect(Collectors.toCollection(ArrayList::new));
-        new_logs.add(new Document("AlgorithmName", algorithm)
+        new_logs.add(new Document("AlgorithmName", enumeratorType + "_" + algorithm)
                 .append("Results", Arrays.asList(result_log_doc)));
         //update the document
         Document updated_doc_value = new Document("Logs", new_logs);
