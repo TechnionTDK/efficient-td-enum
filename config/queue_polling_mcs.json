@@ -4,5 +4,6 @@
   parallelMISEnumeratorType: "QUEUE_POLLING_CKK",
   separatorsGraphType: "DEMON",
   enumerationPurpose: "STANDALONE",
-  time_limit: 60
+  time_limit: 60,
+	"outputType": MONGODB
 }]

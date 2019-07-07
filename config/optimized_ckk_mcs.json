@@ -4,5 +4,6 @@
       enumerationPurpose : "STANDALONE",
       singleThreadMISEnumeratorType:"OPTIMIZED_CKK",
   "time_limit": 60,
-      separatorsGraphType: "CACHED"
+      separatorsGraphType: "CACHED",
+	"outputType": MONGODB
 }]
